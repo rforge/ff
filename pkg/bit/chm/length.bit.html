@@ -1,0 +1,107 @@
+<html><head><title>Getting and setting length of a bit vector</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>length.bit(bit)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   length.bit">
+<param name="keyword" value="R:   length.bitwhich">
+<param name="keyword" value="R:   length.ri">
+<param name="keyword" value="R:   length<-.bit">
+<param name="keyword" value="R:   length<-.bitwhich">
+<param name="keyword" value=" Getting and setting length of a bit vector">
+</object>
+
+
+<h2>Getting and setting length of a bit vector</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Query the number of bits in a bit vector or change the number of bits in a bit vector.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'ri':
+length(x)
+## S3 method for class 'bit':
+length(x)
+## S3 method for class 'bitwhich':
+length(x)
+## S3 method for class 'bit':
+length(x) &lt;- value
+## S3 method for class 'bitwhich':
+length(x) &lt;- value  # not allowed
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+a bit vector </td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+the new number of bits </td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+Note that no explicit initialization is done.
+As a consequence, when you first decrease and then increase length you might find that some 'new' bits are already <code>TRUE</code>.
+Note that assigning a new length to a <code><a href="bitwhich.html">bitwhich</a></code> is not allowed.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+A bit vector with the new length</p>
+
+<h3>Author(s)</h3>
+
+<p>
+Jens Oehlschlägel
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a onclick="findlink('tm', 'length-methods.html')" style="text-decoration: underline; color: blue; cursor: hand">length</a></code>, <code><a href="bit-package.html">bit</a></code>, <code><a href="bitwhich.html">bitwhich</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  x &lt;- bit(32)
+  length(x)
+  x[c(1, 32)] &lt;- TRUE
+  length(x) &lt;- 16
+  x
+  length(x) &lt;- 32
+  x
+</pre>
+
+<script Language="JScript">
+function findlink(pkg, fn) {
+var Y, link;
+Y = location.href.lastIndexOf("\\") + 1;
+link = location.href.substring(0, Y);
+link = link + "../../" + pkg + "/chtml/" + pkg + ".chm::/" + fn;
+location.href = link;
+}
+</script>
+
+
+<hr><div align="center">[Package <em>bit</em> version 1.1.0 <a href="00Index.html">Index</a>]</div>
+
+</body></html>

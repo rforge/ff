@@ -1,0 +1,64 @@
+    CHANGES IN bit VERSION 1.1.0
+
+
+NEW FEATURES
+
+    o New class 'bitwhich' stores subscript positions in most efficient way:
+      TRUE for all()==TRUE, FALSE for !any()==TRUE. otherwise positive or
+      negative subscripts, whatever needs less RAM. Coercion functions and 
+      logical operators are available, the latter being efficient for very
+      asymetric (skewed) distributions: selecting or exlcuding small factions
+      of the data.
+    
+    o New class 'ri' (range index) allows to select ranges of positions for 
+      chunked processing: all three classes 'bit', 'bitwhich' and 'ri' can be 
+      used for subsetting 'ff' objects (ff-2.1.0 and higher).
+    
+    o New c() method for 'bit' and 'bitwhich' objects which behaves like 
+      c(logical).
+
+    o The bit methods sum(), any(), all(), min(), max(), range(), summary() 
+      and which() now support a range argument that allows to restrict the 
+      range of evaluation for chunked processing.
+
+    o New utilities for chunked processing: bbatch, repfromto, chunk, vecseq.
+
+
+USER VISIBLE CHANGES
+
+    o reducing length of bit objects will now set hidden bits to FALSE, 
+      such that subsequent length increase behaves consistent with bit
+      objects that had never been reduced in length: new bits are FALSE
+
+    o 'which' is no longer turned into a generic. Use 'bitwhich' instead, 
+      or, 'as.which' if you need strictly positive subscripts. 
+      
+    o 'which.bit' has been renamed to 'as.which.bit'. It no longer has 
+      parameter 'negative' and always returns positive subscripts (wish of 
+      Stavros Macrakis). It now has second parameter 'range' in order to return
+      subscripts for chunked processing (note that the bitwhich representation 
+      is not suitable for chunked processing). In order to facilitate coercion, 
+      the return vector of 'as.which' now has class 'which'.
+      
+    o the internal structure of a bit object has been changed to align with ff 
+      ram objects: the bitlength of a bit object is no longer stored in 
+      attr(bit, "n"), instead in attr(attr(bit, "physical"), "Length"),
+      which is accessible via physical(bit)$Length, but should be accessed
+      usually via length(bit). 
+
+    o the semantics of 'min', 'max' and 'range' have been changed. They now 
+      refer to the positions of TRUE in the bit vector (and thus are consistent
+      with bitwhich rather than with logical. The 'summary' method now returns 
+      four elements c("FALSE"=, "TRUE"=, "Min."=, "Max."=).
+
+
+BUG FIXES
+
+    o which.bit no longer returns integer() for a bit vector that has all TRUE
+
+
+KNOWN PROBLEMS / TODOs
+
+    o NAs are mapped to TRUE in 'bit' and to FALSE in 'ff' booleans. Might be aligned 
+      in a future release. Don't use bit if you have NAs - or map NAs explicitely.
+
