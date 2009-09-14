@@ -1,3 +1,11 @@
+    CHANGES IN bit VERSION 1.1.1
+
+USER VISIBLE CHANGES
+    o Function 'chunk' has been made generic, the default method
+      provides the previous behavior.
+
+
+
     CHANGES IN bit VERSION 1.1.0
 
 

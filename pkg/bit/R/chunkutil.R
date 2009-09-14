@@ -169,12 +169,14 @@ if (FALSE){
 
 #! \name{chunk}
 #! \alias{chunk}
+#! \alias{chunk.default}
 #! \title{ Chunked range index }
 #! \description{
 #!   creates a sequence of range indexes using a syntax not completely unlike 'seq'
 #! }
 #! \usage{
-#! chunk(from = NULL, to = NULL, by = NULL, length.out = NULL, along.with = NULL, overlap = 0L, method = c("bbatch", "seq"))
+#! chunk(\dots)
+#! \method{chunk}{default}(from = NULL, to = NULL, by = NULL, length.out = NULL, along.with = NULL, overlap = 0L, method = c("bbatch", "seq"), \dots)
 #! }
 #! \arguments{
 #!   \item{from}{ the starting value of the sequence. }
@@ -184,9 +186,13 @@ if (FALSE){
 #!   \item{along.with}{ take the length from the length of this argument. }
 #!   \item{overlap}{ number of values to overlap (will lower the starting value of the sequence, the first range becomes smaller }
 #!   \item{method}{ default 'bbatch' will try to balance the chunk size, see \code{\link{bbatch}}, 'seq' will create chunks like \code{\link[base]{seq}} }
+#!   \item{\dots}{ ignored }
+#! }
+#! \details{
+#!   \code{chunk} is generic, the default method is described here, other methods that automatically consider RAM needs are provided with package 'ff', see for example \code{\link[ff]{chunk.ffdf}}
 #! }
 #! \value{
-#!   returns a list of \code{\link{ri}} objects representing chunks of subscripts
+#!   \code{chunk.default} returns a list of \code{\link{ri}} objects representing chunks of subscripts
 #! }
 #! \author{ Jens Oehlschlägel }
 #! \seealso{ \code{\link{ri}},  \code{\link[base]{seq}}, \code{\link{bbatch}} }
@@ -215,7 +221,10 @@ if (FALSE){
 #! }
 #! \keyword{ data }
 
-chunk <- function(from = NULL, to = NULL, by = NULL, length.out = NULL, along.with = NULL, overlap = 0L, method=c("bbatch","seq"))
+chunk <- function(...)
+  UseMethod("chunk")
+
+chunk.default <- function(from = NULL, to = NULL, by = NULL, length.out = NULL, along.with = NULL, overlap = 0L, method=c("bbatch","seq"), ...)
 {
   method <- match.arg(method)
   if (!is.null(along.with)){
@@ -276,7 +285,7 @@ chunk <- function(from = NULL, to = NULL, by = NULL, length.out = NULL, along.wi
   s <- seq.int(length.out=n)
   ret <- vector("list", n)
   for (i in s){
-    ret[[i]] <- ri(from[i], to[i], N)
+    ret[[i]] <- ri(from[i], to[i])
   }
   ret
 }

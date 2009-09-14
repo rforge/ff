@@ -12,17 +12,6 @@
 
 # source("d:/mwp/eanalysis/bit/R/bit.R")
 
-if (FALSE){
-  library(bit)
-  x <- bit(320000000)
-  x[31]<-T
-  x[3100]<-T
-  as.which(x, range=c(31,33))
-
-  as.which(x)
-  #[1]   30 3099
-}
-
 
 #! \name{bit-package}
 #! \alias{bit-package}
@@ -271,7 +260,8 @@ if (FALSE){
 #!   }
 #! }
 
-.BITS <- 8L * .Machine$sizeof.pointer
+#was wrong because C-code uses int: .BITS <- 8L * .Machine$sizeof.pointer
+.BITS <- 32L
 
 
 
