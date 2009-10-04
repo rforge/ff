@@ -1,7 +1,7 @@
 Package: bit
 Type: Package
 Title: A class for vectors of 1-bit booleans
-Version: 1.1.1
+Version: 1.1-1
 Date: 2009-07-07
 Author: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
@@ -23,7 +23,7 @@ Description: bitmapped vectors of booleans (no NAs),
   performance penalty of 150%. the package now contains further classes for 
   representing logical selections: 'bitwhich' for very skewed selections and 
   'ri' for selecting ranges of values for chunked processing. All three index 
-  classes can be used for subsetting 'ff' objects (ff-2.1.0 and higher).
+  classes can be used for subsetting 'ff' objects (ff-2.1-0 and higher).
 License: GPL-2
 LazyLoad: yes
 Encoding: latin1
