@@ -5,14 +5,6 @@
 
 # source("D:/mwp/eanalysis/bit/R/bit.R")
 
-# xx check the docu for these changes
-# xx check if we can get rid of maxindex, poslength here
-# xx check if we can get rid of vmode here
-# xx check if we can get rid of physical / virtual here
-
-# source("d:/mwp/eanalysis/bit/R/bit.R")
-
-
 #! \name{bit-package}
 #! \alias{bit-package}
 #! \alias{bit}
@@ -77,17 +69,17 @@
 #!    \code{\link{bit}}             \tab \code{\link{bitwhich}}            \tab \code{\link{ri}}                  \tab \code{\link{logical}}     \tab create bit object \cr
 #!    \code{\link{print.bit}}       \tab \code{\link{print.bitwhich}}      \tab \code{\link{print.ri}}            \tab \code{\link{print}}       \tab print bit vector \cr
 #!    \code{\link{length.bit}}      \tab \code{\link{length.bitwhich}}     \tab \code{\link{length.ri}}           \tab \code{\link{length}}      \tab get length of bit vector \cr
-#!    \code{\link{length<-.bit}}    \tab                                   \tab                                   \tab \code{\link{length<-}}    \tab change length of bit vector \cr
+#!    \code{\link{length<-.bit}}    \tab \code{\link{length<-.bitwhich}}   \tab                                   \tab \code{\link{length<-}}    \tab change length of bit vector \cr
 #!    \code{\link{c.bit}}           \tab \code{\link{c.bitwhich}}          \tab                                   \tab \code{\link{c}}           \tab concatenate bit vectors \cr
 #!    \code{\link{is.bit}}          \tab \code{\link{is.bitwhich}}         \tab \code{\link{is.ri}}               \tab \code{\link{is.logical}}  \tab test for bit class \cr
 #!    \code{\link{as.bit}}          \tab \code{\link{as.bitwhich}}         \tab                                   \tab \code{\link{as.logical}}  \tab generically coerce to bit or bitwhich \cr
 #!    \code{\link{as.bit.logical}}  \tab \code{\link{as.bitwhich.logical}} \tab                                   \tab \code{\link{logical}}     \tab coerce logical to bit vector (FALSE => FALSE, c(NA, TRUE) => TRUE) \cr
 #!    \code{\link{as.bit.integer}}  \tab \code{\link{as.bitwhich.integer}} \tab                                   \tab \code{\link{integer}}     \tab coerce integer to bit vector (0 => FALSE, ELSE => TRUE) \cr
 #!    \code{\link{as.bit.double}}   \tab \code{\link{as.bitwhich.double}}  \tab                                   \tab \code{\link{double}}      \tab coerce double to bit vector (0 => FALSE, ELSE => TRUE) \cr
-#!    \code{\link{as.double.bit}}   \tab \code{\link{as.double.bitwhich}}  \tab                                   \tab \code{\link{as.double}}   \tab coerce bit vector to double (0/1) \cr
-#!    \code{\link{as.integer.bit}}  \tab \code{\link{as.integer.bitwhich}} \tab                                   \tab \code{\link{as.integer}}  \tab coerce bit vector to integer (0L/1L) \cr
-#!    \code{\link{as.logical.bit}}  \tab \code{\link{as.logical.bitwhich}} \tab                                   \tab \code{\link{as.logical}}  \tab coerce bit vector to logical (FALSE/TRUE) \cr
-#!    \code{\link{as.which.bit}}    \tab \code{\link{as.which.bitwhich}}   \tab                                   \tab \code{\link{as.which}}    \tab coerce bit vector to positive integer subscripts\cr
+#!    \code{\link{as.double.bit}}   \tab \code{\link{as.double.bitwhich}}  \tab \code{\link{as.double.ri}}        \tab \code{\link{as.double}}   \tab coerce bit vector to double (0/1) \cr
+#!    \code{\link{as.integer.bit}}  \tab \code{\link{as.integer.bitwhich}} \tab \code{\link{as.integer.ri}}       \tab \code{\link{as.integer}}  \tab coerce bit vector to integer (0L/1L) \cr
+#!    \code{\link{as.logical.bit}}  \tab \code{\link{as.logical.bitwhich}} \tab \code{\link{as.logical.ri}}       \tab \code{\link{as.logical}}  \tab coerce bit vector to logical (FALSE/TRUE) \cr
+#!    \code{\link{as.which.bit}}    \tab \code{\link{as.which.bitwhich}}   \tab \code{\link{as.which.ri}}         \tab \code{\link{as.which}}    \tab coerce bit vector to positive integer subscripts\cr
 #!    \code{\link{as.bit.which}}    \tab \code{\link{as.bitwhich.which}}   \tab                                   \tab \code{\link{bitwhich}}    \tab coerce integer subscripts to bit vector \cr
 #!    \code{\link{as.bit.bitwhich}} \tab \code{\link{as.bitwhich.bitwhich}}\tab                                   \tab                           \tab coerce from bitwhich  \cr
 #!    \code{\link{as.bit.bit}}      \tab \code{\link{as.bitwhich.bit}}     \tab                                   \tab \code{\link{UseMethod}}   \tab coerce from bit \cr
@@ -348,7 +340,7 @@ print.bit <- function(x, ...){
 #! \alias{print.bitwhich}
 #! \title{ A class for vectors representing asymetric selections }
 #! \description{
-#!   A bitwhich object like the result of \code{\link{as.which}} does represent integer subscript positions,
+#!   A bitwhich object like the result of \code{\link{which}} and \code{\link{as.which}} does represent integer subscript positions,
 #!   but bitwhich objects represent some subscripts rather with negative integers, if this needs less space.
 #!   The extreme cases of selecting all/none subscripts are represented by TRUE/FALSE.
 #!   This needs less RAM compared to \code{\link{logical}} (and often less than \code{\link{as.which}}).
@@ -388,7 +380,7 @@ print.bit <- function(x, ...){
 
 bitwhich <- function(maxindex, poslength=NULL, x=NULL){
   if (is.null(x)){
-    x <- integer()
+    x <- FALSE
     poslength <- 0L
   }else{
     poslength <- as.integer(poslength)
@@ -409,7 +401,7 @@ print.bitwhich <- function(x, ...){
 #! \alias{is.ri}
 #! \alias{is.bit}
 #! \alias{is.bitwhich}
-#! \title{ Testing classes ri, bit and bitwhich }
+#! \title{ Testing for bit, bitwhich and ri selection classes }
 #! \description{
 #!   Test whether an object inherits from 'ri', 'bit' or 'bitwhich'
 #! }
@@ -454,39 +446,122 @@ is.bitwhich <- function(x)
 #! \alias{length.ri}
 #! \alias{length<-.bit}
 #! \alias{length<-.bitwhich}
-#! \title{ Getting and setting length of a bit vector }
+#! \title{ Getting and setting length of bit, bitwhich and ri objects }
 #! \description{
-#!   Query the number of bits in a bit vector or change the number of bits in a bit vector.
+#!   Query the number of bits in a \code{\link{bit}} vector or change the number of bits in a bit vector. \cr
+#!   Query the number of bits in a \code{\link{bitwhich}} vector or change the number of bits in a bit vector. \cr
 #! }
 #! \usage{
 #! \method{length}{ri}(x)
 #! \method{length}{bit}(x)
 #! \method{length}{bitwhich}(x)
 #! \method{length}{bit}(x) <- value
-#! \method{length}{bitwhich}(x) <- value  # not allowed
+#! \method{length}{bitwhich}(x) <- value
 #! }
 #! \arguments{
-#!   \item{x}{ a bit vector }
+#!   \item{x}{ a \code{\link{bit}}, \code{\link{bitwhich}} or \code{\link{ri}} object }
 #!   \item{value}{ the new number of bits }
 #! }
 #! \details{
-#!   Note that no explicit initialization is done.
-#!   As a consequence, when you first decrease and then increase length you might find that some 'new' bits are already \code{TRUE}.
-#!   Note that assigning a new length to a \code{\link{bitwhich}} is not allowed.
+#!   NOTE that the length does NOT reflect the number of selected (\code{TRUE}) bits, it reflects the sum of both, \code{TRUE} and \code{FALSE} bits.
+#!   Increasing the length of a \code{\link{bit}} object will set new bits to \code{FALSE}.
+#!   The behaviour of increasing the length of a \code{\link{bitwhich}} object is different and depends on the content of the object:
+#!   \itemize{
+#!    \item{TRUE}{all included, new bits are set to \code{TRUE}}
+#!    \item{positive integers}{some included, new bits are set to \code{FALSE}}
+#!    \item{negative integers}{some excluded, new bits are set to \code{TRUE}}
+#!    \item{FALSE}{all excluded:, new bits are set to \code{FALSE}}
+#!   }
+#!   Decreasing the length of bit or bitwhich removes any previous information about the status bits above the new length.
 #! }
 #! \value{
-#!   A bit vector with the new length
+#!   the length  A bit vector with the new length
 #! }
 #! \author{ Jens Oehlschlägel }
-#! \seealso{ \code{\link{length}}, \code{\link{bit}}, \code{\link{bitwhich}}  }
+#! \seealso{ \code{\link{length}}, \code{\link[=sum.bit]{sum}}, \code{\link[ff]{poslength}}, \code{\link[ff]{maxindex}} }
 #! \examples{
-#!   x <- bit(32)
-#!   length(x)
-#!   x[c(1, 32)] <- TRUE
+#!   stopifnot(length(ri(1, 1, 32))==32)
+#!
+#!   x <- as.bit(ri(32, 32, 32))
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==1)
 #!   length(x) <- 16
-#!   x
+#!   stopifnot(length(x)==16)
+#!   stopifnot(sum(x)==0)
 #!   length(x) <- 32
-#!   x
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==0)
+#!
+#!   x <- as.bit(ri(1, 1, 32))
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==1)
+#!   length(x) <- 16
+#!   stopifnot(length(x)==16)
+#!   stopifnot(sum(x)==1)
+#!   length(x) <- 32
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==1)
+#!
+#!   x <- as.bitwhich(bit(32))
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==0)
+#!   length(x) <- 16
+#!   stopifnot(length(x)==16)
+#!   stopifnot(sum(x)==0)
+#!   length(x) <- 32
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==0)
+#!
+#!   x <- as.bitwhich(!bit(32))
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==32)
+#!   length(x) <- 16
+#!   stopifnot(length(x)==16)
+#!   stopifnot(sum(x)==16)
+#!   length(x) <- 32
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==32)
+#!
+#!   x <- as.bitwhich(ri(32, 32, 32))
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==1)
+#!   length(x) <- 16
+#!   stopifnot(length(x)==16)
+#!   stopifnot(sum(x)==0)
+#!   length(x) <- 32
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==0)
+#!
+#!   x <- as.bitwhich(ri(2, 32, 32))
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==31)
+#!   length(x) <- 16
+#!   stopifnot(length(x)==16)
+#!   stopifnot(sum(x)==15)
+#!   length(x) <- 32
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==31)
+#!
+#!   x <- as.bitwhich(ri(1, 1, 32))
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==1)
+#!   length(x) <- 16
+#!   stopifnot(length(x)==16)
+#!   stopifnot(sum(x)==1)
+#!   length(x) <- 32
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==1)
+#!
+#!   x <- as.bitwhich(ri(1, 31, 32))
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==31)
+#!   cat("NOTE the change from 'some excluded' to 'all excluded' here\n")
+#!   length(x) <- 16
+#!   stopifnot(length(x)==16)
+#!   stopifnot(sum(x)==16)
+#!   length(x) <- 32
+#!   stopifnot(length(x)==32)
+#!   stopifnot(sum(x)==32)
 #! }
 #! \keyword{ classes }
 #! \keyword{ logic }
@@ -523,8 +598,41 @@ length.bit <- function(x)
 length.bitwhich <- function(x)
   attr(x, "maxindex")
 
-"length<-.bitwhich" <- function(x, value)
-  stop("assigning length to bitwhich is not allowed")
+"length<-.bitwhich" <- function(x, value){
+  if (value!=length(x)){
+    value <- as.integer(value)
+    if (is.integer(x)){
+      cl <- oldClass(x)
+      oldClass(x) <- NULL
+      if (x[1]>0){
+        x <- x[x <= value]
+        l <- length(x)
+        if (l==0)
+          x <- FALSE
+        else if (l==value)
+          x <- TRUE
+        else if (l>(value%/%2L))
+          x <- -as.integer(seq.int(length=value))[-x]
+        attr(x, "poslength") <- l
+      }else{
+        x <- x[x >= -value]
+        l <- length(x)
+        if (l==0)
+          x <- TRUE
+        else if (l==value)
+          x <- FALSE
+        else if (!((value-l)>(value%/%2L)))
+          x <- -as.integer(seq.int(length=value))[-x]
+        attr(x, "poslength") <- value - l
+      }
+      oldClass(x) <- cl
+    }else if(x){
+      attr(x, "poslength") <- value
+    }
+    attr(x, "maxindex") <- value
+  }
+  x
+}
 
 
 
@@ -532,7 +640,7 @@ length.bitwhich <- function(x)
 #! \name{c.bit}
 #! \alias{c.bit}
 #! \alias{c.bitwhich}
-#! \title{ Concatenating bit vectors }
+#! \title{ Concatenating bit and bitwhich vectors }
 #! \description{
 #!   Creating new bit by concatenating bit vectors
 #! }
@@ -579,10 +687,6 @@ c.bitwhich <- function(...){
 
 
 
-
-
-
-
 #! \name{as.bit}
 #! \alias{as.bit}
 #! \alias{as.bit.bit}
@@ -592,10 +696,9 @@ c.bitwhich <- function(...){
 #! \alias{as.bit.bitwhich}
 #! \alias{as.bit.which}
 #! \alias{as.bit.ri}
-#! \alias{as.bit.ff}
 #! \title{ Coercing to bit }
 #! \description{
-#!   Coerces logical or bit to bit vector (and test for bit)
+#!   Coercing to bit vector
 #! }
 #! \usage{
 #! as.bit(x, \dots)
@@ -699,37 +802,57 @@ as.bit.ri <- function(x, ...){
 #! \alias{as.logical.bit}
 #! \alias{as.integer.bit}
 #! \alias{as.double.bit}
-#! \alias{as.which.bit}
-#! \title{ Coercion from bit }
+#! \alias{as.logical.bitwhich}
+#! \alias{as.integer.bitwhich}
+#! \alias{as.double.bitwhich}
+#! \alias{as.logical.ri}
+#! \alias{as.integer.ri}
+#! \alias{as.double.ri}
+#! \title{ Coercion from bit, bitwhich and ri to logical, integer, double }
 #! \description{
 #!   Coercing from bit to logical, integer, which.
 #! }
 #! \usage{
 #! \method{as.logical}{bit}(x, \dots)
+#! \method{as.logical}{bitwhich}(x, \dots)
+#! \method{as.logical}{ri}(x, \dots)
 #! \method{as.integer}{bit}(x, \dots)
+#! \method{as.integer}{bitwhich}(x, \dots)
+#! \method{as.integer}{ri}(x, \dots)
 #! \method{as.double}{bit}(x, \dots)
-#! \method{as.which}{bit}(x, range = NULL, \dots)
+#! \method{as.double}{bitwhich}(x, \dots)
+#! \method{as.double}{ri}(x, \dots)
 #! }
 #! \arguments{
-#!   \item{x}{ an object of class bit }
-#!   \item{range}{ integer vector of length==2 giving a range restriction for chunked processing }
-#!   \item{\dots}{ further arguments (passed to \code{\link{which}} for the default method, ignored otherwise) }
+#!   \item{x}{ an object of class \code{\link{bit}}, \code{\link{bitwhich}} or \code{\link{ri}} }
+#!   \item{\dots}{ ignored }
 #! }
 #! \details{
-#!   \code{as.logical.bit} and \code{as.integer.bit} return a vector of \code{FALSE, TRUE} resp. \code{0,1}.
-#!   \code{as.which.bit} returns a vector of subscripts with class 'which'
 #!   Coercion from bit is quite fast because we use a double loop that fixes each word in a processor register.
 #! }
 #! \value{
-#!   a vector of class 'logical' or 'integer'
+#!   \code{\link{as.logical}} returns a vector of \code{FALSE, TRUE}, \code{\link{as.integer}} and \code{\link{as.double}} return a vector of \code{0,1}.
 #! }
 #! \author{ Jens Oehlschlägel }
-#! \seealso{ \code{\link{bit}}, \code{\link{as.bit}}, \code{\link{as.logical}}, \code{\link{as.integer}}, \code{\link{as.which}}, \code{\link{as.bitwhich}}, \code{\link[ff]{as.ff}}, \code{\link[ff]{as.hi}} }
+#! \seealso{ \code{\link{as.bit}}, \code{\link{as.which}}, \code{\link{as.bitwhich}}, \code{\link[ff]{as.ff}}, \code{\link[ff]{as.hi}} }
 #! \examples{
-#!   x <- as.bit(c(FALSE, NA, TRUE, rep(TRUE, 9)))
-#!   as.logical(x)
-#!   as.integer(x)
-#!   as.which.bit(x)
+#!   x <- ri(2, 5, 10)
+#!   y <- as.logical(x)
+#!   y
+#!   stopifnot(identical(y, as.logical(as.bit(x))))
+#!   stopifnot(identical(y, as.logical(as.bitwhich(x))))
+#!
+#!   y <- as.integer(x)
+#!   y
+#!   stopifnot(identical(y, as.integer(as.logical(x))))
+#!   stopifnot(identical(y, as.integer(as.bit(x))))
+#!   stopifnot(identical(y, as.integer(as.bitwhich(x))))
+#!
+#!   y <- as.double(x)
+#!   y
+#!   stopifnot(identical(y, as.double(as.logical(x))))
+#!   stopifnot(identical(y, as.double(as.bit(x))))
+#!   stopifnot(identical(y, as.double(as.bitwhich(x))))
 #! }
 #! \keyword{ classes }
 #! \keyword{ logic }
@@ -748,12 +871,91 @@ as.double.bit <- function(x, ...){
   as.double(.Call("R_bit_get_integer", x, l, c(1L, length(x)), PACKAGE="bit"))
 }
 
+as.logical.ri <- function(x, ...){
+  if (is.na(x[3]))
+    stop("cannot coerce to logical from ri object with unknown maxindex")
+  ret <- logical(x[3])
+  ret[x[1]:x[2]] <- TRUE
+  ret
+}
+
+as.integer.ri <- function(x, ...){
+  if (is.na(x[3]))
+    stop("cannot coerce to integer from ri object with unknown maxindex")
+  ret <- integer(x[3])
+  ret[x[1]:x[2]] <- 1L
+  ret
+}
+
+as.double.ri <- function(x, ...){
+  if (is.na(x[3]))
+    stop("cannot coerce to integer from ri object with unknown maxindex")
+  ret <- double(x[3])
+  ret[x[1]:x[2]] <- 1
+  ret
+}
+
+
+
+
+#! \name{as.which}
+#! \alias{as.which}
+#! \alias{as.which.default}
+#! \alias{as.which.bitwhich}
+#! \alias{as.which.bit}
+#! \alias{as.which.ri}
+#! \title{ Coercion to (positive) integer positions }
+#! \description{
+#!   Coercing to something like the result of which \code{\link{which}}
+#! }
+#! \usage{
+#! as.which(x, \dots)
+#! \method{as.which}{default}(x, \dots)
+#! \method{as.which}{ri}(x, \dots)
+#! \method{as.which}{bit}(x, range = NULL, \dots)
+#! \method{as.which}{bitwhich}(x, \dots)
+#! }
+#! \arguments{
+#!   \item{x}{ an object of classes \code{\link{bit}}, \code{\link{bitwhich}}, \code{\link{ri}} or something on which \code{\link{which}} works }
+#!   \item{range}{ a \code{\link{ri}} or an integer vector of length==2 giving a range restriction for chunked processing }
+#!   \item{\dots}{ further arguments (passed to \code{\link{which}} for the default method, ignored otherwise) }
+#! }
+#! \details{
+#!   \code{as.which.bit} returns a vector of subscripts with class 'which'
+#! }
+#! \value{
+#!   a vector of class 'logical' or 'integer'
+#! }
+#! \author{ Jens Oehlschlägel }
+#! \seealso{ \code{\link{as.bit}}, \code{\link{as.logical}}, \code{\link{as.integer}}, \code{\link{as.which}}, \code{\link{as.bitwhich}}, \code{\link[ff]{as.ff}}, \code{\link[ff]{as.hi}} }
+#! \examples{
+#!   r <- ri(5, 20, 100)
+#!   x <- as.which(r)
+#!   x
+#!
+#!   stopifnot(identical(x, as.which(as.logical(r))))
+#!   stopifnot(identical(x, as.which(as.bitwhich(r))))
+#!   stopifnot(identical(x, as.which(as.bit(r))))
+#! }
+#! \keyword{ classes }
+#! \keyword{ logic }
+
+
 
 as.which <- function (x, ...)
   UseMethod("as.which")
 
-as.which.default <- function(x, ...)
-  which(x)
+as.which.default <- function(x, ...){
+  ret <- which(x)
+  class(ret) <- "which"
+  ret
+}
+
+as.which.ri <- function(x, ...){
+  ret <- x[1]:x[2]
+  class(ret) <- "which"
+  ret
+}
 
 as.which.bit <- function(x, range=NULL, ...){
   if (is.null(range))
@@ -775,6 +977,24 @@ as.which.bit <- function(x, range=NULL, ...){
   x
 }
 
+as.which.bitwhich <- function(x, ...){
+  if (is.logical(x)){
+    if (unclass(x))
+      x <- as.integer(seq.int(length=length(x)))
+    else
+      x <- integer()
+  }else{
+    if (x[[1]]<0)
+      x <- as.integer(seq.int(length=length(x)))[x]
+    else{
+      attributes(x) <- NULL
+    }
+  }
+  class(x) <- "which"
+  x
+}
+
+
 
 #! \name{as.bitwhich}
 #! \alias{as.bitwhich}
@@ -787,22 +1007,22 @@ as.which.bit <- function(x, range=NULL, ...){
 #! \alias{as.bitwhich.logical}
 #! \title{ Coercing to bitwhich }
 #! \description{
-#!   Functions to coerce double, integer
+#!   Functions to coerce to bitwhich
 #! }
 #! \usage{
 #! as.bitwhich(x, \dots)
 #! \method{as.bitwhich}{bitwhich}(x, \dots)
 #! \method{as.bitwhich}{ri}(x, \dots)
+#! \method{as.bitwhich}{bit}(x, range=NULL, \dots)
 #! \method{as.bitwhich}{which}(x, maxindex, \dots)
 #! \method{as.bitwhich}{integer}(x, \dots)
 #! \method{as.bitwhich}{double}(x, \dots)
 #! \method{as.bitwhich}{logical}(x, \dots)
-#! \method{as.bitwhich}{bit}(x, range=NULL, \dots)
 #! }
 #! \arguments{
 #!   \item{x}{ An object of class 'bitwhich', 'integer', 'logical' or 'bit' or an integer vector as resulting from 'which' }
 #!   \item{maxindex}{ the length of the new bitwhich vector }
-#!   \item{range}{ NULL or a vector with two elements indicating first and last position to be analyzed }
+#!   \item{range}{ a \code{\link{ri}} or an integer vector of length==2 giving a range restriction for chunked processing }
 #!   \item{\dots}{ further arguments }
 #! }
 #! \value{
@@ -851,8 +1071,8 @@ as.bitwhich.ri <- function(x, ...){
   else if (poslength==maxindex)
     bitwhich(maxindex, poslength, TRUE)
   else if (poslength>(maxindex%/%2L)){
-    if (x[1]>1L) a <- 1:x[1] else a <- integer()
-    if (x[2]<maxindex) b <- x[2]:maxindex else b <- integer()
+    if (x[1]>1L) a <- 1:(x[1]-1L) else a <- integer()
+    if (x[2]<maxindex) b <- (x[2]+1L):maxindex else b <- integer()
     bitwhich(maxindex, poslength, -c(a,b))
   }else{
     bitwhich(maxindex, poslength, x[1]:x[2])
@@ -902,62 +1122,7 @@ as.bitwhich.bit <- function(x, range=NULL, ...){
 }
 
 
-#! \name{as.logical.bitwhich}
-#! \alias{as.logical.bitwhich}
-#! \alias{as.integer.bitwhich}
-#! \alias{as.double.bitwhich}
-#! \alias{as.which}
-#! \alias{as.which.default}
-#! \alias{as.which.bitwhich}
-#! \title{ Coercing from bitwhich }
-#! \description{
-#!   Functions for coercing from class \code{\link{bitwhich}}
-#! }
-#! \usage{
-#! \method{as.logical}{bitwhich}(x, \dots)
-#! \method{as.integer}{bitwhich}(x, \dots)
-#! \method{as.double}{bitwhich}(x, \dots)
-#! as.which(x, \dots)
-#! \method{as.which}{default}(x, \dots)
-#! \method{as.which}{bitwhich}(x, \dots)
-#! }
-#! \arguments{
-#!   \item{x}{ an object of class \code{\link{bitwhich}} }
-#!   \item{\dots}{ further arguments }
-#! }
-#! \details{
-#!   Function 'as.integer' converts to positive integers.
-#! }
-#! \value{
-#!   A vector of the desired mode.
-#! }
-#! \author{ Jens Oehlschlägel }
-#! \seealso{ \code{\link{as.bit.bitwhich}}, \code{\link{as.integer.bit}} }
-#! \examples{
-#!  as.integer(as.bitwhich(c(FALSE, FALSE, TRUE)))
-#!  as.integer(as.bit(c(FALSE, FALSE, TRUE)))
-#!  as.logical(as.bitwhich(c(FALSE, FALSE, TRUE)))
-#!  as.logical(as.bit(c(FALSE, FALSE, TRUE)))
-#! }
-#! \keyword{ classes }
-#! \keyword{ logic }
 
-as.which.bitwhich <- function(x, ...){
-  if (is.logical(x)){
-    if (unclass(x))
-      x <- as.integer(seq.int(length=length(x)))
-    else
-      x <- integer()
-  }else{
-    if (x[[1]]<0)
-      x <- as.integer(seq.int(length=length(x)))[x]
-    else{
-      attributes(x) <- NULL
-    }
-  }
-  class(x) <- "which"
-  x
-}
 
 
 as.integer.bitwhich <- function(x, ...){
@@ -1383,7 +1548,7 @@ xor.bitwhich(e1, e2)
 #! \arguments{
 #!   \item{x}{ an object of class bit or bitwhich }
 #!   \item{object}{ an object of class bit }
-#!   \item{range}{ NULL or a vector with two elements indicating first and last position to be analyzed }
+#!   \item{range}{ a \code{\link{ri}} or an integer vector of length==2 giving a range restriction for chunked processing }
 #!   \item{\dots}{ formally required but not used }
 #! }
 #! \details{
@@ -1455,7 +1620,7 @@ sum.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)
+    range <- as.integer(range)[1:2]
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1466,7 +1631,7 @@ all.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)
+    range <- as.integer(range)[1:2]
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1477,7 +1642,7 @@ any.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)
+    range <- as.integer(range)[1:2]
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1488,7 +1653,7 @@ min.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)
+    range <- as.integer(range)[1:2]
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1499,7 +1664,7 @@ max.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)
+    range <- as.integer(range)[1:2]
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1510,7 +1675,7 @@ range.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)
+    range <- as.integer(range)[1:2]
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1527,7 +1692,7 @@ summary.bit <- function(object, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(object))
   else{
-    range <- as.integer(range)
+    range <- as.integer(range)[1:2]
     if (range[1]<1L || range[2]>length(object))
       stop("illegal range")
   }
@@ -2158,7 +2323,7 @@ regtest.bit <- function(
     }
     # check positive whichs
     w <- as.which(l)
-    w2 <- unclass(as.which(as.bit.which(w, n)))
+    w2 <- as.which(as.bit.which(w, n))
     if (!identical(w,w2)){
       cat("\nregression test difference between which\n")
       print(w)
@@ -2173,13 +2338,14 @@ regtest.bit <- function(
     }else if (s==n){
       w <- TRUE
     }else if (s>(n%/%2L)){
-      w <- -rev(as.which(!l))
+      w <- -rev(which(!l))
     }else{
-      w <- as.which(l)
+      w <- which(l)
     }
     w2 <- as.vector(as.bitwhich(as.bit(l)))
     if (!identical(w,w2)){
       cat("\nregression test difference between which\n")
+      browser()
       print(w)
       cat("and as.which(as.bit.which(which))\n")
       print(w2)

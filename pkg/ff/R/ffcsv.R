@@ -7,10 +7,26 @@
 
 # source("d:/mwp/eanalysis/ff/R/ffcsv.R")
 
-# three columns with 78 mio records (integer, factor, factor)
+# 3 columns with 78 mio records (integer, factor, factor)
 # read.table: read.csv 5 min + write.ffdf 1 min
 # clone.ffdf: read+write: 1 min
 # write.table: read.ffdf 0.8 min + write.csv 9.5 min
+
+# 7 columns with 78 mio records ("boolean"    "byte"  "single"   "short"   "short"  "single"  "single")
+# create ffdf 102.7 sec
+# write.table: ffdf-read=100.45sec  csv-write=2553.57sec  TOTAL=2654.02sec
+# read.table: csv-read=2769.26sec  ffdf-write=115.63sec  TOTAL=2884.89sec
+# clone.ffdf: read+write: 175 min
+
+
+#readratio  2769.26/100.45 = 27.5
+#writeratio 2553.57/115.63 = 22
+
+# ff read 1.3s / 1mio / 7 col = 0.2s / mio / col
+# ff write 1.5s / 1mio / 7 col = 0.21s / mio / col
+# csv write 35.5s / 1mio / 7 col = 5 sec / 1mio / col
+# csv read 32.7s / 1mio / 7 col = 4.7 sec / 1mio / col
+
 
 
 # NOTE that this colClass implementation works only because accidentally the last position of the oldClasses is needed

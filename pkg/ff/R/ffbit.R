@@ -30,7 +30,10 @@ as.hi.ri <- function(x
 , ...
 )
 {
-  as.hi(quote(x[[1]] : x[[2]]), maxindex=maxindex, ...)  # NOTE that we cannot call hi() here because it would not handle ...-paramters dim= dimorder=
+  # NOTE that we cannot call hi() here because it would not handle ...-paramters dim= dimorder=
+  l <- list(...)
+  l$envir <- NULL
+  do.call("as.hi", c(list(quote(x[[1]]:x[[2]]), maxindex=maxindex), l))
 }
 
 

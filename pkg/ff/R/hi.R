@@ -919,7 +919,7 @@ as.hi.character <- function(x
 # -- reverting hi to original (as far as possible) -----------------------------------------------------------
 
 #! \name{as.integer.hi}
-#! \alias{which.hi}
+#! \alias{as.which.hi}
 #! \alias{as.bitwhich.hi}
 #! \alias{as.bit.hi}
 #! \alias{as.integer.hi}
@@ -931,7 +931,7 @@ as.hi.character <- function(x
 #!   Functions that (back-)convert an \code{\link{hi}} object to the respective subscripting information.
 #! }
 #! \usage{
-#! \method{which}{hi}(x, \dots)
+#! \method{as.which}{hi}(x, \dots)
 #! \method{as.bitwhich}{hi}(x, \dots)
 #! \method{as.bit}{hi}(x, \dots)
 #! \method{as.integer}{hi}(x, vw.convert = TRUE, \dots)
@@ -1003,7 +1003,7 @@ as.integer.hi <- function(
   ret
 }
 
-which.hi <- function(x, ...){
+as.which.hi <- function(x, ...){
   i <- as.integer(x, ...)
   if (length(i) && i[[1]]<0)
     i <- (1:maxindex(x))[i]

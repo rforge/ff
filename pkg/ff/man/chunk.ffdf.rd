@@ -30,6 +30,29 @@
   ceiling(13 / (100 \%/\% sum(.rambytes[vmode(a)])))
   chunk(a, from=1, to = 13, BATCHBYTES=100)
   rm(a); gc()
+
+ cat("dummy example for linear regression with biglm on ffdf\n")
+  library(biglm)
+
+  cat("NOTE that . in formula requires calculating terms manually because . as a data-dependant term is not allowed in biglm\n")
+  form <- Sepal.Length ~ Sepal.Width + Petal.Length + Petal.Width + Species
+
+  lmfit <- lm(form, data=iris)
+
+  firis <- as.ffdf(iris)
+  for (i in chunk(firis, by=50)){
+    if (i[1]==1){
+      cat("first chunk is: "); print(i)
+      biglmfit <- biglm(form, data=firis[i,,drop=FALSE])
+    }else{
+      cat("next chunk is: "); print(i)
+      biglmfit <- update(biglmfit, firis[i,,drop=FALSE])
+    }
+  }
+
+  summary(lmfit)
+  summary(biglmfit)
+  stopifnot(all.equal(coef(lmfit), coef(biglmfit)))
 }
 \keyword{ IO }
 \keyword{ data }

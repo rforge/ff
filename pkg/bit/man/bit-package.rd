@@ -69,10 +69,10 @@ Index:
    \code{\link{as.bit.logical}}  \tab \code{\link{as.bitwhich.logical}} \tab                                   \tab \code{\link{logical}}     \tab coerce logical to bit vector (FALSE => FALSE, c(NA, TRUE) => TRUE) \cr
    \code{\link{as.bit.integer}}  \tab \code{\link{as.bitwhich.integer}} \tab                                   \tab \code{\link{integer}}     \tab coerce integer to bit vector (0 => FALSE, ELSE => TRUE) \cr
    \code{\link{as.bit.double}}   \tab \code{\link{as.bitwhich.double}}  \tab                                   \tab \code{\link{double}}      \tab coerce double to bit vector (0 => FALSE, ELSE => TRUE) \cr
-   \code{\link{as.double.bit}}   \tab \code{\link{as.double.bitwhich}}  \tab                                   \tab \code{\link{as.double}}   \tab coerce bit vector to double (0/1) \cr
-   \code{\link{as.integer.bit}}  \tab \code{\link{as.integer.bitwhich}} \tab                                   \tab \code{\link{as.integer}}  \tab coerce bit vector to integer (0L/1L) \cr
-   \code{\link{as.logical.bit}}  \tab \code{\link{as.logical.bitwhich}} \tab                                   \tab \code{\link{as.logical}}  \tab coerce bit vector to logical (FALSE/TRUE) \cr
-   \code{\link{as.which.bit}}    \tab \code{\link{as.which.bitwhich}}   \tab                                   \tab \code{\link{as.which}}    \tab coerce bit vector to positive integer subscripts\cr
+   \code{\link{as.double.bit}}   \tab \code{\link{as.double.bitwhich}}  \tab \code{\link{as.double.ri}}        \tab \code{\link{as.double}}   \tab coerce bit vector to double (0/1) \cr
+   \code{\link{as.integer.bit}}  \tab \code{\link{as.integer.bitwhich}} \tab \code{\link{as.integer.ri}}       \tab \code{\link{as.integer}}  \tab coerce bit vector to integer (0L/1L) \cr
+   \code{\link{as.logical.bit}}  \tab \code{\link{as.logical.bitwhich}} \tab \code{\link{as.logical.ri}}       \tab \code{\link{as.logical}}  \tab coerce bit vector to logical (FALSE/TRUE) \cr
+   \code{\link{as.which.bit}}    \tab \code{\link{as.which.bitwhich}}   \tab \code{\link{as.which.ri}}         \tab \code{\link{as.which}}    \tab coerce bit vector to positive integer subscripts\cr
    \code{\link{as.bit.which}}    \tab \code{\link{as.bitwhich.which}}   \tab                                   \tab \code{\link{bitwhich}}    \tab coerce integer subscripts to bit vector \cr
    \code{\link{as.bit.bitwhich}} \tab \code{\link{as.bitwhich.bitwhich}}\tab                                   \tab                           \tab coerce from bitwhich  \cr
    \code{\link{as.bit.bit}}      \tab \code{\link{as.bitwhich.bit}}     \tab                                   \tab \code{\link{UseMethod}}   \tab coerce from bit \cr

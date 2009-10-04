@@ -50,7 +50,7 @@
 \arguments{
   \item{x}{ an object of class bit or bitwhich }
   \item{object}{ an object of class bit }
-  \item{range}{ NULL or a vector with two elements indicating first and last position to be analyzed }
+  \item{range}{ a \code{\link{ri}} or an integer vector of length==2 giving a range restriction for chunked processing }
   \item{\dots}{ formally required but not used }
 }
 \details{

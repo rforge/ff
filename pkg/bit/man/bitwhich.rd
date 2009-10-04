@@ -3,7 +3,7 @@
 \alias{print.bitwhich}
 \title{ A class for vectors representing asymetric selections }
 \description{
-  A bitwhich object like the result of \code{\link{as.which}} does represent integer subscript positions,
+  A bitwhich object like the result of \code{\link{which}} and \code{\link{as.which}} does represent integer subscript positions,
   but bitwhich objects represent some subscripts rather with negative integers, if this needs less space.
   The extreme cases of selecting all/none subscripts are represented by TRUE/FALSE.
   This needs less RAM compared to \code{\link{logical}} (and often less than \code{\link{as.which}}).

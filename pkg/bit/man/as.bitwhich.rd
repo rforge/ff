@@ -9,22 +9,22 @@
 \alias{as.bitwhich.logical}
 \title{ Coercing to bitwhich }
 \description{
-  Functions to coerce double, integer
+  Functions to coerce to bitwhich
 }
 \usage{
 as.bitwhich(x, \dots)
 \method{as.bitwhich}{bitwhich}(x, \dots)
 \method{as.bitwhich}{ri}(x, \dots)
+\method{as.bitwhich}{bit}(x, range=NULL, \dots)
 \method{as.bitwhich}{which}(x, maxindex, \dots)
 \method{as.bitwhich}{integer}(x, \dots)
 \method{as.bitwhich}{double}(x, \dots)
 \method{as.bitwhich}{logical}(x, \dots)
-\method{as.bitwhich}{bit}(x, range=NULL, \dots)
 }
 \arguments{
   \item{x}{ An object of class 'bitwhich', 'integer', 'logical' or 'bit' or an integer vector as resulting from 'which' }
   \item{maxindex}{ the length of the new bitwhich vector }
-  \item{range}{ NULL or a vector with two elements indicating first and last position to be analyzed }
+  \item{range}{ a \code{\link{ri}} or an integer vector of length==2 giving a range restriction for chunked processing }
   \item{\dots}{ further arguments }
 }
 \value{

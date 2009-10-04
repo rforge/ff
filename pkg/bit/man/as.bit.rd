@@ -7,10 +7,9 @@
 \alias{as.bit.bitwhich}
 \alias{as.bit.which}
 \alias{as.bit.ri}
-\alias{as.bit.ff}
 \title{ Coercing to bit }
 \description{
-  Coerces logical or bit to bit vector (and test for bit)
+  Coercing to bit vector
 }
 \usage{
 as.bit(x, \dots)

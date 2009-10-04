@@ -255,7 +255,7 @@ export(
 ,as.hi.character
 ,as.hi.double
 ,subscript2integer
-,which.hi
+,as.which.hi
 ,as.integer.hi
 ,as.matrix.hi
 ,as.logical.hi
@@ -587,7 +587,7 @@ S3method(as.hi, which)
 S3method(as.hi, double)
 S3method(as.hi, character)
 S3method(as.matrix, hi)
-S3method(which, hi)
+S3method(as.which, hi)
 S3method(as.integer, hi)
 S3method(as.logical, hi)
 S3method(as.character, hi)

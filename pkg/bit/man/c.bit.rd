@@ -1,7 +1,7 @@
 \name{c.bit}
 \alias{c.bit}
 \alias{c.bitwhich}
-\title{ Concatenating bit vectors }
+\title{ Concatenating bit and bitwhich vectors }
 \description{
   Creating new bit by concatenating bit vectors
 }

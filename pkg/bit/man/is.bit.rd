@@ -2,7 +2,7 @@
 \alias{is.ri}
 \alias{is.bit}
 \alias{is.bitwhich}
-\title{ Testing classes ri, bit and bitwhich }
+\title{ Testing for bit, bitwhich and ri selection classes }
 \description{
   Test whether an object inherits from 'ri', 'bit' or 'bitwhich'
 }

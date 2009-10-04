@@ -4,39 +4,122 @@
 \alias{length.ri}
 \alias{length<-.bit}
 \alias{length<-.bitwhich}
-\title{ Getting and setting length of a bit vector }
+\title{ Getting and setting length of bit, bitwhich and ri objects }
 \description{
-  Query the number of bits in a bit vector or change the number of bits in a bit vector.
+  Query the number of bits in a \code{\link{bit}} vector or change the number of bits in a bit vector. \cr
+  Query the number of bits in a \code{\link{bitwhich}} vector or change the number of bits in a bit vector. \cr
 }
 \usage{
 \method{length}{ri}(x)
 \method{length}{bit}(x)
 \method{length}{bitwhich}(x)
 \method{length}{bit}(x) <- value
-\method{length}{bitwhich}(x) <- value  # not allowed
+\method{length}{bitwhich}(x) <- value
 }
 \arguments{
-  \item{x}{ a bit vector }
+  \item{x}{ a \code{\link{bit}}, \code{\link{bitwhich}} or \code{\link{ri}} object }
   \item{value}{ the new number of bits }
 }
 \details{
-  Note that no explicit initialization is done.
-  As a consequence, when you first decrease and then increase length you might find that some 'new' bits are already \code{TRUE}.
-  Note that assigning a new length to a \code{\link{bitwhich}} is not allowed.
+  NOTE that the length does NOT reflect the number of selected (\code{TRUE}) bits, it reflects the sum of both, \code{TRUE} and \code{FALSE} bits.
+  Increasing the length of a \code{\link{bit}} object will set new bits to \code{FALSE}.
+  The behaviour of increasing the length of a \code{\link{bitwhich}} object is different and depends on the content of the object:
+  \itemize{
+   \item{TRUE}{all included, new bits are set to \code{TRUE}}
+   \item{positive integers}{some included, new bits are set to \code{FALSE}}
+   \item{negative integers}{some excluded, new bits are set to \code{TRUE}}
+   \item{FALSE}{all excluded:, new bits are set to \code{FALSE}}
+  }
+  Decreasing the length of bit or bitwhich removes any previous information about the status bits above the new length.
 }
 \value{
-  A bit vector with the new length
+  the length  A bit vector with the new length
 }
 \author{ Jens Oehlschlägel }
-\seealso{ \code{\link{length}}, \code{\link{bit}}, \code{\link{bitwhich}}  }
+\seealso{ \code{\link{length}}, \code{\link[=sum.bit]{sum}}, \code{\link[ff]{poslength}}, \code{\link[ff]{maxindex}} }
 \examples{
-  x <- bit(32)
-  length(x)
-  x[c(1, 32)] <- TRUE
+  stopifnot(length(ri(1, 1, 32))==32)
+
+  x <- as.bit(ri(32, 32, 32))
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==1)
   length(x) <- 16
-  x
+  stopifnot(length(x)==16)
+  stopifnot(sum(x)==0)
   length(x) <- 32
-  x
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==0)
+
+  x <- as.bit(ri(1, 1, 32))
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==1)
+  length(x) <- 16
+  stopifnot(length(x)==16)
+  stopifnot(sum(x)==1)
+  length(x) <- 32
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==1)
+
+  x <- as.bitwhich(bit(32))
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==0)
+  length(x) <- 16
+  stopifnot(length(x)==16)
+  stopifnot(sum(x)==0)
+  length(x) <- 32
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==0)
+
+  x <- as.bitwhich(!bit(32))
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==32)
+  length(x) <- 16
+  stopifnot(length(x)==16)
+  stopifnot(sum(x)==16)
+  length(x) <- 32
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==32)
+
+  x <- as.bitwhich(ri(32, 32, 32))
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==1)
+  length(x) <- 16
+  stopifnot(length(x)==16)
+  stopifnot(sum(x)==0)
+  length(x) <- 32
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==0)
+
+  x <- as.bitwhich(ri(2, 32, 32))
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==31)
+  length(x) <- 16
+  stopifnot(length(x)==16)
+  stopifnot(sum(x)==15)
+  length(x) <- 32
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==31)
+
+  x <- as.bitwhich(ri(1, 1, 32))
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==1)
+  length(x) <- 16
+  stopifnot(length(x)==16)
+  stopifnot(sum(x)==1)
+  length(x) <- 32
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==1)
+
+  x <- as.bitwhich(ri(1, 31, 32))
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==31)
+  cat("NOTE the change from 'some excluded' to 'all excluded' here\n")
+  length(x) <- 16
+  stopifnot(length(x)==16)
+  stopifnot(sum(x)==16)
+  length(x) <- 32
+  stopifnot(length(x)==32)
+  stopifnot(sum(x)==32)
 }
 \keyword{ classes }
 \keyword{ logic }

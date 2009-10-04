@@ -7,6 +7,7 @@
 
 # source("d:/mwp/eanalysis/ff/R/ffdf.R")
 
+
 if (FALSE){
   library(ff)
   n <- 10000
@@ -387,25 +388,31 @@ get_nvw <- function(x){
 #!   generic  \tab  \code{\link{as.ffdf}}                    \tab \emph{ }  \tab coerce to ff, if not yet \cr
 #!   generic  \tab  \code{\link[=as.data.frame.ffdf]{as.data.frame}}              \tab \emph{ }  \tab coerce to ram data.frame\cr
 #!   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{Virtual storage mode} \cr
-#!   generic  \tab  \code{\link[=vmode.ffdf]{vmode}}         \tab \code{ } \tab get virtual modes for all (virtual) columns \cr
+#!   generic  \tab  \code{\link[=vmode.ffdf]{vmode}}         \tab \code{ }  \tab get virtual modes for all (virtual) columns \cr
 #!   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{Physical attributes}  \cr
-#!   function \tab  \code{\link[=physical.ffdf]{physical}}                   \tab \code{ } \tab get physical attributes \cr
-#!   \emph{ } \tab  \emph{ }                                 \tab \emph{ }   \tab \bold{Virtual attributes} \cr
-#!   function \tab  \code{\link[=virtual.ffdf]{virtual}}                    \tab \code{ } \tab get virtual attributes \cr
-#!   method   \tab  \code{\link[=length.ffdf]{length}}       \tab \code{ } \tab get length \cr
-#!   method   \tab  \code{\link[=dim.ffdf]{dim }}            \tab \code{ } \tab get dim \cr
-#!   generic  \tab  \code{\link[=dimorder.ffdf]{dimorder}}   \tab \code{ } \tab get the dimorder (non-standard if any component is non-standard) \cr
+#!   function \tab  \code{\link[=physical.ffdf]{physical}}   \tab \code{ }  \tab get physical attributes \cr
+#!   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{Virtual attributes} \cr
+#!   function \tab  \code{\link[=virtual.ffdf]{virtual}}     \tab \code{ } \tab get virtual attributes \cr
+#!   method   \tab  \code{\link[=length.ffdf]{length}}       \tab \code{ }  \tab get length \cr
+#!   method   \tab  \code{\link[=dim.ffdf]{dim }}            \tab \code{<-} \tab get dim and set nrow \cr
+#!   generic  \tab  \code{\link[=dimorder.ffdf]{dimorder}}   \tab \code{ }  \tab get the dimorder (non-standard if any component is non-standard) \cr
 #!   method   \tab  \code{\link[=names.ffdf]{names}}         \tab \code{<-} \tab set and get names \cr
 #!   method   \tab  \code{\link[=row.names.ffdf]{row.names}} \tab \code{<-} \tab set and get row.names \cr
 #!   method   \tab  \code{\link[=dimnames.ffdf]{dimnames}}   \tab \code{<-} \tab set and get dimnames \cr
+#!   method   \tab  \code{\link[=pattern.ffdf]{pattern}}     \tab \code{<-} \tab set pattern (rename/move files) \cr
 #!   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{Access functions}  \cr
 #!   method   \tab  \code{\link[=[.ffdf]{[}}                 \tab \emph{<-} \tab set and get data.frame content (\code{[,]}) or get ffdf with less columns (\code{[]}) \cr
 #!   method   \tab  \code{\link[=[[.ffdf]{[[}}               \tab \emph{<-} \tab set and get single column ff object \cr
+#!   method   \tab  \code{\link[=$.ffdf]{$}}                 \tab \emph{<-} \tab set and get single column ff object \cr
 #!   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{Opening/Closing/Deleting}                                             \cr
 #!   generic  \tab  \code{\link[=is.open.ffdf]{is.open}}     \tab \emph{ }  \tab tri-bool is.open status of the physical ff components \cr
 #!   method   \tab  \code{\link[=open.ffdf]{open}}           \tab \emph{ }  \tab open all physical ff objects (is done automatically on access) \cr
 #!   method   \tab  \code{\link[=close.ffdf]{close}}         \tab \emph{ }  \tab close all physical ff objects \cr
-#!   generic  \tab  \code{\link[=delete.ffdf]{delete}}       \tab \emph{ }  \tab deletes all physical ff files \cr
+#!   method   \tab  \code{\link[=delete.ffdf]{delete}}       \tab \emph{ }  \tab deletes all physical ff files \cr
+#!   method   \tab  \code{\link[=finalize.ffdf]{finalize}}   \tab \emph{ }  \tab call finalizer \cr
+#!   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{processing}                                             \cr
+#!   method   \tab  \code{\link[=chunk.ffdf]{chunk}}         \tab \emph{ }  \tab create chunked index \cr
+#!   method   \tab  \code{\link[=sortLevels.ffdf]{sortLevels}} \tab \emph{ }  \tab sort and recode levels \cr
 #!   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{Other}                                                     \cr
 #!   }
 #! }
@@ -1112,15 +1119,15 @@ ffdf <- function(
             # and thus index may differ for different physical components of the dataframe (if their vw differ)
             # if you pass-in a hi object, this must be suitable for all physical components
             if (missing(i))
-              i <- hi(from=1, to=nvw$n, maxindex=nvw$n, vw=nvw$vw, pack=FALSE)
+              i2 <- hi(from=1, to=nvw$n, maxindex=nvw$n, vw=nvw$vw, pack=FALSE)
             else{
-              i <- as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam)
+              i2 <- as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam)
             }
           }
           if (ip==1){
-            nrows <- length(i)
+            nrows <- length(i2)
           }else{
-            if (length(i)!=nrows)
+            if (length(i2)!=nrows)
               stop("number of rows don't match, recycling not yet implemented")
           }
 
@@ -1128,7 +1135,7 @@ ffdf <- function(
             cols <- cumsum(vi$PhysicalLastCol - vi$PhysicalFirstCol + 1L)
             cols <- vecseq(c(1L, cols[-length(cols)] + 1L), cols, concat=FALSE)
             colindex <- vecseq(vi$PhysicalFirstCol, vi$PhysicalLastCol, eval=FALSE)
-            pvalue <- p[i, colindex, drop=FALSE]
+            pvalue <- p[i2, colindex, drop=FALSE]
             for (iv in seq.int(length.out=length(v))){
               elem <- pvalue[, cols[[iv]], drop=!vi$VirtualIsMatrix[iv]]
               if (vi$AsIs[iv]){
@@ -1141,7 +1148,7 @@ ffdf <- function(
               df[[v[iv]]] <- elem
             }
           }else{
-            pvalue <- p[i]
+            pvalue <- p[i2]
             df[v] <- list(pvalue)
           }
         }
@@ -1159,8 +1166,8 @@ ffdf <- function(
         if (missing(i)){
           nrows <- nvw$n
         }else{
-          i <- as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam)
-          nrows <- length(i)
+          i2 <- as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam)
+          nrows <- length(i2)
         }
         df <- data.frame(row.names=seq.int(length.out=nrows))
       }
@@ -1171,17 +1178,20 @@ ffdf <- function(
           nvw <- get_nvw(rownam)
           if (!identical(last_nvw, nvw)){
             if (missing(i))
-              i <- hi(from=1, to=nvw$n, maxindex=nvw$n, vw=nvw$vw, pack=FALSE)
+              i2 <- hi(from=1, to=nvw$n, maxindex=nvw$n, vw=nvw$vw, pack=FALSE)
             else{
-              i <- as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam)
+              i2 <- as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam)
             }
           }
-          row.names(df) <- rownam[i]
+          row.names(df) <- rownam[i2]
         }else{
-          if (is.character(i))
+          if (missing(i)){
+            row.names(df) <- rownam
+          }else if(is.character(i))
             row.names(df) <- i
-          else
-            row.names(df) <- rownam[as.integer(i)]
+          else{
+            row.names(df) <- rownam[as.integer(as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam))]
+          }
         }
       }
 
@@ -1291,13 +1301,13 @@ ffdf <- function(
             # and thus index may differ for different physical components of the dataframe (if their vw differ)
             # if you pass-in a hi object, this must bu suitable for all physical components
             if (missing(i))
-              i <- hi(from=1, to=nvw$n, maxindex=nvw$n, vw=nvw$vw, pack=FALSE)
+              i2 <- hi(from=1, to=nvw$n, maxindex=nvw$n, vw=nvw$vw, pack=FALSE)
             else{
-              i <- as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam)
+              i2 <- as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam)
             }
           }
           if (ip==1){
-            nrows <- length(i)
+            nrows <- length(i2)
             if (is.null(valuedim)){
               valuelen <- length(value)
               if (nrows==1){
@@ -1312,7 +1322,7 @@ ffdf <- function(
               }
             }else{
               if (nrows %% valuedim[[1]])
-                stop("nrow(i) not a multiple of nrow(value)")
+                stop("nrow(index) not a multiple of nrow(value)")
               if (ncols %% valuedim[[2]]){
                 stop("ncol(index) not a multiple of ncol(value)")
               }
@@ -1323,7 +1333,7 @@ ffdf <- function(
                 f <- function(val, ind)if (length(ind)>1)as.matrix(val[,rft[ind],drop=FALSE]) else val[,rft[ind]]
             }
           }else{
-            if (length(i)!=nrows)
+            if (length(i2)!=nrows)
               stop("number of rows in ffdf don't match other number of rows in ffdf, should not happen")
           }
           if (vi1$PhysicalIsMatrix){
@@ -1332,9 +1342,9 @@ ffdf <- function(
             colindex <- vecseq(vi$PhysicalFirstCol, vi$PhysicalLastCol, eval=FALSE)
 
             # finally the assignment
-            p[i, colindex] <- f(value, v)
+            p[i2, colindex] <- f(value, v)
           }else{
-            p[i] <- f(value,v)
+            p[i2] <- f(value,v)
           }
         }
       }
@@ -1670,6 +1680,29 @@ vmode.ffdf <- function(x, ...){
 #!   ceiling(13 / (100 \%/\% sum(.rambytes[vmode(a)])))
 #!   chunk(a, from=1, to = 13, BATCHBYTES=100)
 #!   rm(a); gc()
+#!
+#!  cat("dummy example for linear regression with biglm on ffdf\n")
+#!   library(biglm)
+#!
+#!   cat("NOTE that . in formula requires calculating terms manually because . as a data-dependant term is not allowed in biglm\n")
+#!   form <- Sepal.Length ~ Sepal.Width + Petal.Length + Petal.Width + Species
+#!
+#!   lmfit <- lm(form, data=iris)
+#!
+#!   firis <- as.ffdf(iris)
+#!   for (i in chunk(firis, by=50)){
+#!     if (i[1]==1){
+#!       cat("first chunk is: "); print(i)
+#!       biglmfit <- biglm(form, data=firis[i,,drop=FALSE])
+#!     }else{
+#!       cat("next chunk is: "); print(i)
+#!       biglmfit <- update(biglmfit, firis[i,,drop=FALSE])
+#!     }
+#!   }
+#!
+#!   summary(lmfit)
+#!   summary(biglmfit)
+#!   stopifnot(all.equal(coef(lmfit), coef(biglmfit)))
 #! }
 #! \keyword{ IO }
 #! \keyword{ data }
@@ -1691,8 +1724,8 @@ chunk.ffdf <- function(x, ..., BATCHBYTES = getOption("ffbatchbytes")){
         warning("single record does not fit into BATCHBYTES")
       }
       l$by <- b
-      ret <- do.call("chunk.default", l)
     }
+    ret <- do.call("chunk.default", l)
 
   }else{
     ret <- list()

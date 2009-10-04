@@ -1,5 +1,5 @@
 \name{as.integer.hi}
-\alias{which.hi}
+\alias{as.which.hi}
 \alias{as.bitwhich.hi}
 \alias{as.bit.hi}
 \alias{as.integer.hi}
@@ -11,7 +11,7 @@
   Functions that (back-)convert an \code{\link{hi}} object to the respective subscripting information.
 }
 \usage{
-\method{which}{hi}(x, \dots)
+\method{as.which}{hi}(x, \dots)
 \method{as.bitwhich}{hi}(x, \dots)
 \method{as.bit}{hi}(x, \dots)
 \method{as.integer}{hi}(x, vw.convert = TRUE, \dots)
