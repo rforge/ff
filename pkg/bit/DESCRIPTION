@@ -5,6 +5,7 @@ Version: 1.1-1
 Date: 2009-07-07
 Author: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
+Depends: R (>= 2.9.2)
 Description: bitmapped vectors of booleans (no NAs), 
   coercion from and to logicals, integers and integer subscripts; 
   fast boolean operators and fast summary statistics. 
