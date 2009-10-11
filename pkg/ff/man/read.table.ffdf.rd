@@ -31,7 +31,7 @@ read.delim2.ffdf(...)
   \item{x}{
 NULL or an optional \code{\link{ffdf}} object to which the read records are appended.
 If this is provided, it defines crucial features that are otherwise determnined during the 'first' chunk of reading:
-\code{\link[vmode.ffdf]{vmode}s}, \code{\link[=dimnames.ffdf]{colnames}}, \code{colClasses}, sequence of predefined \code{\link[levels.ff]{levels}}.
+\code{\link[=vmode.ffdf]{vmode}s}, \code{\link[=dimnames.ffdf]{colnames}}, \code{colClasses}, sequence of predefined \code{\link[=levels.ff]{levels}}.
 }
   \item{file}{
     the name of the file which the data are to be read from.
@@ -63,12 +63,12 @@ If this is provided, it defines crucial features that are otherwise determnined 
   By default calculated as \code{BATCHBYTES \%/\% sum(.rambytes[\link{vmode}(x)])}
 }
   \item{levels}{
-  NULL or an optional list, each element named with col.names of factor columns specifies the \code{\link[levels.ff]{levels}}
+  NULL or an optional list, each element named with col.names of factor columns specifies the \code{\link[=levels.ff]{levels}}
   Ignored if \code{x} is given.
 }
   \item{appendLevels}{
   logical.
-  A vector of permissions to expand \code{\link[levels.ff]{levels}} for factor columns.
+  A vector of permissions to expand \code{\link[=levels.ff]{levels}} for factor columns.
   Recycled as necessary, or if the logical vector is named, unspecified values are taken to be \code{TRUE}.
   Ignored during processing of the 'first' chunk
 }
@@ -103,7 +103,7 @@ If this is provided, it defines crucial features that are otherwise determnined 
     \item character vector are not supported, character data must be read as one of the following colClasses: 'Date', 'POSIXct', 'factor, 'ordered'.
           By default character columns are read as factors.
           Accordingly arguments 'as.is' and 'stringsAsFactors' are not allowed.
-    \item the sequence of \code{\link[=levels.ff]{levels}} from chunked reading can depend on chunk size: by default new levels found on a chunk are appended to the levels found in previous chunks, no attempt is made to sort and recode the levels during chunked processing, levels can be sorted and recoded most efficiently \emph{after} all records have been read using \code{\link{sortLevels}}.
+    \item the sequence of \code{\link{levels.ff}} from chunked reading can depend on chunk size: by default new levels found on a chunk are appended to the levels found in previous chunks, no attempt is made to sort and recode the levels during chunked processing, levels can be sorted and recoded most efficiently \emph{after} all records have been read using \code{\link{sortLevels}}.
     \item the default for argument 'comment.char' is \code{""} even for those FUN that have a different default. However, explicit specification of 'comment.char' will have priority.
     \item Arguments 'colClasses' and 'col.names' are ignored during 'next.rows' chunks and thus can be completely ignored if no 'first.rows' chunk is read because argument \code{x} has given a \code{\link{ffdf}} object.
   }

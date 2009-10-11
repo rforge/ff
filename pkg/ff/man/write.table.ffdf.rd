@@ -68,7 +68,7 @@ write.csv2(...)
   \cr
   \code{write.table.ffdf} has been designed to behave as much like \code{\link{write.table}} as possible. However, note the following differences:
   \enumerate{
-    \item by default \code{\link[=row.names.ffdf]{row.names}} are only written if the \code{\link{ffdf}} has row.names.
+    \item by default \code{\link[=dimnames.ffdf]{row.names}} are only written if the \code{\link{ffdf}} has row.names.
   }
 }
 \value{

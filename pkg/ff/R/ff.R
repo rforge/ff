@@ -394,7 +394,7 @@ is.readonly.ff <- function(x
 #! }
 #! \details{
 #!   ff objects open automatically if accessed while closed.
-#!   For ffdf objects we test all of their \code{\link[=physical.ffdf]{physical}} components including their \code{\link[row.names.ffdf]{row.names}} if they are \code{\link{is.ff}}
+#!   For ffdf objects we test all of their \code{\link[=physical.ffdf]{physical}} components including their \code{\link[=row.names.ffdf]{row.names}} if they are \code{\link{is.ff}}
 #! }
 #! \value{
 #!   TRUE or FALSE (or NA if not all components of an ffdf object are opened or closed)
@@ -1058,7 +1058,7 @@ length.ff <- function(x)
 #! \alias{is.ordered.ff}
 #! \title{ Getting and setting factor levels }
 #! \description{
-#!   \command{levels.ff<-} sets factor levels, \command{levels.ff} gets factor levels
+#!   \code{levels.ff<-} sets factor levels, \code{levels.ff} gets factor levels
 #! }
 #! \usage{
 #! \method{levels}{ff}(x)
@@ -1943,7 +1943,7 @@ str.ff <- function(object, nest.lev=0, ...){
 #!   function \tab  \code{\link{is.ff}}                      \tab \emph{ }  \tab check if inherits from ff \cr
 #!   generic  \tab  \code{\link{as.ff}}                      \tab \emph{ }  \tab coerce to ff, if not yet \cr
 #!   generic  \tab  \code{\link{as.ram}}                     \tab \emph{ }  \tab coerce to ram retaining some of the ff information \cr
-#!   generic  \tab  \code{\link[as.bit.ff]{as.bit}}          \tab \emph{ }  \tab coerce to \code{\link[bit]{bit}} \cr
+#!   generic  \tab  \code{\link[=as.bit.ff]{as.bit}}          \tab \emph{ }  \tab coerce to \code{\link[bit]{bit}} \cr
 #!   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{Virtual storage mode} \cr
 #!   generic  \tab  \code{\link{vmode}}                      \tab \code{<-} \tab get and set virtual mode (setting only for ram, not for ff objects) \cr
 #!   generic  \tab  \code{\link{as.vmode}}                   \tab \emph{ }  \tab coerce to vmode (only for ram, not for ff objects) \cr
@@ -1989,7 +1989,7 @@ str.ff <- function(object, nest.lev=0, ...){
 #!   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{Opening/Closing/Deleting}                                             \cr
 #!   generic  \tab  \code{\link{is.open}}                    \tab \emph{ }  \tab check if ff is open \cr
 #!   method   \tab  \code{\link[ff:open.ff]{open}}           \tab \emph{ }  \tab open ff object (is done automatically on access) \cr
-#!   method   \tab  \code{\link[ff:close]{close}}            \tab \emph{ }  \tab close ff object (releases C++ memory and protects against file deletion if  \code{\link{deleteIfOpen}}) finalizer is used \cr
+#!   method   \tab  \code{\link[ff:close.ff]{close}}         \tab \emph{ }  \tab close ff object (releases C++ memory and protects against file deletion if  \code{\link{deleteIfOpen}}) finalizer is used \cr
 #!   generic  \tab  \code{\link[ff:delete.ff]{delete}}       \tab \emph{ }  \tab deletes ff file (unconditionally) \cr
 #!   generic  \tab  \code{\link{deleteIfOpen}}               \tab \emph{ }  \tab deletes ff file if ff object is open (finalization method) \cr
 #!   generic  \tab  \code{\link{finalizer}}                  \tab \emph{<-} \tab get and set finalizer \cr
@@ -3004,7 +3004,7 @@ clone.default <- function(x
 #!   The user can override this either by setting \code{options("fffinalizer")} or by using argument \code{finalizer} when creating single \code{ff} objects.
 #!   Available finalizer generics are "close", "delete" and "deleteIfOpen", available methods are \code{\link{close.ff}}, \code{\link{delete.ff}} and \code{\link{deleteIfOpen.ff}}.
 #!   \cr
-#!   In order to be able to change the finalizer before finalization, the finalizer is NOT directly passed to R's finalization mechanism \code{\link[base]{reg.finalize}} (an active finalizer can never be changed other than be executed).
+#!   In order to be able to change the finalizer before finalization, the finalizer is NOT directly passed to R's finalization mechanism \code{\link[base]{reg.finalizer}} (an active finalizer can never be changed other than be executed).
 #!   Instead the NAME of the desired finalizer is stored in the ff object and \code{\link{finalize.ff_pointer}} is passed to \code{reg.finalizer}. \code{finalize.ff_pointer} will at finalization-time determine the desired finalizer and call it.
 #!   \cr
 #!   There are two possible triggers for execution \code{finalize.ff_pointer}:
@@ -3043,10 +3043,8 @@ clone.default <- function(x
 #! \author{
 #!   Jens Oehlschlägel
 #! }
-#! \note{
-#! }
 #! \seealso{
-#!   \code{\link{ff}}, \code{\link{finalize}}, \code{\link[base]{reg.finalize}}
+#!   \code{\link{ff}}, \code{\link{finalize}}, \code{\link[base]{reg.finalizer}}
 #! }
 #! \examples{
 #!   x <- ff(1:12, pattern="./finalizerdemo")
@@ -3204,7 +3202,7 @@ x       # ff object
 #! }
 #! \details{
 #!   ff objects will be opened automatically when accessing their content and the file is still closed.
-#!   Opening ffdf objects will open all of their \code{\link[=physical.ffdf]{physical}} components including their \code{\link[row.names.ffdf]{row.names}} if they are \code{\link{is.ff}}
+#!   Opening ffdf objects will open all of their \code{\link[=physical.ffdf]{physical}} components including their \code{\link[=row.names.ffdf]{row.names}} if they are \code{\link{is.ff}}
 #! }
 #! \value{
 #!   TRUE if object could be opened, FALSE if it was opened already (or NA if not all components of an ffdf returned FALSE or TRUE on opening)
@@ -3289,7 +3287,7 @@ open.ff <- function(con
 #! }
 #! \details{
 #!   The \code{ff_pointer} method is not intended for manual use, it is used at finalizer dispatch time.
-#!   Closing ffdf objects will close all of their \code{\link[=physical.ffdf]{physical}} components including their \code{\link[row.names.ffdf]{row.names}} if they are \code{\link{is.ff}}
+#!   Closing ffdf objects will close all of their \code{\link[=physical.ffdf]{physical}} components including their \code{\link[=row.names.ffdf]{row.names}} if they are \code{\link{is.ff}}
 #! }
 #! \value{
 #!   TRUE if the file could be closed, FALSE if it was closed already (or NA if not all components of an ffdf returned FALSE or TRUE on closing)

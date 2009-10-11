@@ -18,7 +18,7 @@
 }
 \details{
   ff objects will be opened automatically when accessing their content and the file is still closed.
-  Opening ffdf objects will open all of their \code{\link[=physical.ffdf]{physical}} components including their \code{\link[row.names.ffdf]{row.names}} if they are \code{\link{is.ff}}
+  Opening ffdf objects will open all of their \code{\link[=physical.ffdf]{physical}} components including their \code{\link[=row.names.ffdf]{row.names}} if they are \code{\link{is.ff}}
 }
 \value{
   TRUE if object could be opened, FALSE if it was opened already (or NA if not all components of an ffdf returned FALSE or TRUE on opening)

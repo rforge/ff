@@ -15,7 +15,7 @@ clone.ffdf(x, ...)
   \item{\dots}{ further arguments passed to \code{\link{clone}} (usually not usefull) }
 }
 \details{
-  Creates a deep copy of an ffdf object by cloning all \code{\link[=physical.ffdf]{physical}} components including the \code{\link[=row.names.ffdf]{row.names}}
+  Creates a deep copy of an ffdf object by cloning all \code{\link[=physical.ffdf]{physical}} components including the \code{\link[=dimnames.ffdf]{row.names}}
 }
 \value{
   An object of type \code{\link{ffdf}}

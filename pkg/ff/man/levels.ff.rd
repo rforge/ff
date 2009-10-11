@@ -9,7 +9,7 @@
 \alias{is.ordered.ff}
 \title{ Getting and setting factor levels }
 \description{
-  \command{levels.ff<-} sets factor levels, \command{levels.ff} gets factor levels
+  \code{levels.ff<-} sets factor levels, \code{levels.ff} gets factor levels
 }
 \usage{
 \method{levels}{ff}(x)

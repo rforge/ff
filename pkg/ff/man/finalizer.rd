@@ -29,7 +29,7 @@ finalizer(x, ...) <- value
   The user can override this either by setting \code{options("fffinalizer")} or by using argument \code{finalizer} when creating single \code{ff} objects.
   Available finalizer generics are "close", "delete" and "deleteIfOpen", available methods are \code{\link{close.ff}}, \code{\link{delete.ff}} and \code{\link{deleteIfOpen.ff}}.
   \cr
-  In order to be able to change the finalizer before finalization, the finalizer is NOT directly passed to R's finalization mechanism \code{\link[base]{reg.finalize}} (an active finalizer can never be changed other than be executed).
+  In order to be able to change the finalizer before finalization, the finalizer is NOT directly passed to R's finalization mechanism \code{\link[base]{reg.finalizer}} (an active finalizer can never be changed other than be executed).
   Instead the NAME of the desired finalizer is stored in the ff object and \code{\link{finalize.ff_pointer}} is passed to \code{reg.finalizer}. \code{finalize.ff_pointer} will at finalization-time determine the desired finalizer and call it.
   \cr
   There are two possible triggers for execution \code{finalize.ff_pointer}:
@@ -68,10 +68,8 @@ finalizer(x, ...) <- value
 \author{
   Jens Oehlschlägel
 }
-\note{
-}
 \seealso{
-  \code{\link{ff}}, \code{\link{finalize}}, \code{\link[base]{reg.finalize}}
+  \code{\link{ff}}, \code{\link{finalize}}, \code{\link[base]{reg.finalizer}}
 }
 \examples{
   x <- ff(1:12, pattern="./finalizerdemo")

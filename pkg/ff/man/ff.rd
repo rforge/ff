@@ -163,7 +163,7 @@ ff( initdata  = NULL
   function \tab  \code{\link{is.ff}}                      \tab \emph{ }  \tab check if inherits from ff \cr
   generic  \tab  \code{\link{as.ff}}                      \tab \emph{ }  \tab coerce to ff, if not yet \cr
   generic  \tab  \code{\link{as.ram}}                     \tab \emph{ }  \tab coerce to ram retaining some of the ff information \cr
-  generic  \tab  \code{\link[as.bit.ff]{as.bit}}          \tab \emph{ }  \tab coerce to \code{\link[bit]{bit}} \cr
+  generic  \tab  \code{\link[=as.bit.ff]{as.bit}}          \tab \emph{ }  \tab coerce to \code{\link[bit]{bit}} \cr
   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{Virtual storage mode} \cr
   generic  \tab  \code{\link{vmode}}                      \tab \code{<-} \tab get and set virtual mode (setting only for ram, not for ff objects) \cr
   generic  \tab  \code{\link{as.vmode}}                   \tab \emph{ }  \tab coerce to vmode (only for ram, not for ff objects) \cr
@@ -209,7 +209,7 @@ ff( initdata  = NULL
   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{Opening/Closing/Deleting}                                             \cr
   generic  \tab  \code{\link{is.open}}                    \tab \emph{ }  \tab check if ff is open \cr
   method   \tab  \code{\link[ff:open.ff]{open}}           \tab \emph{ }  \tab open ff object (is done automatically on access) \cr
-  method   \tab  \code{\link[ff:close]{close}}            \tab \emph{ }  \tab close ff object (releases C++ memory and protects against file deletion if  \code{\link{deleteIfOpen}}) finalizer is used \cr
+  method   \tab  \code{\link[ff:close.ff]{close}}         \tab \emph{ }  \tab close ff object (releases C++ memory and protects against file deletion if  \code{\link{deleteIfOpen}}) finalizer is used \cr
   generic  \tab  \code{\link[ff:delete.ff]{delete}}       \tab \emph{ }  \tab deletes ff file (unconditionally) \cr
   generic  \tab  \code{\link{deleteIfOpen}}               \tab \emph{ }  \tab deletes ff file if ff object is open (finalization method) \cr
   generic  \tab  \code{\link{finalizer}}                  \tab \emph{<-} \tab get and set finalizer \cr

@@ -362,7 +362,7 @@ get_nvw <- function(x){
 #! most notably in \code{data.frame(matrix())}, where an input matrix is converted to single columns.
 #! ffdf by contrast, will store an input matrix physically as the same matrix and virtually map it to columns.
 #! Physically copying a large ff matrix to single ff vectors can be expensive.
-#! More generally, ffdf objects have a \code{\link[physical.ffdf]{physical}} and a \code{\link[virtual.ffdf]{virtual}} component,
+#! More generally, ffdf objects have a \code{\link[=physical.ffdf]{physical}} and a \code{\link[=virtual.ffdf]{virtual}} component,
 #! which allows very flexible dataframe designs: a physically stored matrix can be virtually mapped to single columns,
 #! a couple of physically stored vectors can be virtually mapped to a single matrix.
 #! The means to configure these are \code{\link[base]{I}} for the virtual representation and the 'ff_split' and 'ff_join'
@@ -397,9 +397,9 @@ get_nvw <- function(x){
 #!   method   \tab  \code{\link[=dim.ffdf]{dim }}            \tab \code{<-} \tab get dim and set nrow \cr
 #!   generic  \tab  \code{\link[=dimorder.ffdf]{dimorder}}   \tab \code{ }  \tab get the dimorder (non-standard if any component is non-standard) \cr
 #!   method   \tab  \code{\link[=names.ffdf]{names}}         \tab \code{<-} \tab set and get names \cr
-#!   method   \tab  \code{\link[=row.names.ffdf]{row.names}} \tab \code{<-} \tab set and get row.names \cr
+#!   method   \tab  \code{\link[=dimnames.ffdf]{row.names}}  \tab \code{<-} \tab set and get row.names \cr
 #!   method   \tab  \code{\link[=dimnames.ffdf]{dimnames}}   \tab \code{<-} \tab set and get dimnames \cr
-#!   method   \tab  \code{\link[=pattern.ffdf]{pattern}}     \tab \code{<-} \tab set pattern (rename/move files) \cr
+#!   method   \tab  \code{\link[=filename]{pattern}}         \tab \code{<-} \tab set pattern (rename/move files) \cr
 #!   \emph{ } \tab  \emph{ }                                 \tab \emph{ }  \tab \bold{Access functions}  \cr
 #!   method   \tab  \code{\link[=[.ffdf]{[}}                 \tab \emph{<-} \tab set and get data.frame content (\code{[,]}) or get ffdf with less columns (\code{[]}) \cr
 #!   method   \tab  \code{\link[=[[.ffdf]{[[}}               \tab \emph{<-} \tab set and get single column ff object \cr
@@ -420,7 +420,7 @@ get_nvw <- function(x){
 #! \value{
 #! A list with components
 #! \item{physical}{the underlying ff vectors and matrices, to be accessed via \code{\link[=physical.ffdf]{physical}}}
-#! \item{virtual}{the virtual features of the ffdf including the virtual-to-physical mapping, to be accessed via \code{\link[virtual.ffdf]{virtual}}}
+#! \item{virtual}{the virtual features of the ffdf including the virtual-to-physical mapping, to be accessed via \code{\link[=virtual.ffdf]{virtual}}}
 #! \item{row.names}{the optional row.names, see argument row.names}
 #! and class 'ffdf' (NOTE that ffdf dows not inherit from ff)
 #! }
@@ -1371,7 +1371,7 @@ ffdf <- function(
 #!   \item{\dots}{ further arguments passed to \code{\link{clone}} (usually not usefull) }
 #! }
 #! \details{
-#!   Creates a deep copy of an ffdf object by cloning all \code{\link[=physical.ffdf]{physical}} components including the \code{\link[=row.names.ffdf]{row.names}}
+#!   Creates a deep copy of an ffdf object by cloning all \code{\link[=physical.ffdf]{physical}} components including the \code{\link[=dimnames.ffdf]{row.names}}
 #! }
 #! \value{
 #!   An object of type \code{\link{ffdf}}
