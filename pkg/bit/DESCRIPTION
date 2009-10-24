@@ -1,7 +1,7 @@
 Package: bit
 Type: Package
 Title: A class for vectors of 1-bit booleans
-Version: 1.1-1
+Version: 1.1-2
 Date: 2009-07-07
 Author: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
@@ -27,4 +27,5 @@ Description: bitmapped vectors of booleans (no NAs),
   classes can be used for subsetting 'ff' objects (ff-2.1-0 and higher).
 License: GPL-2
 LazyLoad: yes
+URL: http://ff.r-forge.r-project.org/
 Encoding: latin1

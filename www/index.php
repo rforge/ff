@@ -43,9 +43,23 @@ echo $contents; } ?>
 
 <!-- end of project description -->
 
-<p> No content added. </p>
-
+<BR>
 <p> The <strong>project summary page</strong> you can find <a href="http://<?php echo $domain; ?>/projects/<?php echo $group_name; ?>/"><strong>here</strong></a>. </p>
+
+<BR>
+<p><B>presentations on available functionality</B></p>
+
+<p>Oehlschl&auml;gel, Adler (2009) <A HREF="ff&bit_UseR!2009.pdf"><I>Managing data.frames with package 'ff' and fast filtering with package 'bit'</I></A>. Presentation at UseR!2009, Agrocampus, Rennes</p>
+
+<p>Adler, Oehlschl&auml;gel, Nenadic, Zucchini (2008) <A HREF="ff2.0_UseR!2008.pdf"><I>Large atomic data in R package 'ff'</I></A>. Presentation at UseR!2008, statistics department, University of Dortmund</p>
+
+<p>Adler, Oehlschl&auml;gel, Nenadic, Zucchini (2008) <A HREF="ff2.0_jsm2008.pdf"><I>High-Performance Processing of Large Data Sets via Memory Mapping: A Case Study in R And C++</I></A>. Presentation at Joint Statistical Meetings, Denver, Colorado.</p>
+
+<BR>
+<p><B>presentations on future functionality</B></p>
+
+<p>Oehlschl&auml;gel, Adler, Nenadic, Zucchini (2008) <A HREF="R.ff0.1_UseR!2008.pdf"><I>A first glimpse into 'R.ff'</I></A>. Presentation at UseR!2008, statistics department, University of Dortmund</p>
+
 
 </body>
 </html>

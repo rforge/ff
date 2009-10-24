@@ -1,5 +1,5 @@
 Package: ff
-Version: 2.0-7
+Version: 2.1-0
 Date: 2008-08-03
 Title: memory-efficient storage of large data on disk and fast access functions
 Author: Daniel Adler <dadler@uni-goettingen.de>, 
@@ -57,4 +57,6 @@ Description: The ff package provides data structures that are stored on
 	modify selection criteria. 
 	Further high-performance enhancements can be made available upon request. 
 License: file LICENSE
+LazyLoad: yes
+URL: http://ff.r-forge.r-project.org/
 Encoding: latin1

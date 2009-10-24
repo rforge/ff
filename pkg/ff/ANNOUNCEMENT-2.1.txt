@@ -18,7 +18,7 @@ Examples of things you can do with ff and bit:
 - handle very skewed selections very fast (?bitwhich)
 - parallel access to large dataset just by sending ff's small metadata from master to slaves (e.g. with snowfall)
 
-Hope you find this useful. We appreciate any feedback. 
+Hope you find this useful. We appreciate any feedback.
 
 
 Jens & Daniel
