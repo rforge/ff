@@ -18,8 +18,7 @@ Examples of things you can do with ff and bit:
 - handle very skewed selections very fast (?bitwhich)
 - parallel access to large dataset just by sending ff's small metadata from master to slaves (e.g. with snowfall)
 
-
-ff is hosted on r-forge now and some more information from presentations on ff is on
+ff is hosted on r-forge now and you find some presentations on ff on
 http://ff.r-forge.r-project.org/
 
 Hope you find this useful. We appreciate any feedback.

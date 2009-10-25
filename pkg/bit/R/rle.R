@@ -1,3 +1,11 @@
+# rle utilities for bit and ff
+# (c) 2007-2009 Jens Oehlschägel
+# Licence: GPL2
+# Provided 'as is', use at your own risk
+# Created: 2007-09-03
+# Last changed: 2007-10-25
+
+# source("D:/mwp/eanalysis/bit/R/rle.R")
 
 #! \name{intrle}
 #! \alias{intrle}

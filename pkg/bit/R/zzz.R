@@ -1,5 +1,6 @@
-.First.lib <- function(lib, pkg) {
-  library.dynam("bit", pkg, lib)
+.onLoad <- function(lib, pkg) {
+  ##library.dynam("bit", pkg, lib) use useDynLib(bit) in NAMESPACE instead
+  cat("Loading package bit", installed.packages()["bit","Version"], "\n")
   bit_init()
   cat("package:bit (c) 2008/2009 Jens Oehlschlaegel (GPL-2)\n")
   cat("creators: bit bitwhich\n")
@@ -10,8 +11,8 @@
   cat("for more help type ?bit\n")
 }
 
-.Last.lib <- function(libpath) {
-  bit_done()
-  library.dynam.unload("bit", libpath)
+.onUnload <- function(libpath){
+   cat("Unloading package bit\n")
+   bit_done()
+   library.dynam.unload("bit", libpath)
 }
-

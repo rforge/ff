@@ -62,7 +62,7 @@ Index:
    \code{\link{bit}}             \tab \code{\link{bitwhich}}            \tab \code{\link{ri}}                  \tab \code{\link{logical}}     \tab create bit object \cr
    \code{\link{print.bit}}       \tab \code{\link{print.bitwhich}}      \tab \code{\link{print.ri}}            \tab \code{\link{print}}       \tab print bit vector \cr
    \code{\link{length.bit}}      \tab \code{\link{length.bitwhich}}     \tab \code{\link{length.ri}}           \tab \code{\link{length}}      \tab get length of bit vector \cr
-   \code{\link{length<-.bit}}    \tab                                   \tab                                   \tab \code{\link{length<-}}    \tab change length of bit vector \cr
+   \code{\link{length<-.bit}}    \tab \code{\link{length<-.bitwhich}}   \tab                                   \tab \code{\link{length<-}}    \tab change length of bit vector \cr
    \code{\link{c.bit}}           \tab \code{\link{c.bitwhich}}          \tab                                   \tab \code{\link{c}}           \tab concatenate bit vectors \cr
    \code{\link{is.bit}}          \tab \code{\link{is.bitwhich}}         \tab \code{\link{is.ri}}               \tab \code{\link{is.logical}}  \tab test for bit class \cr
    \code{\link{as.bit}}          \tab \code{\link{as.bitwhich}}         \tab                                   \tab \code{\link{as.logical}}  \tab generically coerce to bit or bitwhich \cr

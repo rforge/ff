@@ -94,7 +94,7 @@
 
 .onAttach <- function(libname, pkgname){
   cat("Attaching package ff\n")
-  cat('fixing [.AsIs because if the NextMethod("[") returns a different class, [.AsIs was reverting this\n')
+  cat('fixing [.AsIs in base namespace because if the NextMethod("[") returns a different class, [.AsIs was reverting this\n')
   assignInNamespace(
     "[.AsIs"
   , function (x, i, ...){

@@ -734,10 +734,6 @@ c.bitwhich <- function(...){
 #! \keyword{ classes }
 #! \keyword{ logic }
 
-as.bit <- function(x, ...){
-  UseMethod("as.bit", x)
-}
-
 as.bit.bit <- function(x, ...)
   x
 
@@ -942,9 +938,6 @@ as.double.ri <- function(x, ...){
 
 
 
-as.which <- function (x, ...)
-  UseMethod("as.which")
-
 as.which.default <- function(x, ...){
   ret <- which(x)
   class(ret) <- "which"
@@ -1038,9 +1031,6 @@ as.which.bitwhich <- function(x, ...){
 #! }
 #! \keyword{ classes }
 #! \keyword{ logic }
-
-as.bitwhich <- function(x, ...)
-UseMethod("as.bitwhich")
 
 as.bitwhich.bitwhich <- function(x, ...){
   x
@@ -1318,10 +1308,6 @@ as.logical.bitwhich <- function(x, ...){
   e2 <- as.bit(e2)
   ret <- bit(n)
   .Call("R_bit_or", e1, e2, ret, PACKAGE="bit")
-}
-
-xor <- function(x, y){
-  UseMethod("xor", x)
 }
 
 xor.default <- function(x,y){
@@ -2200,12 +2186,6 @@ summary.ri <- function(object, ...){
 #! \keyword{ data }
 #! \keyword{ attribute }
 
-
-physical <- function(x)UseMethod("physical")
-"physical<-" <- function(x, value)UseMethod("physical<-")
-
-virtual <- function(x)UseMethod("virtual")
-"virtual<-" <- function(x, value)UseMethod("virtual<-")
 
 # this version without vmode() will be overwritte by the version in package ff
 physical.default <- function(x){
