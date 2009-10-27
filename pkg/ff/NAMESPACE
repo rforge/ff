@@ -8,6 +8,8 @@ useDynLib(ff)
 
 importFrom(utils, installed.packages)
 importFrom(utils, memory.limit)
+import(bit)
+
 
 export(
 
@@ -413,6 +415,12 @@ export(
 ,write.csv.ffdf
 ,write.csv2.ffdf
 
+
+# -- ffsave.R - saving / loading many ff objects WITH ff files --
+,ffsave
+,ffsave.image
+,ffinfo
+,ffload
 
 
 # -- x_ff_symm.R - ff extension (dual licensing, no GPL): symmetric  ff matrices with free and fixed diagonal --
