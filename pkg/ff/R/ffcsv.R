@@ -108,7 +108,7 @@ colClass.ff <- function(x){
 #!   Negative and other invalid values are ignored.
 #! }
 #!   \item{first.rows}{
-#!   integer: number of rows to be read in the first chunk, see details. Default is the value given at \code{next.rows} or \code{1e6} otherwise.
+#!   integer: number of rows to be read in the first chunk, see details. Default is the value given at \code{next.rows} or \code{1e3} otherwise.
 #!   Ignored if \code{x} is given.
 #! }
 #!   \item{next.rows}{
@@ -370,7 +370,7 @@ read.table.ffdf <- function(
 
     if (is.null(first.rows)){
       if (is.null(next.rows))
-        first.rows <- 1e6L
+        first.rows <- 1e3L
       else
         first.rows <- as.integer(next.rows)
     }else
@@ -379,6 +379,7 @@ read.table.ffdf <- function(
       first.rows <- nrows
 
     rt.args$nrows <- first.rows
+
     dat <- do.call(FUN, rt.args)
     n <- nrow(dat)
     N <- n
@@ -672,7 +673,7 @@ write.table.ffdf <- function(
   }
   if (is.null(first.rows)){
     if (is.null(next.rows))
-      first.rows <- 1e6L
+      first.rows <- 1e3L
     else
       first.rows <- next.rows
   }else

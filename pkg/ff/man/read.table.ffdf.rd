@@ -55,7 +55,7 @@ If this is provided, it defines crucial features that are otherwise determnined 
   Negative and other invalid values are ignored.
 }
   \item{first.rows}{
-  integer: number of rows to be read in the first chunk, see details. Default is the value given at \code{next.rows} or \code{1e6} otherwise.
+  integer: number of rows to be read in the first chunk, see details. Default is the value given at \code{next.rows} or \code{1e3} otherwise.
   Ignored if \code{x} is given.
 }
   \item{next.rows}{
