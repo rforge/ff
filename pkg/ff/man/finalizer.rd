@@ -30,12 +30,13 @@ finalizer(x, ...) <- value
   Available finalizer generics are "close", "delete" and "deleteIfOpen", available methods are \code{\link{close.ff}}, \code{\link{delete.ff}} and \code{\link{deleteIfOpen.ff}}.
   \cr
   In order to be able to change the finalizer before finalization, the finalizer is NOT directly passed to R's finalization mechanism \code{\link[base]{reg.finalizer}} (an active finalizer can never be changed other than be executed).
-  Instead the NAME of the desired finalizer is stored in the ff object and \code{\link{finalize.ff_pointer}} is passed to \code{reg.finalizer}. \code{finalize.ff_pointer} will at finalization-time determine the desired finalizer and call it.
+  Instead the NAME of the desired finalizer is stored in the ff object and \code{\link{finalize.ff_pointer}} is passed to \code{reg.finalizer}.
+  \code{finalize.ff_pointer} will at finalization-time determine the desired finalizer and call it.
   \cr
   There are two possible triggers for execution \code{finalize.ff_pointer}:
   \enumerate{
     \item the garbage collection \code{\link{gc}} following removal \code{\link{rm}} of the ff object
-    \item closing R if \code{finonexit} was {TRUE} at ff creation-time (determined by \code{options("fffinonexit")} and ff argument \code{finonexit} )
+    \item closing R if \code{finonexit} was \code{TRUE} at ff creation-time (determined by \code{options("fffinonexit")} and ff argument \code{finonexit} )
   }
   \cr
   Furthermore there are two possible triggers for calling the finalizer:

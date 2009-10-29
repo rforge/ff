@@ -124,6 +124,7 @@ export(
 ,"pattern<-.ff"
 ,"pattern<-.ffdf"
 ,filename.ff_pointer
+,filename.ffdf
 ,filename.default
 ,"filename<-.ff"
 ,is.readonly.ff
@@ -416,6 +417,7 @@ export(
 ,write.csv2.ffdf
 
 
+
 # -- x_ff_symm.R - ff extension (dual licensing, no GPL): symmetric  ff matrices with free and fixed diagonal --
 
 #,swapdiag
@@ -491,6 +493,7 @@ S3method(bigsample, ff)
 S3method("pattern",ff)
 S3method("pattern<-",ff)
 S3method("pattern<-",ffdf)
+S3method("filename",ffdf)
 S3method("filename",ff_pointer)
 S3method("filename",default)
 S3method("filename<-",ff)

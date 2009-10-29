@@ -2,6 +2,7 @@
 \alias{filename}
 \alias{filename.default}
 \alias{filename.ff_pointer}
+\alias{filename.ffdf}
 \alias{filename<-}
 \alias{filename<-.ff}
 \alias{pattern}
@@ -19,6 +20,7 @@ filename(x, \dots)
 filename(x, \dots) <- value
 \method{filename}{default}(x, \dots)
 \method{filename}{ff_pointer}(x, \dots)
+\method{filename}{ffdf}(x, \dots)
 \method{filename}{ff}(x, \dots) <- value
 pattern(x, \dots)
 pattern(x, \dots) <- value
@@ -33,6 +35,7 @@ pattern(x, \dots) <- value
 }
 \value{
   \code{filename} and \code{pattern} return a character filename or pattern.
+  For \code{\link{ffdf}} returns a list with one filename element for each \code{\link[=physical.ffdf]{physical}} component.
   The assignment functions return the changed object, which will keep the change even without re-assigning the return-value
 }
 \details{

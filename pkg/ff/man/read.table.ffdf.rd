@@ -151,7 +151,7 @@ If this is provided, it defines crucial features that are otherwise determnined 
     cat("NOTE that reading in chunks can change the sequence of levels and thus the coding\n")
     cat("(Sorting levels during chunked reading can be too expensive)\n")
     ffx <- read.csv.ffdf(file=csvfile, header=TRUE, colClasses=c(ord="ordered", dct="POSIXct", dat="Date"), first.rows=6, next.rows=10, VERBOSE=TRUE)
-    y <- ffx$y[]
+    y <- ffx$fac[]
     print(levels(y))
     data.frame(values=as.character(y), codes=as.integer(y))
 
@@ -159,13 +159,13 @@ If this is provided, it defines crucial features that are otherwise determnined 
     cat("(Will rewrite all factor codes)\n")
     cat("NOTE that you MUST assign the return value of sortLevels()\n")
     ffx <- sortLevels(ffx)
-    y <- ffx$y[]
+    y <- ffx$fac[]
     print(levels(y))
     data.frame(values=as.character(y), codes=as.integer(y))
 
     cat("If we KNOW the levels we can fix levels upfront\n")
     ffx <- read.csv.ffdf(file=csvfile, header=TRUE, colClasses=c(ord="ordered", dct="POSIXct", dat="Date"), first.rows=6, next.rows=10, levels=list(fac=letters, ord=LETTERS))
-    y <- ffx$y[]
+    y <- ffx$fac[]
     print(levels(y))
     data.frame(values=as.character(y), codes=as.integer(y))
 
