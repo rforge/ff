@@ -53,7 +53,7 @@ write.csv2(...)
   character: name of a function that is called for writing each chunk, see \code{\link{write.table}}, \code{\link{write.csv}}, etc.
 }
   \item{\dots}{
-  further arguments, passed to \code{FUN} in \code{write.table.ffdf} (or passed to \code{write.table.ffdf} in the convenience wrappers)
+  further arguments, passed to \code{FUN} in \code{write.table.ffdf}, or passed to \code{write.table.ffdf} in the convenience wrappers
 }
   \item{BATCHBYTES}{
   integer: bytes allowed for the size of the \code{\link{data.frame}} storing the result of reading one chunk. Default \code{getOption("ffbatchbytes")}.

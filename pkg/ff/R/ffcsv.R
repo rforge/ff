@@ -129,7 +129,7 @@ colClass.ff <- function(x){
 #!   character: name of a function that is called for reading each chunk, see \code{\link{read.table}}, \code{\link{read.csv}}, etc.
 #! }
 #!   \item{\dots}{
-#!   further arguments, passed to \code{FUN} in \code{read.table.ffdf} (or passed to \code{read.table.ffdf} in the convenience wrappers)
+#!   further arguments, passed to \code{FUN} in \code{read.table.ffdf}, or passed to \code{read.table.ffdf} in the convenience wrappers
 #! }
 #!   \item{ff_args}{
 #!   further arguments passed to \code{\link{as.ffdf}} when converting the \code{\link{data.frame}} of the first chunk to \code{\link{ffdf}}.
@@ -143,9 +143,16 @@ colClass.ff <- function(x){
 #! }
 #! }
 #! \details{
-#!   \code{read.table.ffdf} has been designed to read very large separated flatfiles in chunks
-#!   and store the result in a \code{\link{ffdf}} object
-#!   (on disk, but quickly accessible via \code{\link{ff}} techniques.
+#!   \code{read.table.ffdf} has been designed to read very large (many rows) separated flatfiles in row-chunks
+#!   and store the result in a \code{\link{ffdf}} object on disk, but quickly accessible via \code{\link{ff}} techniques.
+#!   \cr
+#!   The first chunk is read with a default of 1000 rows, for subsequent chunks the number of rows is calculated to not require more RAM than \code{getOption("ffbatchbytes")}.
+#!   The following could be indications to change the parameter \code{first.rows}:
+#!   \enumerate{
+#!     \item set \code{first.rows=-1} to read the complete file in one go (requires enough RAM)
+#!     \item set \code{first.rows} to a smaller number if the pre-allocation of RAM for the first chunk with parameter \code{nrows} in \code{\link{read.table}} is too large, i.e. with many columns on machine with little RAM.
+#!     \item set \code{first.rows} to a larger number if you expect better factor level ordering (factor levels are sorted in the first chunk, but not at subsequent chunks, however, factor level ordering can be fixed later, see below).
+#!   }
 #!   By default the \code{\link{ffdf}} object is created on the fly at the end of reading the 'first' chunk, see argument \code{first.rows}.
 #!   The creation of the \code{\link{ffdf}} object is done via \code{\link{as.ffdf}} and can be finetuned by passing argument \code{ff_args}.
 #!   Even more control is possible by passing in a \code{\link{ffdf}} object as argument \code{x} to which the read records are appended.
@@ -557,7 +564,7 @@ read.table.ffdf <- function(
 #!   character: name of a function that is called for writing each chunk, see \code{\link{write.table}}, \code{\link{write.csv}}, etc.
 #! }
 #!   \item{\dots}{
-#!   further arguments, passed to \code{FUN} in \code{write.table.ffdf} (or passed to \code{write.table.ffdf} in the convenience wrappers)
+#!   further arguments, passed to \code{FUN} in \code{write.table.ffdf}, or passed to \code{write.table.ffdf} in the convenience wrappers
 #! }
 #!   \item{BATCHBYTES}{
 #!   integer: bytes allowed for the size of the \code{\link{data.frame}} storing the result of reading one chunk. Default \code{getOption("ffbatchbytes")}.
@@ -806,7 +813,8 @@ read.delim2.ffdf <- function(...)
 
 cat("we fix write.csv and write.csv2 such that:\n")
 cat("- match.call identifies abbreviated arguments (matching against write.table)\n")
-cat("- we allow col.names=FALSE in combination with append=TRUE (R-core: you could fix this)\n")
+cat("- we allow col.names=FALSE in combination with append=TRUE\n")
+cat("(R-core: could you fix this?)\n")
 write.csv <-
 function (...)
 {

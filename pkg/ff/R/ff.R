@@ -3019,21 +3019,18 @@ clone.default <- function(x
 #!   There are two possible triggers for execution \code{finalize.ff_pointer}:
 #!   \enumerate{
 #!     \item the garbage collection \code{\link{gc}} following removal \code{\link{rm}} of the ff object
-#!     \item closing R if \code{finonexit} was \code{TRUE} at ff creation-time (determined by \code{options("fffinonexit")} and ff argument \code{finonexit} )
+#!     \item closing R if \code{finonexit} was \code{TRUE} at ff creation-time, determined by \code{options("fffinonexit")} and ff argument \code{finonexit}
 #!   }
-#!   \cr
-#!   Furthermore there are two possible triggers for calling the finalizer:
+#!   Furthermore there are two possible triggers for calling the finalizer
 #!   \enumerate{
 #!     \item an explicit call to \code{\link{finalize}}
 #!     \item an explicit call to one of the finalizers \code{\link[ff:close.ff]{close}}, \code{\link{delete}} and \code{\link{deleteIfOpen}}
 #!   }
-#!   \cr
-#!   The user can define custom finalizers by creating a generic function like \code{\link{delete}}, a ff_pointer method like \code{\link{delete.ff_pointer}} and a ff method for manual calls like \code{\link{delete.ff}}. The user then is responsible to take care of two things:
+#!   The user can define custom finalizers by creating a generic function like \code{\link{delete}}, a ff_pointer method like \code{\link{delete.ff_pointer}} and a ff method for manual calls like \code{\link{delete.ff}}. The user then is responsible to take care of two things
 #!   \enumerate{
 #!     \item adequate freeing of ressources
 #!     \item proper maintenance of the finalizer name in the ff object via \code{\link[=physical.ff]{physical}$finalizer}
 #!   }
-#!   \cr
 #!   \code{is.null(finalizer(ff))} indicates NO active finalizer, i.e. no pending execution of \code{finalize.ff_pointer} lurking around after call of \code{reg.finalizer}.
 #!   This requires that
 #!   \enumerate{
