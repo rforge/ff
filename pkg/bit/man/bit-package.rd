@@ -111,6 +111,8 @@ Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 }
 \note{
+  Currently operations on bit objects have some overhead from R-calls. Do expect speed gains for vectors
+  of length ~ 10000 or longer. \cr
   Since this package was created for high performance purposes, only positive integer subscripts are allowed:
   The '[.bit' and '[<-.bit' methods don't check whether the subscripts are positive integers in the allowed range.
   All R-functions behave as expected - i.e. they do not change their arguments and create new return values.

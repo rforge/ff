@@ -1,7 +1,7 @@
 Package: bit
 Type: Package
 Title: A class for vectors of 1-bit booleans
-Version: 1.1-2
+Version: 1.1-3
 Date: 2009-07-07
 Author: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
@@ -11,10 +11,11 @@ Description: bitmapped vectors of booleans (no NAs),
   fast boolean operators and fast summary statistics. 
   With 'bit' vectors you can store true binary booleans {FALSE,TRUE} at the 
   expense of 1 bit only, on a 32 bit architecture this means factor 32 less 
-  RAM and factor 32 more speed on boolean operations. With this speed gain it 
-  even pays-off to convert to bit in order to avoid a single boolean operation 
-  on logicals or a single set operation on (longer) integer subscripts, the 
-  pay-off is dramatic when such components are used more than once. 
+  RAM and ~ factor 32 more speed on boolean operations. Due to overhead of 
+  R calls, actual speed gain depends on the size of the vector: expect gains 
+  for vectors of size > 10000 elements. Even for one-time boolean operations 
+  it can pay-off to convert to bit, the pay-off is obvious, when such 
+  components are used more than once. 
   Reading from and writing to bit is approximately as fast as accessing 
   standard logicals - mostly due to R's time for memory allocation. The package 
   allows to work with pre-allocated memory for return values by calling .Call() 
