@@ -1,3 +1,43 @@
+		CHANGES IN ff VERSION 2.1.2
+
+
+NEW FEATURES
+
+    o	New functions ffsave, ffsave.image, ffinfo and ffload allow to save 
+    	and load ff and ffdf objects together with all associated ff files 
+    	in a ff archive. Incremental save and selective load are supported.
+
+    o	read.table.ffdf now supports reading fixed-width format by specifying
+    	FUN="read.fwf". But beware, read.fwf reads fwf, writes csv, then calls 
+    	read.table to read csv (Anyone feels challenged to provide faster 
+    	csv and fwf reader?)
+
+    o	xx read.table.ffdf will now treat an argument 'x' with 1 row special: 
+    	instead of appending it will overwrite the first row. This is working 
+    	around the fact that it is currently not possible to create ff vectors 
+    	having length zero.
+
+    o	read.table.ffdf and write.table.ffdf have a new argument 'transFUN' 
+    	which allows filtering and other modifications of the data.frames 
+    	processed in each chunk.
+
+    o	argument 'ff_args' in read.table.ffdf has been renamed to 'asffdf_args'
+
+
+
+
+USER VISIBLE CHANGES
+
+    o	The filename of each ff object is now always stored with absolute path
+
+    o	as.ffdf.data.frame now passes '...' to ffdf like the other as.ffdf 
+    	methods do. From now on use 'col_args' for passing arguments to ff
+    	(first ff columns are created, then ffdf is called to bind them).
+    	
+
+
+
+
 		CHANGES IN ff VERSION 2.1.0
 
 

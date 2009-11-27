@@ -72,7 +72,9 @@ colClass.ff <- function(x){
 #! , nrows = -1, first.rows = NULL, next.rows = NULL
 #! , levels = NULL, appendLevels = TRUE
 #! , FUN = "read.table", ...
-#! , ff_args = list(), BATCHBYTES = getOption("ffbatchbytes")
+#! , transFUN = NULL
+#! , asffdf_args = list()
+#! , BATCHBYTES = getOption("ffbatchbytes")
 #! , VERBOSE = FALSE
 #! )
 #! read.csv.ffdf(...)
@@ -131,7 +133,10 @@ colClass.ff <- function(x){
 #!   \item{\dots}{
 #!   further arguments, passed to \code{FUN} in \code{read.table.ffdf}, or passed to \code{read.table.ffdf} in the convenience wrappers
 #! }
-#!   \item{ff_args}{
+#!   \item{transFUN}{
+#!   NULL or a function that is called on each data.frame chunk after reading with \code{FUN} and before further processing (for filtering, transformations etc.)
+#! }
+#!   \item{asffdf_args}{
 #!   further arguments passed to \code{\link{as.ffdf}} when converting the \code{\link{data.frame}} of the first chunk to \code{\link{ffdf}}.
 #!   Ignored if \code{x} is given.
 #! }
@@ -154,7 +159,7 @@ colClass.ff <- function(x){
 #!     \item set \code{first.rows} to a larger number if you expect better factor level ordering (factor levels are sorted in the first chunk, but not at subsequent chunks, however, factor level ordering can be fixed later, see below).
 #!   }
 #!   By default the \code{\link{ffdf}} object is created on the fly at the end of reading the 'first' chunk, see argument \code{first.rows}.
-#!   The creation of the \code{\link{ffdf}} object is done via \code{\link{as.ffdf}} and can be finetuned by passing argument \code{ff_args}.
+#!   The creation of the \code{\link{ffdf}} object is done via \code{\link{as.ffdf}} and can be finetuned by passing argument \code{asffdf_args}.
 #!   Even more control is possible by passing in a \code{\link{ffdf}} object as argument \code{x} to which the read records are appended.
 #!   \cr
 #!   \code{read.table.ffdf} has been designed to behave as much like \code{\link{read.table}} as possible. Hoever, note the following differences:
@@ -245,9 +250,9 @@ colClass.ff <- function(x){
 #!     sum(.ffbytes[vmode(ffx)])
 #!
 #!     ffy <- read.csv.ffdf(file=csvfile, header=TRUE, colClasses=c(ord="ordered", dct="POSIXct", dat="Date")
-#!     , ff_args=list(
+#!     , asffdf_args=list(
 #!         vmode = c(log="boolean", int="byte", dbl="single", fac="nibble", ord="nibble", dct="single", dat="single")
-#!       , pattern = "./csv"  # create in getwd() with prefix csv
+#!       , col_args=list(pattern = "./csv")  # create in getwd() with prefix csv
 #!       )
 #!     )
 #!     vmode(ffy)
@@ -258,6 +263,29 @@ colClass.ff <- function(x){
 #!     delete(ffy); rm(ffy)
 #!     cat("It's a good habit to also wrap-up temporary stuff (or at least know how this is done)\n")
 #!     rm(ffx); gc()
+#!
+#!     fwffile <- tempfile()
+#!
+#!     cat(file=fwffile, "123456", "987654", sep="\n")
+#!     x <- read.fwf(fwffile, widths=c(1,2,3))    #> 1 23 456 \ 9 87 654
+#!     y <- read.table.ffdf(file=fwffile, FUN="read.fwf", widths=c(1,2,3))
+#!     stopifnot(identical(x, y[,]))
+#!     x <- read.fwf(fwffile, widths=c(1,-2,3))   #> 1 456 \ 9 654
+#!     y <- read.table.ffdf(file=fwffile, FUN="read.fwf", widths=c(1,-2,3))
+#!     stopifnot(identical(x, y[,]))
+#!     unlink(fwffile)
+#!
+#!     cat(file=fwffile, "123", "987654", sep="\n")
+#!     x <- read.fwf(fwffile, widths=c(1,0, 2,3))    #> 1 NA 23 NA \ 9 NA 87 654
+#!     y <- read.table.ffdf(file=fwffile, FUN="read.fwf", widths=c(1,0, 2,3))
+#!     stopifnot(identical(x, y[,]))
+#!     unlink(fwffile)
+#!
+#!     cat(file=fwffile, "123456", "987654", sep="\n")
+#!     x <- read.fwf(fwffile, widths=list(c(1,0, 2,3), c(2,2,2))) #> 1 NA 23 456 98 76 54
+#!     y <- read.table.ffdf(file=fwffile, FUN="read.fwf", widths=list(c(1,0, 2,3), c(2,2,2)))
+#!     stopifnot(identical(x, y[,]))
+#!     unlink(fwffile)
 #!
 #!     \dontshow{
 #!        x <- read.csv(file=csvfile, header=TRUE)
@@ -311,7 +339,8 @@ read.table.ffdf <- function(
 , appendLevels = TRUE  # levels are expanded (but not sorted)
 , FUN = "read.table"
 , ...    # further arguments pmatched against args(read.table)
-, ff_args = list()    # further arguments passed to as.ffdf() (ignored if 'append' gives an ffdf object )
+, transFUN = NULL
+, asffdf_args = list()    # further arguments passed to as.ffdf() (ignored if 'x' gives an ffdf object )
 , BATCHBYTES = getOption("ffbatchbytes")
 , VERBOSE = FALSE
 ){
@@ -326,7 +355,10 @@ read.table.ffdf <- function(
   }
   rt.args <- list(...)
   lnam <- names(rt.args)
-  fnam <- names(as.list(args(read.table)))
+  if (FUN=="read.fwf")
+    fnam <- names(as.list(args(read.fwf)))
+  else
+    fnam <- names(as.list(args(read.table)))
   i <- pmatch(lnam, fnam)
   if (any(is.na(i)))
     stop("unkown arguments: ", paste(lnam[is.na(i)], sep="", collapse=","))
@@ -387,7 +419,11 @@ read.table.ffdf <- function(
 
     rt.args$nrows <- first.rows
 
-    dat <- do.call(FUN, rt.args)
+    if (is.null(transFUN))
+      dat <- do.call(FUN, rt.args)
+    else
+      dat <- transFUN(do.call(FUN, rt.args))
+
     n <- nrow(dat)
     N <- n
 
@@ -407,7 +443,7 @@ read.table.ffdf <- function(
       cat(N, " (", n, ")  csv-read=", round(write.start-read.start, 3), "sec", sep="")
     }
 
-    x <- do.call("as.ffdf", c(list(dat), ff_args))
+    x <- do.call("as.ffdf", c(list(dat), asffdf_args))
 
     # now fix ordered
     colClasses <- repnam(colClasses, colnames(x), default=NA)
@@ -460,7 +496,11 @@ read.table.ffdf <- function(
         read.start <- proc.time()[3]
       }
 
-      dat <- do.call(FUN, rt.args)
+      if (is.null(transFUN))
+        dat <- do.call(FUN, rt.args)
+      else
+        dat <- transFUN(do.call(FUN, rt.args))
+
       n <- nrow(dat)
       N <- N + n
       if (VERBOSE){
@@ -528,6 +568,7 @@ read.table.ffdf <- function(
 #! , file, append = FALSE
 #! , nrows = -1, first.rows = NULL, next.rows = NULL
 #! , FUN = "write.table", ...
+#! , transFUN = NULL
 #! , BATCHBYTES = getOption("ffbatchbytes")
 #! , VERBOSE = FALSE
 #! )
@@ -565,6 +606,9 @@ read.table.ffdf <- function(
 #! }
 #!   \item{\dots}{
 #!   further arguments, passed to \code{FUN} in \code{write.table.ffdf}, or passed to \code{write.table.ffdf} in the convenience wrappers
+#! }
+#!   \item{transFUN}{
+#!   NULL or a function that is called on each data.frame chunk before writing with \code{FUN} (for filtering, transformations etc.)
 #! }
 #!   \item{BATCHBYTES}{
 #!   integer: bytes allowed for the size of the \code{\link{data.frame}} storing the result of reading one chunk. Default \code{getOption("ffbatchbytes")}.
@@ -634,7 +678,7 @@ read.table.ffdf <- function(
 #!   csvfile <- tempPathFile(path=getOption("fftempdir"), extension="csv")
 #!
 #!   write.csv.ffdf(ffx, file=csvfile, VERBOSE=TRUE)
-#!   ffy <- read.csv.ffdf(file=csvfile, header=TRUE, colClasses=c(ord="ordered", dct="POSIXct", dat="Date"), ff_args=list(vmode = vmodes), VERBOSE=TRUE)
+#!   ffy <- read.csv.ffdf(file=csvfile, header=TRUE, colClasses=c(ord="ordered", dct="POSIXct", dat="Date"), asffdf_args=list(vmode = vmodes), VERBOSE=TRUE)
 #!
 #!   rm(ffx, ffy); gc()
 #!   unlink(csvfile)
@@ -654,6 +698,7 @@ write.table.ffdf <- function(
 , next.rows   = NULL
 , FUN = "write.table"
 , ...    # further arguments pmatched against args(write.table)
+, transFUN = NULL
 , BATCHBYTES = getOption("ffbatchbytes")
 , VERBOSE = FALSE
 ){
@@ -742,7 +787,10 @@ write.table.ffdf <- function(
       cat(N, " (", n, ", ", round(N/nrows*100, 1), "%)  ffdf-read=", round(write.start-read.start, 3), "sec", sep="")
   }
 
-  dat <- do.call(FUN, c(list(y), wt.args))
+  if (is.null(transFUN))
+    dat <- do.call(FUN, c(list(y), wt.args))
+  else
+    dat <- do.call(FUN, c(list(transFUN(y)), wt.args))
 
   if (VERBOSE){
     write.stop <- proc.time()[3]

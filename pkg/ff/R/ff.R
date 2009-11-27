@@ -251,6 +251,17 @@ filename.default <- function(x
   }else if(splitted$path=="" && splitted$fsep==""){
     splitted$path <- tmpdirnam
     value <- unsplitPathFile(splitted)
+  }else{
+    # convert to absolute path
+    cwd <- getwd()
+    on.exit(setwd(cwd))
+    dfile <- dirname(value)
+    bfile <- basename(value)
+    setwd(dfile)
+    dfile <- getwd()
+    value <- file.path(dfile, bfile)
+    # fix problem in file.path
+    value <- gsub("/+","/",value)
   }
 
   if (olddirnam==tmpdirnam){
@@ -267,17 +278,13 @@ filename.default <- function(x
 
   if (isopen){
     close(x)
-    if(file.rename(oldnam, value))
-      physical(x)$filename <- value
-    else
-      stop("ff file rename from '", oldnam, "' to '", value, "' failed")
-    open(x)
-  }else{
-    if(file.rename(oldnam, value))
-      physical(x)$filename <- value
-    else
-      stop("ff file rename from '", oldnam, "' to '", value, "' failed")
+    on.exit(open(x), add=TRUE)
   }
+
+  if(file.rename(oldnam, value)){
+    physical(x)$filename <- value
+  }else
+    stop("ff file rename from '", oldnam, "' to '", value, "' failed")
 
   x
 }
@@ -311,19 +318,13 @@ pattern.ff <- function(x, ...){
 
   if (isopen){
     close(x)
-    if(file.rename(oldnam, filename)){
-      physical(x)$pattern <- value
-      physical(x)$filename <- filename
-    }else
-      stop("ff file rename from '", oldnam, "' to '", filename, "' failed")
-    open(x)
-  }else{
-    if(file.rename(oldnam, filename)){
-      physical(x)$pattern <- value
-      physical(x)$filename <- filename
-    }else
-      stop("ff file rename from '", oldnam, "' to '", filename, "' failed")
+    on.exit(open(x))
   }
+  if(file.rename(oldnam, filename)){
+    physical(x)$pattern <- value
+    physical(x)$filename <- filename
+  }else
+    stop("ff file rename from '", oldnam, "' to '", filename, "' failed")
 
   x
 }
@@ -2201,10 +2202,21 @@ ff <- function(
   # determine filename and finalizer
   if (is.null(filename))
     filename <- fftempfile(pattern)
+  # gurantee absolute path
+  dfile <- dirname(filename)
+  bfile <- basename(filename)
+  cwd <- getwd()
+  on.exit(setwd(cwd))
+  setwd(dfile)
+  dfile <- getwd()
+  filename <- file.path(dfile, bfile)
+  # fix problem in file.path
+  filename <- gsub("/+","/",filename)
+
   if (is.null(finalizer)){
     finalizer <- getOption("fffinalizer")
     if (is.null(finalizer)){
-      if (dirname(filename)==getOption("fftempdir"))
+      if (dfile==getOption("fftempdir"))
         finalizer <- "delete"   # temporary ff object
       else
         finalizer <- "close"    # persistent ff object
@@ -2335,7 +2347,7 @@ ff <- function(
         ffclass <- c("ff_array","ff")
     }
   }
-  if (length<1 || length>.Machine$integer.max)
+  if (length<0 || length>.Machine$integer.max)
     stop("length must be between 1 and .Machine$integer.max")
 
   if (is.null(pagesize))

@@ -10,7 +10,7 @@
 
 if (FALSE){
   library(ff)
-  n <- 10000
+  n <- 160
   x <- ff(as.factor(letters[1:16]), dim=c(n,4), dimorder=2:1)
   y <- ff(1:(n*4), dim=c(n,4), dimorder=2:1)
   colnames(y) <- letters[1:4]
@@ -25,9 +25,9 @@ if (FALSE){
   ffvecapply(rnam[i1:i2] <- as.character.hexmode(i1:i2), N=n, VMODE="double", VERBOSE=TRUE)
 
   #d <- ffdf(x, y, z, z2, z3)
-  #dj <- ffdf(x, y, z, z2, z3, join=list(c(1,3), c(2,4,5)), ff_args=list(pattern="dj_"))
+  #dj <- ffdf(x, y, z, z2, z3, ff_join=list(c(1,3), c(2,4,5)), ff_args=list(pattern="dj_"))
   #di <- ffdf(I(x), y, z, z2, z3)
-  #dji <- ffdf(I(x), y, z, z2, z3, join=list(c(1,3), c(2,4,5)), ff_args=list(pattern="dj_"))
+  #dji <- ffdf(I(x), y, z, z2, z3, ff_join=list(c(1,3), c(2,4,5)), ff_args=list(pattern="dj_"))
 
   d   <- ffdf(x, y, z, z2, z3, row.names=rnam)
   dj  <- ffdf(x, y, z, z2, z3, ff_join=list(c(1,3), c(2,4,5)), row.names=rnam, ff_args=list(pattern="dj_"))
@@ -734,9 +734,9 @@ ffdf <- function(
           if (n==1 && is.null(dim(dotval[[sj[1]]]))){
             # store physically as ff_vector
             f <- dotval[[sj[1]]]
-            fnam <- paste(sjinam, "vec", sep=".")
+            fnam <- paste(sjinam, "vec.", sep=".")
             useffargs <- ff_args
-            useffargs[c("vmode", "length", "filename")] <- list(sjmodes, nrows, paste(ff_args$pattern, fnam, getOption("ffextension"), sep="."))
+            useffargs[c("vmode", "length", "pattern")] <- list(sjmodes, nrows, paste(ff_args$pattern, fnam, sep="."))
             physical[[p]] <- do.call("clone", c(list(f), useffargs))
             names(physical)[p] <- fnam
             if (inherits(f, "AsIs")){
@@ -762,9 +762,9 @@ ffdf <- function(
                 anyAsIs <- TRUE
               }
               if (i==1){
-                fnam <- paste(sjinam, "mat", sep=".")
+                fnam <- paste(sjinam, "mat.", sep=".")
                 useffargs <- ff_args
-                useffargs[c("vmode", "dim","dimorder","filename")] <- list(names(maxffmode(sjmodes)), c(nrows, n), 2:1, paste(ff_args$pattern, fnam, getOption("ffextension"), sep="."))
+                useffargs[c("vmode", "dim","dimorder","pattern")] <- list(names(maxffmode(sjmodes)), c(nrows, n), 2:1, paste(ff_args$pattern, fnam, sep="."))
 
                 physical[[p]] <- do.call("clone", c(list(f), useffargs))
                 colnames(physical[[p]]) <- pnam[offset+seq.int(length.out=n)]
@@ -1475,14 +1475,15 @@ is.ffdf <- function(x)
 #! as.ffdf(x, ...)
 #! \method{as.ffdf}{ff_vector}(x, ...)
 #! \method{as.ffdf}{ff_matrix}(x, ...)
-#! \method{as.ffdf}{data.frame}(x, vmode=NULL, ...)
+#! \method{as.ffdf}{data.frame}(x, vmode=NULL, col_args = list(), ...)
 #! \method{as.data.frame}{ffdf}(x, ...)
 #! }
 #! \arguments{
 #!   \item{x}{ the object to be coerced }
 #!   \item{vmode}{ optional specification of the \code{\link{vmode}s} of columns of the \code{\link{data.frame}}. Either a character vector of vmodes (named with column names of the data.frame or recycled if not named)
 #!                 or a list named with vmodes where each element identifies those columns of the data.frame that should get the vmode encoded in the name of the element }
-#!   \item{\dots}{ further arguments; passed to \code{\link{ffdf}} for .ff_vector and .ff_matrix methods, passed to \code{\link{ff}} for .data.frame method, ignored for .ffdf identity method }
+#!   \item{col_args}{ further arguments; passed to \code{\link{ff}}  }
+#!   \item{\dots}{ further arguments; passed to \code{\link{ffdf}} for .ff_vector, .ff_matrix and .data.frame methods, ignored for .ffdf identity method }
 #! }
 #! \value{
 #!   'as.ffdf' returns an object of class \code{\link{ffdf}}, 'as.data.frame' returns an object of class \code{\link{data.frame}}
@@ -1508,7 +1509,12 @@ as.ffdf.ff_matrix <- function(x, ...){
 as.ffdf.ff_vector <- function(x, ...){
   ffdf(x, row.names=names(x), ...)
 }
-as.ffdf.data.frame <- function(x, vmode=NULL, ...){
+as.ffdf.data.frame <- function(
+  x
+, vmode = NULL
+, col_args=list()
+, ...
+){
   rnam <- attr(x, "row.names")
   if (is.integer(rnam)){
     if (all(rnam==seq.int(along=rnam)))
@@ -1540,26 +1546,29 @@ as.ffdf.data.frame <- function(x, vmode=NULL, ...){
       }
     }
   }
+  if (is.null(col_args$pattern))
+    col_args$pattern <- "ffdf"
+
   l <- list(...)
-  if (is.null(l$pattern))
-    l$pattern <- "ffdf"
+  if (is.null(l$ff_args$pattern))
+    l$ff_args$pattern <- "ffdf"
   ret <- lapply(seq.int(along=x)
   , function(i, ...){
     xi <- x[[i]]
     AsIs <- inherits(xi, "AsIs")
     if (AsIs){
       oldClass(xi) <- oldClass(xi)[-match("AsIs", oldClass(xi))]
-      ret <- as.ff(xi, vmode=vmodes[[i]], ...)
+      ret <- do.call("as.ff", c(list(xi, vmode=vmodes[[i]]), col_args))
       oldClass(ret) <- c("AsIs", oldClass(ret))
       ret
     }else{
-      do.call("as.ff", c(list(xi, vmode=vmodes[[i]]), l))
+      do.call("as.ff", c(list(xi, vmode=vmodes[[i]]), col_args))
     }
   }
   , ...
   )
   names(ret) <- names(x)
-  do.call("ffdf", c(ret, list(row.names=rnam)))
+  do.call("ffdf", c(ret, list(row.names=rnam), l))
 }
 
 as.data.frame.ffdf <- function(x, ...)
