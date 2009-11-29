@@ -12,10 +12,10 @@ NEW FEATURES
     	read.table to read csv (Anyone feels challenged to provide faster 
     	csv and fwf reader?)
 
-    o	xx read.table.ffdf will now treat an argument 'x' with 1 row special: 
+    o	read.table.ffdf will now treat an argument 'x' with 1 row special: 
     	instead of appending it will overwrite the first row. This is working 
     	around the fact that it is currently not possible to create ff vectors 
-    	having length zero.
+    	having length zero and ffdf data.frames with zero rows.
 
     o	read.table.ffdf and write.table.ffdf have a new argument 'transFUN' 
     	which allows filtering and other modifications of the data.frames 

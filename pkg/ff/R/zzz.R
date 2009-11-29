@@ -94,16 +94,23 @@
 
 .onAttach <- function(libname, pkgname){
   cat("Attaching package ff\n")
-  cat('fixing [.AsIs in base namespace because if the NextMethod("[") returns a different class, [.AsIs was reverting this\n')
-  assignInNamespace(
-    "[.AsIs"
-  , function (x, i, ...){
-      ret <- NextMethod("[")
-      oldClass(ret) <- c("AsIs", oldClass(ret))
-      ret
-    }
-  , "base"
-  )
+  if (getRversion()<="2.10.0"){
+    cat('fixing [.AsIs in base namespace because if the NextMethod("[") returns a different class, [.AsIs was reverting this\n')
+    #assignInNamespace(
+    #  "[.AsIs"
+    #, function (x, i, ...){
+    #    ret <- NextMethod("[")
+    #    oldClass(ret) <- c("AsIs", oldClass(ret))
+    #    ret
+    #  }
+    #, "base"
+    #)
+    assignInNamespace(
+      "[.AsIs"
+    , function (x, i, ...)I(NextMethod("["))
+    , "base"
+    )
+  }
 }
 
 .Last.lib <- function(libpath) {

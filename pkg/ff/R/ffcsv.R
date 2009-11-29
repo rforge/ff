@@ -87,6 +87,8 @@ colClass.ff <- function(x){
 #! NULL or an optional \code{\link{ffdf}} object to which the read records are appended.
 #! If this is provided, it defines crucial features that are otherwise determnined during the 'first' chunk of reading:
 #! \code{\link[=vmode.ffdf]{vmode}s}, \code{\link[=dimnames.ffdf]{colnames}}, \code{colClasses}, sequence of predefined \code{\link[=levels.ff]{levels}}.
+#! In order to also read the first chunk into such predefined ffdf, an \code{x} with 1 row is treated special: instead of appending the first row will be overwritten.
+#! This is necessary because we cannot provide \code{x} with zero rows (we cannot create ff vectors with zero elements).
 #! }
 #!   \item{file}{
 #!     the name of the file which the data are to be read from.
@@ -521,9 +523,14 @@ read.table.ffdf <- function(
       }
 
       nff <- nrow(x)
-      nrow(x) <- nff + n
-      i <- hi(nff+1L, nff+n)
-      x[i,] <- dat
+      if (nff==1){  # since we cannot create a ffdf with zero rows, we allow to use nrow()==1 instead
+        nrow(x) <- n
+        x[,] <- dat
+      }else{
+        nrow(x) <- nff + n
+        i <- hi(nff+1L, nff+n)
+        x[i,] <- dat
+      }
 
       if (VERBOSE){
         write.stop <- proc.time()[3]
@@ -862,7 +869,6 @@ read.delim2.ffdf <- function(...)
 cat("we fix write.csv and write.csv2 such that:\n")
 cat("- match.call identifies abbreviated arguments (matching against write.table)\n")
 cat("- we allow col.names=FALSE in combination with append=TRUE\n")
-cat("(R-core: could you fix this?)\n")
 write.csv <-
 function (...)
 {

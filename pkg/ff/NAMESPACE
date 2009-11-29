@@ -8,7 +8,6 @@ useDynLib(ff)
 
 importFrom(utils, installed.packages)
 importFrom(utils, memory.limit)
-importFrom(utils, memory.limit)
 import(bit)
 
 
