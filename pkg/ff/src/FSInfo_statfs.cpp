@@ -31,12 +31,24 @@
 #include <sys/mount.h>
 #endif
 
+#if defined(__sun__)
+#include <sys/statvfs.h>
+#else
+#include <sys/statfs.h>
+#endif
+
 namespace ff {
 
 void getFSInfo(const char* path, FSInfo& info)
 {
+
+#if defined(__sun__) 
+  struct statvfs sfs;
+  statvfs(path, &sfs);
+#else
   struct statfs sfs;
   statfs(path, &sfs);
+#endif
   info.free_space = ((fsize_t)sfs.f_bsize) * ((fsize_t)sfs.f_bavail );
   info.block_size = sfs.f_bsize;
 #ifdef HAVE_STRUCT_STATFS_F_IOSIZE
