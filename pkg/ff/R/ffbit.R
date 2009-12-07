@@ -31,9 +31,7 @@ as.hi.ri <- function(x
 )
 {
   # NOTE that we cannot call hi() here because it would not handle ...-paramters dim= dimorder=
-  l <- list(...)
-  l$envir <- NULL
-  do.call("as.hi", c(list(quote(x[[1]]:x[[2]]), maxindex=maxindex), l))
+  as.hi(substitute(a:b, list(a=x[[1]], b=x[[2]])), maxindex=maxindex, ...)
 }
 
 

@@ -36,6 +36,12 @@ USER VISIBLE CHANGES
     	
 
 
+BUG FIXES
+
+    o	as.hi.ri no longer expands the sequence
+
+
+
 
 
 		CHANGES IN ff VERSION 2.1.0
