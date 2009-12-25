@@ -23,6 +23,8 @@ NEW FEATURES
 
     o	argument 'ff_args' in read.table.ffdf has been renamed to 'asffdf_args'
 
+    o	New 'chunk' methods for classes 'bit', 'ff_vector'
+
 
 
 
@@ -33,13 +35,26 @@ USER VISIBLE CHANGES
     o	as.ffdf.data.frame now passes '...' to ffdf like the other as.ffdf 
     	methods do. From now on use 'col_args' for passing arguments to ff
     	(first ff columns are created, then ffdf is called to bind them).
+
+    o	New argument 'RECORDBYTES' for chunk methods. Position of dots argument
+    	moved to last position.
     	
+    o	The low-level access-functions 'get.ff', 'set.ff' and 'getset.ff' now 
+    	accept vectors (not only scalars) of positive subscript positions. This
+    	allows to evaluate the benefit of the hybrid index preprocessing done in
+    	'[.ff', '[<-.ff' and 'swap.ff'.
 
 
 BUG FIXES
 
-    o	as.hi.ri no longer expands the sequence
+    o	as.hi.ri no longer blows RAM by expanding the sequence ri[[1]]:ri[[2]]
 
+    o	[.ffdf now requires less RAM because it avoids as.data.frame
+
+    o	[.ff_array and [<-.ff_array no longer skip over -1 in a non-packed 
+    	negative index
+
+    o	unsort.ahi now uses poslength instead of length (negative indexes)
 
 
 

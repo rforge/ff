@@ -1157,7 +1157,7 @@ ffdf <- function(
         }else{
           names(df) <- row.names(virtual)
           if (nrows!=1 || !drop){
-            df <- as.data.frame(df)
+            class(df) <- "data.frame"
           }
         }
       }else{
@@ -1169,28 +1169,35 @@ ffdf <- function(
           i2 <- as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam)
           nrows <- length(i2)
         }
-        df <- data.frame(row.names=seq.int(length.out=nrows))
+        df <- list()
+        class(df) <- "data.frame"
       }
 
-
-      if (is.data.frame(df) && !is.null(rownam)){
-        if (is.ff(rownam)){
-          nvw <- get_nvw(rownam)
-          if (!identical(last_nvw, nvw)){
-            if (missing(i))
-              i2 <- hi(from=1, to=nvw$n, maxindex=nvw$n, vw=nvw$vw, pack=FALSE)
-            else{
-              i2 <- as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam)
-            }
-          }
-          row.names(df) <- rownam[i2]
+      if (is.data.frame(df)){
+        if (is.null(rownam)){
+          if (missing(i))
+            row.names(df) <- seq.int(length.out=nrows)
+          else
+            row.names(df) <- as.which(i2)
         }else{
-          if (missing(i)){
-            row.names(df) <- rownam
-          }else if(is.character(i))
-            row.names(df) <- i
-          else{
-            row.names(df) <- rownam[as.integer(as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam))]
+          if (is.ff(rownam)){
+            nvw <- get_nvw(rownam)
+            if (!identical(last_nvw, nvw)){
+              if (missing(i))
+                i2 <- hi(from=1, to=nvw$n, maxindex=nvw$n, vw=nvw$vw, pack=FALSE)
+              else{
+                i2 <- as.hi(i, maxindex=nvw$n, vw=nvw$vw, pack=FALSE, envir=parent.frame(), names=rownam)
+              }
+            }
+            row.names(df) <- rownam[i2]
+          }else{
+            if (missing(i)){
+              row.names(df) <- rownam
+            }else if(is.character(i))
+              row.names(df) <- i
+            else{
+              row.names(df) <- rownam[as.integer(as.hi(i2))]
+            }
           }
         }
       }
@@ -1667,12 +1674,13 @@ vmode.ffdf <- function(x, ...){
 #!    Row-wise chunking method for ffdf objects automatically considering RAM requirements from recordsize as calculated from \code{\link{sum}(\link{.rambytes}[\link[=vmode.ffdf]{vmode}])}
 #! }
 #! \usage{
-#! \method{chunk}{ffdf}(x, \dots, BATCHBYTES = getOption("ffbatchbytes"))
+#! \method{chunk}{ffdf}(x, RECORDBYTES = sum(.rambytes[vmode(x)]), BATCHBYTES = getOption("ffbatchbytes"), \dots)
 #! }
 #! \arguments{
 #!   \item{x}{\code{\link{ffdf}}}
-#!   \item{\dots}{further arguments passed to \code{\link[bit]{chunk}}}
+#!   \item{RECORDBYTES}{ optional integer scalar representing the bytes needed to process a single row of the ffdf }
 #!   \item{BATCHBYTES}{ integer scalar limiting the number of bytes to be processed in one chunk, default from \code{getOption("ffbatchbytes")}, see also \code{\link{.rambytes}} }
+#!   \item{\dots}{further arguments passed to \code{\link[bit]{chunk}}}
 #! }
 #! \value{
 #!   A list with \code{\link[bit]{ri}} indexes each representing one chunk
@@ -1717,7 +1725,7 @@ vmode.ffdf <- function(x, ...){
 #! \keyword{ data }
 
 
-chunk.ffdf <- function(x, ..., BATCHBYTES = getOption("ffbatchbytes")){
+chunk.ffdf <- function(x, RECORDBYTES = sum(.rambytes[vmode(x)]), BATCHBYTES = getOption("ffbatchbytes"), ...){
   n <- nrow(x)
   if (n){
     l <- list(...)
@@ -1726,8 +1734,7 @@ chunk.ffdf <- function(x, ..., BATCHBYTES = getOption("ffbatchbytes")){
     if (is.null(l$to))
       l$to <- n
     if (is.null(l$by) && is.null(l$len)){
-      recordsize <- sum(.rambytes[vmode(x)])
-      b <- BATCHBYTES %/% recordsize
+      b <- BATCHBYTES %/% RECORDBYTES
       if (b==0L){
         b <- 1L
         warning("single record does not fit into BATCHBYTES")

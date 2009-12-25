@@ -8,12 +8,13 @@
    Row-wise chunking method for ffdf objects automatically considering RAM requirements from recordsize as calculated from \code{\link{sum}(\link{.rambytes}[\link[=vmode.ffdf]{vmode}])}
 }
 \usage{
-\method{chunk}{ffdf}(x, \dots, BATCHBYTES = getOption("ffbatchbytes"))
+\method{chunk}{ffdf}(x, RECORDBYTES = sum(.rambytes[vmode(x)]), BATCHBYTES = getOption("ffbatchbytes"), \dots)
 }
 \arguments{
   \item{x}{\code{\link{ffdf}}}
-  \item{\dots}{further arguments passed to \code{\link[bit]{chunk}}}
+  \item{RECORDBYTES}{ optional integer scalar representing the bytes needed to process a single row of the ffdf }
   \item{BATCHBYTES}{ integer scalar limiting the number of bytes to be processed in one chunk, default from \code{getOption("ffbatchbytes")}, see also \code{\link{.rambytes}} }
+  \item{\dots}{further arguments passed to \code{\link[bit]{chunk}}}
 }
 \value{
   A list with \code{\link[bit]{ri}} indexes each representing one chunk

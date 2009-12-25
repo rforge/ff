@@ -115,16 +115,18 @@
 
 .Last.lib <- function(libpath) {
    cat("Detaching package ff\n")
-  cat('restoring [.AsIs\n')
-  assignInNamespace(
-    "[.AsIs"
-  , function (x, i, ...){
-      ret <- NextMethod("[")
-      oldClass(ret) <- c("AsIs", oldClass(x))
-      ret
-    }
-  , "base"
-  )
+  if (getRversion()<="2.10.0"){
+    cat('restoring [.AsIs\n')
+    assignInNamespace(
+      "[.AsIs"
+    , function (x, i, ...){
+        ret <- NextMethod("[")
+        oldClass(ret) <- c("AsIs", oldClass(x))
+        ret
+      }
+    , "base"
+    )
+  }
 }
 
 .onUnload <- function(libpath){

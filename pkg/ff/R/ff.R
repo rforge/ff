@@ -3490,9 +3490,9 @@ if (FALSE){
 #! \alias{getset.ff}
 #! \alias{get.ff}
 #! \alias{set.ff}
-#! \title{ Reading and writing single values (low-level) }
+#! \title{ Reading and writing vectors of values (low-level) }
 #! \description{
-#!   The three functions \command{get.ff}, \command{set.ff} and \command{getset.ff} provide the simplest interface to access an ff file: getting and setting single values
+#!   The three functions \command{get.ff}, \command{set.ff} and \command{getset.ff} provide the simplest interface to access an ff file: getting and setting vector of values identified by positive subscripts
 #! }
 #! \usage{
 #! get.ff(x, i)
@@ -3510,12 +3510,12 @@ if (FALSE){
 #!   \command{getset.ff} will maintain \code{\link{na.count}}.
 #! }
 #! \value{
-#!   \command{get.ff} returns a single value, \command{set.ff} returns the 'changed' ff object (like all assignment functions do) and \command{getset.ff} returns the value at the position.
-#!   More precisely \code{getset.ff(x, i, value, add=FALSE)} returns the old value at the position \code{i} while \code{getset.ff(x, i, value, add=TRUE)} returns the incremented value of \code{x}.
+#!   \command{get.ff} returns a vector, \command{set.ff} returns the 'changed' ff object (like all assignment functions do) and \command{getset.ff} returns the value at the subscript positions.
+#!   More precisely \code{getset.ff(x, i, value, add=FALSE)} returns the old values at the subscript positions \code{i} while \code{getset.ff(x, i, value, add=TRUE)} returns the incremented values at the subscript positions.
 #! }
 #! \author{ Jens Oehlschlägel }
 #! \note{ \command{get.ff}, \command{set.ff} and \command{getset.ff} are low level functions that do not support \code{ramclass} and \code{ramattribs} and thus will not give the expected result with \code{factor} and \code{POSIXct} }
-#! \seealso{ \code{\link{readwrite.ff}} for low-level vector access and \code{\link{[.ff}} for high-level access }
+#! \seealso{ \code{\link{readwrite.ff}} for low-level access to contiguous chunks and \code{\link{[.ff}} for high-level access }
 #! \examples{
 #!  x <- ff(0, length=12)
 #!  get.ff(x, 3L)
@@ -3551,9 +3551,9 @@ getset.ff <- function(x, i, value, add=FALSE)
     new.nc <- is.na(value)
   vmode <- vmode(x)
   if (add)
-    ret <- .Call("addgetset", .ffmode[vmode], attr(x, "physical"), i, as.vmode(value, vmode), PACKAGE="ff")
+    ret <- .Call("addgetset_vec", .ffmode[vmode], attr(x, "physical"), i, length(i), as.vmode(value, vmode), PACKAGE="ff")
   else
-    ret <- .Call("getset", .ffmode[vmode], attr(x, "physical"), i, as.vmode(value, vmode), PACKAGE="ff")
+    ret <- .Call("getset_vec", .ffmode[vmode], attr(x, "physical"), i, length(i), as.vmode(value, vmode), PACKAGE="ff")
   if (!is.na(nc)){
     old.nc <- is.na(ret)
     na.count(x) <- nc - old.nc + new.nc
@@ -3574,7 +3574,7 @@ get.ff   <- function(x, i)
   if (!is.integer(i) || i<1 || i>length(x)) stop("illegal index")
   if(!is.null(vw(x))) stop("please use '[' to access ff with vw")
 
-  .Call("get", .ffmode[vmode(x)], attr(x, "physical"), i, PACKAGE="ff")
+  .Call("get_vec", .ffmode[vmode(x)], attr(x, "physical"), i, length(i), PACKAGE="ff")
 }
 
 set.ff   <- function(x, i, value, add=FALSE)
@@ -3594,15 +3594,25 @@ set.ff   <- function(x, i, value, add=FALSE)
   if(!is.null(physical(x)$na.count)) stop("use readwrite.ff instead to maintain na.count (or deactivate na.count(x)<-NULL)")
   vmode <- vmode(x)
   if (add)
-    attr(x, "physical") <- .Call("addset", .ffmode[vmode], attr(x, "physical"), i, as.vmode(value, vmode), PACKAGE="ff")
+    attr(x, "physical") <- .Call("addset_vec", .ffmode[vmode], attr(x, "physical"), i, length(i), as.vmode(value, vmode), PACKAGE="ff")
   else
-    attr(x, "physical") <- .Call("set", .ffmode[vmode], attr(x, "physical"), i, as.vmode(value, vmode), PACKAGE="ff")
+    attr(x, "physical") <- .Call("set_vec", .ffmode[vmode], attr(x, "physical"), i, length(i), as.vmode(value, vmode), PACKAGE="ff")
   x
 }
 
-"[[.ff" <- get.ff
-"[[<-.ff" <- function(x, i, add=FALSE, value)
+"[[.ff" <- function(x, i){
+  if (length(i)!=1L)
+    stop("i must have length 1")
+  set.ff(x=x, i=i)
+}
+
+"[[<-.ff" <- function(x, i, add=FALSE, value){
+  if (length(i)!=1L)
+    stop("i must have length 1")
+  if (length(value)!=1L)
+    stop("value must have length 1")
   set.ff(x=x, i=i, value=value, add=add)
+}
 
 
 #! \name{readwrite.ff}
@@ -4867,4 +4877,90 @@ swap.default <- function(
 #! \keyword{ IO }
 #! \keyword{ data }
 #! \keyword{ package }
+
+
+#! \name{chunk.ffdf}
+#! \Rdversion{1.1}
+#! \alias{chunk.ffdf}
+#! \title{
+#!    Chunk ffdf
+#! }
+#! \description{
+#!    Row-wise chunking method for ffdf objects automatically considering RAM requirements from recordsize as calculated from \code{\link{sum}(\link{.rambytes}[\link[=vmode.ffdf]{vmode}])}
+#! }
+#! \usage{
+#! \method{chunk}{ffdf}(x, RECORDBYTES = sum(.rambytes[vmode(x)]), BATCHBYTES = getOption("ffbatchbytes"), \dots)
+#! }
+#! \arguments{
+#!   \item{x}{\code{\link{ffdf}}}
+#!   \item{RECORDBYTES}{ optional integer scalar representing the bytes needed to process a single row of the ffdf }
+#!   \item{BATCHBYTES}{ integer scalar limiting the number of bytes to be processed in one chunk, default from \code{getOption("ffbatchbytes")}, see also \code{\link{.rambytes}} }
+#!   \item{\dots}{further arguments passed to \code{\link[bit]{chunk}}}
+#! }
+#! \value{
+#!   A list with \code{\link[bit]{ri}} indexes each representing one chunk
+#! }
+#! \author{
+#!   Jens Oehlschlägel
+#! }
+#! \seealso{ \code{\link[bit]{chunk}}, \code{\link{ffdf}} }
+#! \examples{
+#!   x <- data.frame(x=as.double(1:26), y=factor(letters), z=ordered(LETTERS))
+#!   a <- as.ffdf(x)
+#!   ceiling(26 / (300 \%/\% sum(.rambytes[vmode(a)])))
+#!   chunk(a, BATCHBYTES=300)
+#!   ceiling(13 / (100 \%/\% sum(.rambytes[vmode(a)])))
+#!   chunk(a, from=1, to = 13, BATCHBYTES=100)
+#!   rm(a); gc()
+#!
+#!  cat("dummy example for linear regression with biglm on ffdf\n")
+#!   library(biglm)
+#!
+#!   cat("NOTE that . in formula requires calculating terms manually because . as a data-dependant term is not allowed in biglm\n")
+#!   form <- Sepal.Length ~ Sepal.Width + Petal.Length + Petal.Width + Species
+#!
+#!   lmfit <- lm(form, data=iris)
+#!
+#!   firis <- as.ffdf(iris)
+#!   for (i in chunk(firis, by=50)){
+#!     if (i[1]==1){
+#!       cat("first chunk is: "); print(i)
+#!       biglmfit <- biglm(form, data=firis[i,,drop=FALSE])
+#!     }else{
+#!       cat("next chunk is: "); print(i)
+#!       biglmfit <- update(biglmfit, firis[i,,drop=FALSE])
+#!     }
+#!   }
+#!
+#!   summary(lmfit)
+#!   summary(biglmfit)
+#!   stopifnot(all.equal(coef(lmfit), coef(biglmfit)))
+#! }
+#! \keyword{ IO }
+#! \keyword{ data }
+
+
+chunk.ff_vector <- function(x, RECORDBYTES = .rambytes[vmode(x)], BATCHBYTES = getOption("ffbatchbytes"), ...){
+  n <- length(x)
+  if (n){
+    l <- list(...)
+    if (is.null(l$from))
+      l$from <- 1L
+    if (is.null(l$to))
+      l$to <- n
+    if (is.null(l$by) && is.null(l$len)){
+      b <- BATCHBYTES %/% RECORDBYTES
+      if (b==0L){
+        b <- 1L
+        warning("single record does not fit into BATCHBYTES")
+      }
+      l$by <- b
+    }
+    ret <- do.call("chunk.default", l)
+
+  }else{
+    ret <- list()
+  }
+  ret
+}
 
