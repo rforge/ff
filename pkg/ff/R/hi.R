@@ -119,6 +119,7 @@ hi <- function (from, to, by = 1L, maxindex = NA, vw=NULL, pack = TRUE, NAs = NU
             x <- as.integer(cumsum(c(from, rep(r$values, r$lengths))))
             x <- sort.int(x, index.return = TRUE, method = "quick")
             ix <- x$ix
+            re <- FALSE
             x <- rlepack(x$x, pack = pack)
         }
 
@@ -174,6 +175,7 @@ hi <- function (from, to, by = 1L, maxindex = NA, vw=NULL, pack = TRUE, NAs = NU
         }
     }else{
         x <- list(first = as.integer(NA), dat = integer(), last = as.integer(NA))
+        re <- FALSE
         ix <- NULL
         n <- 0L
         minindex <- 1L

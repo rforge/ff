@@ -9,7 +9,7 @@
    Chunking method for ff_vector and ffdf objects (row-wise) automatically considering RAM requirements from recordsize as calculated from \code{\link{sum}(\link{.rambytes}[\link{vmode}])}
 }
 \usage{
-\method{chunk}{ff_vector}(x, RECORDBYTES = sum(.rambytes[vmode(x)]), BATCHBYTES = getOption("ffbatchbytes"), \dots)
+\method{chunk}{ff_vector}(x, RECORDBYTES = .rambytes[vmode(x)], BATCHBYTES = getOption("ffbatchbytes"), \dots)
 \method{chunk}{ffdf}(x, RECORDBYTES = sum(.rambytes[vmode(x)]), BATCHBYTES = getOption("ffbatchbytes"), \dots)
 }
 \arguments{
