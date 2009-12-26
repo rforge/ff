@@ -57,6 +57,8 @@ BUG FIXES
 
     o	[.ffdf now requires less RAM because it avoids as.data.frame
 
+    o	as.hi.which now call as.hi.integer and works
+
 
 
 
