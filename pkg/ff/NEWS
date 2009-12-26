@@ -47,14 +47,16 @@ USER VISIBLE CHANGES
 
 BUG FIXES
 
+    o	Fixed problems with negative subscripts (discovered by Trishank 
+    	Kuppusamy):  [.ff_array and [<-.ff_array no longer skip over -1 in a 
+    	non-packed negative index, and hybrid indexing no longer reverts the 
+    	order of assigned or returned values (for negative subscripts we now 
+    	have always hi$ix=NULL and hi$re=FALSE).
+
     o	as.hi.ri no longer blows RAM by expanding the sequence ri[[1]]:ri[[2]]
 
     o	[.ffdf now requires less RAM because it avoids as.data.frame
 
-    o	[.ff_array and [<-.ff_array no longer skip over -1 in a non-packed 
-    	negative index
-
-    o	unsort.ahi now uses poslength instead of length (negative indexes)
 
 
 

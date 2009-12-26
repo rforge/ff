@@ -124,12 +124,16 @@ hi <- function (from, to, by = 1L, maxindex = NA, vw=NULL, pack = TRUE, NAs = NU
 
         x <- unique.rlepack(x)
 
-        # this ifelse section copied 1L to hi.default
+        # this ifelse section copied 1L to as.hi.call
         if (x$last < 0) {
           if (is.na(maxindex))
               stop("maxindex is required with negative subscripts")
           if ( -x$first > maxindex )
               stop("negative subscripts out of range")
+
+          re <- FALSE
+          ix <- NULL
+
           if (vw.convert){
             x$first <- x$first - vw[1]
             x$last <- x$last - vw[1]
@@ -185,7 +189,7 @@ hi <- function (from, to, by = 1L, maxindex = NA, vw=NULL, pack = TRUE, NAs = NU
     ret <- list(
       x = x                # directly accessed by the C-code: hybrid index, i.e. either raw or rle
     , ix = ix              # NULL or positions for re-ordering
-    , re = FALSE           # logical indicating whether sequence was reversed from descending to ascending
+    , re = re              # logical indicating whether sequence was reversed from descending to ascending
     , minindex = minindex  # directly accessed by the C-code: represents the lowest positive subscript to be enumerated in case of negative subscripts
     , maxindex = maxindex  # directly accessed by the C-code: represents the highest positive subscript to be enumerated in case of negative subscripts
     , length = n           # number of subscripts, whether negative or positive
@@ -562,6 +566,10 @@ as.hi.call <- function(
           stop("maxindex is required with negative subscripts")
       if ( -x$first > maxindex )
           stop("negative subscripts out of range")
+
+      re <- FALSE
+      ix <- NULL
+
       if (vw.convert){
         x$first <- x$first - vw[1]
         x$last <- x$last - vw[1]
@@ -723,10 +731,12 @@ as.hi.which <-  as.hi.integer <- function(
       }
       if ( -x[1] > maxindex )
         stop("negative subscripts out of range")
-      x <- unique(x)
-      n <- length(x)
+
       ix <- NULL
       re <- FALSE
+
+      x <- unique(x)
+      n <- length(x)
       if (vw.convert){
         # convert window positions to absolute positions
         if (is.null(dim)){
