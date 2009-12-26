@@ -191,6 +191,9 @@ if (FALSE){
 #! \details{
 #!   \code{chunk} is generic, the default method is described here, other methods that automatically consider RAM needs are provided with package 'ff', see for example \code{\link[ff]{chunk.ffdf}}
 #! }
+#! \section{available methods}{
+#!   \code{chunk.default}, \code{\link[ff]{chunk.bit}}, \code{\link[ff]{chunk.ff_vector}}, \code{\link[ff]{chunk.ffdf}}
+#! }
 #! \value{
 #!   \code{chunk.default} returns a list of \code{\link{ri}} objects representing chunks of subscripts
 #! }
@@ -224,7 +227,16 @@ if (FALSE){
 chunk <- function(...)
   UseMethod("chunk")
 
-chunk.default <- function(from = NULL, to = NULL, by = NULL, length.out = NULL, along.with = NULL, overlap = 0L, method=c("bbatch","seq"), ...)
+chunk.default <- function(
+  from = NULL
+, to = NULL
+, by = NULL
+, length.out = NULL
+, along.with = NULL
+, overlap = 0L
+, method=c("bbatch","seq")
+, ...
+)
 {
   method <- match.arg(method)
   if (!is.null(along.with)){

@@ -29,6 +29,7 @@ as.hi(x, \dots)
 \method{as.hi}{name}(x, envir = parent.frame(), \dots)
 %\method{as.hi}{(}(x, envir = parent.frame(), \dots)
 \method{as.hi}{integer}(x, maxindex = NA, dim = NULL, dimorder = NULL, symmetric = FALSE, fixdiag = NULL, vw = NULL, vw.convert = TRUE, dimorder.convert  = TRUE, pack = TRUE, NAs = NULL, \dots)
+\method{as.hi}{which}(x, \dots)
 \method{as.hi}{double}(x, \dots)
 \method{as.hi}{logical}(x, maxindex = NA, dim = NULL, vw = NULL, pack = TRUE, \dots)
 \method{as.hi}{character}(x, names, vw = NULL, vw.convert = TRUE, \dots)
@@ -56,8 +57,9 @@ as.hi(x, \dots)
   \code{as.hi.call} tries to \code{\link{hiparse}} instead of evaluate its input in order to save RAM.
   If parsing fails it evaluates the index expression and dispatches again to one of the other methods.
   \code{as.hi.name} and \code{as.hi.(} are wrappers to \code{as.hi.call}.
-  \code{as.hi.integer == as.hi.which} is the workhorse for coercing evaluated expressions,
-  \code{as.hi.double}, \code{as.hi.logical} and \code{as.hi.character} are simply wrappers to \code{as.hi.integer},
+  \code{as.hi.integer} is the workhorse for coercing evaluated expressions
+  and \code{as.hi.which} is a wrapper removing the \code{which} class attribute.
+  \code{as.hi.double}, \code{as.hi.logical} and \code{as.hi.character} are also wrappers to \code{as.hi.integer},
   but note that \code{as.hi.logical} is not memory efficient because it expands \emph{all} positions and then applies logical subscripting.
   \cr
   \code{as.hi.matrix} calls \code{\link{arrayIndex2vectorIndex}} and then \code{as.hi.integer} to interpret and preprocess matrix indices.
