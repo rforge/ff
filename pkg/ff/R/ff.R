@@ -295,37 +295,8 @@ pattern.ff <- function(x, ...){
 }
 
 "pattern<-.ff" <- function(x, ...,value){
-  oldnam <- filename(x)
-  olddirnam <- dirname(oldnam)
-
   filename <- fftempfile(value)
-  newdirnam <- dirname(filename)
-
-  tmpdirnam <- getOption("fftempdir")
-  isopen <- is.open(x)
-
-  if (olddirnam==tmpdirnam){
-    if (newdirnam!=tmpdirnam){
-      if (isopen)
-        attr(attr(x,"physical"),"finalizer") <- "close"
-      else
-        attr(attr(x,"physical"),"finalizer") <- NULL
-    }
-  }else{
-    if (newdirnam==tmpdirnam)
-      finalizer(x) <- "delete"
-  }
-
-  if (isopen){
-    close(x)
-    on.exit(open(x))
-  }
-  if(file.rename(oldnam, filename)){
-    physical(x)$pattern <- value
-    physical(x)$filename <- filename
-  }else
-    stop("ff file rename from '", oldnam, "' to '", filename, "' failed")
-
+  filename(x) <- filename
   x
 }
 
@@ -1820,7 +1791,7 @@ str.ff <- function(object, nest.lev=0, ...){
 #! ff( initdata  = NULL
 #! , length      = NULL
 #! , levels      = NULL
-#! , ordered     = FALSE
+#! , ordered     = NULL
 #! , dim         = NULL
 #! , dimorder    = NULL
 #! , bydim       = NULL
@@ -2137,7 +2108,7 @@ ff <- function(
   initdata    = NULL
 , length      = NULL
 , levels      = NULL
-, ordered     = FALSE
+, ordered     = NULL
 , dim         = NULL
 , dimorder    = NULL    # this is the (transparent) storage layout
 , bydim       = NULL    # this is the dimorder used to read in the initdata (e.g. use 2:1 to mimic matrix(,byrow=TRUE)) (passed to update)
@@ -2268,6 +2239,8 @@ ff <- function(
     if (length(levels)>.vmax[vmode]+.vunsigned[vmode])
       stop("vmode '", vmode, "' can carry max ", .vmax[vmode]+.vunsigned[vmode], " levels")
     if (is.null(ramclass)){
+      if (is.null(ordered))
+        ordered <- is.ordered(initdata)
       if (ordered)
         ramclass <- c("ordered","factor")
       else
@@ -4804,7 +4777,7 @@ swap.default <- function(
 #!   \bold{Otherwise you might experience 'unexpected' losses of files and data.}
 #! }
 #! \section{Size of objects}{
-#!   Currently ff objects are limited to \code{.Machine$integer.max} elements and we have not yet ported the R code to support 64bit double indices (in essence 52 bits integer) although the C++ back-end has been prepared for this.
+#!   Currently ff objects cannot have length zero and are limited to \code{.Machine$integer.max} elements. We have not yet ported the R code to support 64bit double indices (in essence 52 bits integer) although the C++ back-end has been prepared for this.
 #!   Furthermore filesize limitations of the OS apply, see \code{\link{ff}}.
 #! }
 #! \section{Side effects}{

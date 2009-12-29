@@ -166,6 +166,66 @@ if (FALSE){
   }
 }
 
+if (FALSE){
+  intseq <- function(from=NULL, to=NULL, by=NULL, length.out=NULL, along.with=NULL){
+    if (is.null(from)){
+      if (is.null(to))
+        stop("need 'from' or 'to'")
+      else
+        to <- as.integer(to)
+      if (is.null(by))
+        by <- 1L
+      else
+        by <- as.integer(by)
+    }else{
+      from <- as.integer(from)
+      if (is.null(to)){
+        if (is.null(by))
+          by <- 1L
+        else
+          by <- as.integer(by)
+      }else{
+        to <- as.integer(to)
+        n <- to - from
+        if (is.null(by)){
+          if (to<from)
+            by = -1L
+          else
+            by = 1L
+        }else{
+          by <- as.integer(by)
+          if (n){
+            if (sign(n) != sign(by))
+              stop("wrong sign of by")
+          }else
+            return(from)  # to == from
+        }
+      }
+    }
+
+    if (is.null(length.out)){
+      if (is.null(along.with)){
+        if (is.null(to) || is.null(from))
+          stop("not enough info to guess the length.out")
+        else{
+          length.out <- n %/% by + 1L
+        }
+      }else{
+        length.out <- length(along.with)
+      }
+    }else{
+      length.out <- as.integer(length.out)
+    }
+    if (length.out){
+      if (length.out==1L)
+        from
+      else
+        cumsum(c(from, rep(by, length.out-1L)))
+    }else
+      integer()
+  }
+}
+
 
 #! \name{chunk}
 #! \alias{chunk}
@@ -176,7 +236,7 @@ if (FALSE){
 #! }
 #! \usage{
 #! chunk(\dots)
-#! \method{chunk}{default}(from = NULL, to = NULL, by = NULL, length.out = NULL, along.with = NULL, overlap = 0L, method = c("bbatch", "seq"), \dots)
+#! \method{chunk}{default}(from = NULL, to = NULL, by = NULL, length.out = NULL, along.with = NULL, overlap = 0L, method = c("bbatch", "seq"), maxindex = NA, \dots)
 #! }
 #! \arguments{
 #!   \item{from}{ the starting value of the sequence. }
@@ -186,6 +246,7 @@ if (FALSE){
 #!   \item{along.with}{ take the length from the length of this argument. }
 #!   \item{overlap}{ number of values to overlap (will lower the starting value of the sequence, the first range becomes smaller }
 #!   \item{method}{ default 'bbatch' will try to balance the chunk size, see \code{\link{bbatch}}, 'seq' will create chunks like \code{\link[base]{seq}} }
+#!   \item{maxindex}{ passed to \code{\link{ri}} }
 #!   \item{\dots}{ ignored }
 #! }
 #! \details{
@@ -235,6 +296,7 @@ chunk.default <- function(
 , along.with = NULL
 , overlap = 0L
 , method=c("bbatch","seq")
+, maxindex = NA
 , ...
 )
 {
@@ -243,6 +305,7 @@ chunk.default <- function(
     if (is.null(from))
       from <- 1L
     else{
+
       if (length(from)==1)
         from <- as.integer(from)
       else
@@ -266,6 +329,8 @@ chunk.default <- function(
   else
     stop("'to' must be scalar")
 
+  if (to<from)
+    stop("to < from")
   N <- to - from + 1L
 
   if (is.null(by)){
@@ -274,6 +339,8 @@ chunk.default <- function(
     else{
       if (length(length.out)==1){
         length.out <- as.integer(length.out)
+        if (length.out>N)
+          length.out <- N
         by <- N %/% length.out
       }else
         stop("'length.out' must be scalar")
@@ -281,7 +348,9 @@ chunk.default <- function(
   }else{
     if (length(by)==1){
       by <- as.integer(by)
-      length.out <- N %/% by
+      if (by<1)
+        stop("'by' must be > 0")
+      length.out <- (N - 1L) %/% by + 1L
     }else
       stop("'by' must be scalar")
   }
@@ -289,15 +358,17 @@ chunk.default <- function(
   if (method=="bbatch")
     by <- bbatch(N, by)$b
 
-  from <- seq.int(from, to, by)
-  to <- c(from[-1]-1L, N)
-  if (overlap>0)
-    from[-1] <- from[-1] - overlap
+  if (length.out>1L){
+    from <- cumsum(c(from, rep(by, length.out - 1L)))
+    to <- c(from[-1]-1L, N)
+    if (overlap>0)
+      from[-1] <- from[-1] - overlap
+  }
   n <- length(from)
   s <- seq.int(length.out=n)
   ret <- vector("list", n)
   for (i in s){
-    ret[[i]] <- ri(from[i], to[i])
+    ret[[i]] <- ri(from[i], to[i], maxindex)
   }
   ret
 }

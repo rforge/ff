@@ -23,8 +23,8 @@
 as.hi(x, \dots)
 \method{as.hi}{hi}(x, \dots)
 \method{as.hi}{ri}(x, maxindex = length(x), \dots)
-\method{as.hi}{bit}(x, range = NULL, maxindex = length(x), vw = NULL, dim = NULL, dimorder = NULL, \dots)
-\method{as.hi}{bitwhich}(x, maxindex = length(x), \dots)
+\method{as.hi}{bit}(x, range = NULL, maxindex = length(x), vw = NULL, dim = NULL, dimorder = NULL, pack = TRUE, \dots)
+\method{as.hi}{bitwhich}(x, maxindex = length(x), pack = FALSE, \dots)
 \method{as.hi}{call}(x, maxindex = NA, dim = NULL, dimorder = NULL, vw = NULL, vw.convert = TRUE, pack = TRUE, envir = parent.frame(), \dots)
 \method{as.hi}{name}(x, envir = parent.frame(), \dots)
 %\method{as.hi}{(}(x, envir = parent.frame(), \dots)
@@ -48,13 +48,14 @@ as.hi(x, \dots)
   \item{vw.convert}{ FALSE to prevent doubly virtual window conversion, this is needed for some internal calls that have done the virtual window conversion already, see details }
   \item{dimorder.convert}{ FALSE to prevent doubly dimorder conversion, this is needed for some internal calls that have done the dimorder conversion already, see details }
   \item{NAs}{ a vector of NA positions to be stored \code{\link[bit]{rlepack}ed}, not fully supported yet }
-  \item{pack}{ FALSE to prevent \code{\link[bit]{rlepack}ing} }
+  \item{pack}{ FALSE to prevent \code{\link[bit]{rlepack}ing}, note that this is a hint rather than a guarantee, \code{as.hi.bit} might ignore this }
   \item{range}{ NULL or a vector with two elements indicating first and last position to be converted from 'bit' to 'hi' }
   \item{\dots}{ further argument passed from generic to method or from wrapper method to \code{as.hi.integer} }
 }
 \details{
   The generic dispatches appropriately, \code{as.hi.hi} returns an \code{\link{hi}} object unchanged,
   \code{as.hi.call} tries to \code{\link{hiparse}} instead of evaluate its input in order to save RAM.
+  If parsing is successfull \code{as.hi.call} will ignore its argument \code{pack} and always pack unless the subscript is too small to do so.
   If parsing fails it evaluates the index expression and dispatches again to one of the other methods.
   \code{as.hi.name} and \code{as.hi.(} are wrappers to \code{as.hi.call}.
   \code{as.hi.integer} is the workhorse for coercing evaluated expressions
@@ -79,7 +80,7 @@ as.hi(x, \dots)
   an object of class \code{\link{hi}}
 }
 \author{ Jens Oehlschlägel }
-\note{ Avoid changing the Hybrid Index representation, this might crash the \code{\link{[.ff}} subscripting }
+\note{ Avoid changing the Hybrid Index representation, this might crash the \code{\link{[.ff}} subscripting. }
 \seealso{ \code{\link{hi}} for the Hybrid Index class, \code{\link{hiparse}} for parsing details, \code{\link{as.integer.hi}} for back-coercion, \code{\link{[.ff}} for ff subscripting }
 \examples{
   cat("integer indexing with and without rel-packing\n")

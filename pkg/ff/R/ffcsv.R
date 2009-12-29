@@ -7,6 +7,7 @@
 
 # source("d:/mwp/eanalysis/ff/R/ffcsv.R")
 
+
 # 3 columns with 78 mio records (integer, factor, factor)
 # read.table: read.csv 5 min + write.ffdf 1 min
 # clone.ffdf: read+write: 1 min
@@ -31,7 +32,7 @@
 
 # NOTE that this colClass implementation works only because accidentally the last position of the oldClasses is needed
 # for c("ordered","factor") read.table does not want "ordered"
-# for c("POSIXt","POSIXct") "POSIXct" is in the last position only due to "historical error" (Gabor Grothedieck, r-help, 26.9.2009)
+# for c("POSIXt","POSIXct") "POSIXct" is in the last position only due to "historical error" (Gabor Grothendieck, r-help, 26.9.2009)
 
 colClass <- function(x)
 UseMethod("colClass")
@@ -419,6 +420,9 @@ read.table.ffdf <- function(
     if (nrows>=0L && nrows<first.rows)
       first.rows <- nrows
 
+    if (first.rows==1)
+      stop("first.rows must not be 1")
+
     rt.args$nrows <- first.rows
 
     if (is.null(transFUN))
@@ -516,6 +520,7 @@ read.table.ffdf <- function(
         break
       }
 
+      if(any(appendLevels))
       for (i in i.fac){
         lev <- unique(c(levels(x[[i]]),levels(dat[[i]])))  # we save a call to the more general appendLevels() here
         levels(x[[i]]) <- lev

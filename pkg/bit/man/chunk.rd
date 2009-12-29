@@ -7,7 +7,7 @@
 }
 \usage{
 chunk(\dots)
-\method{chunk}{default}(from = NULL, to = NULL, by = NULL, length.out = NULL, along.with = NULL, overlap = 0L, method = c("bbatch", "seq"), \dots)
+\method{chunk}{default}(from = NULL, to = NULL, by = NULL, length.out = NULL, along.with = NULL, overlap = 0L, method = c("bbatch", "seq"), maxindex = NA, \dots)
 }
 \arguments{
   \item{from}{ the starting value of the sequence. }
@@ -17,6 +17,7 @@ chunk(\dots)
   \item{along.with}{ take the length from the length of this argument. }
   \item{overlap}{ number of values to overlap (will lower the starting value of the sequence, the first range becomes smaller }
   \item{method}{ default 'bbatch' will try to balance the chunk size, see \code{\link{bbatch}}, 'seq' will create chunks like \code{\link[base]{seq}} }
+  \item{maxindex}{ passed to \code{\link{ri}} }
   \item{\dots}{ ignored }
 }
 \details{

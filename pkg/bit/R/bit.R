@@ -3,6 +3,10 @@
 # Licence: GPL2
 # Provided 'as is', use at your own risk
 
+# currently |.bit and |.bitwhich are bypassed if we ask for bit | bitwhich
+# xx explore/write Ops.bit Ops.bitwhich
+
+
 # source("D:/mwp/eanalysis/bit/R/bit.R")
 
 #! \name{bit-package}

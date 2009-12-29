@@ -9,7 +9,18 @@ Save R and ff objects
  The objects can be read back from the file at a later date by using the function \code{\link{ffload}}.
 }
 \usage{
-ffsave(..., list = character(0L), file = stop("'file' must be specified"), envir = parent.frame(), rootpath = NULL, add = FALSE, move = FALSE, compress = !move, compression_level = 6, precheck=TRUE)
+ffsave(...
+, list = character(0L)
+, file = stop("'file' must be specified")
+, envir = parent.frame()
+, rootpath = NULL
+, add = FALSE
+%, overwrite = FALSE
+, move = FALSE
+, compress = !move
+, compression_level = 6
+, precheck=TRUE
+)
 ffsave.image(file = stop("'file' must be specified"), safe = TRUE, ...)
 }
 \arguments{
@@ -29,6 +40,9 @@ ffsave.image(file = stop("'file' must be specified"), safe = TRUE, ...)
   \item{add}{
   logical indicating whether the objects shall be added to the \code{ffarchive} (in this case \code{rootpath} is taken from an existing archive)
 }
+%  \item{overwrite}{
+%  logical indicating whether an existing archive may be overwritten
+%}
   \item{move}{
   logical indicating whether ff files shall be moved instead of copied into the \code{<file>.ffData}
 }

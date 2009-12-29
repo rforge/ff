@@ -80,7 +80,18 @@ if (FALSE){
 #!  The objects can be read back from the file at a later date by using the function \code{\link{ffload}}.
 #! }
 #! \usage{
-#! ffsave(..., list = character(0L), file = stop("'file' must be specified"), envir = parent.frame(), rootpath = NULL, add = FALSE, move = FALSE, compress = !move, compression_level = 6, precheck=TRUE)
+#! ffsave(...
+#! , list = character(0L)
+#! , file = stop("'file' must be specified")
+#! , envir = parent.frame()
+#! , rootpath = NULL
+#! , add = FALSE
+#! %, overwrite = FALSE
+#! , move = FALSE
+#! , compress = !move
+#! , compression_level = 6
+#! , precheck=TRUE
+#! )
 #! ffsave.image(file = stop("'file' must be specified"), safe = TRUE, ...)
 #! }
 #! \arguments{
@@ -100,6 +111,9 @@ if (FALSE){
 #!   \item{add}{
 #!   logical indicating whether the objects shall be added to the \code{ffarchive} (in this case \code{rootpath} is taken from an existing archive)
 #! }
+#! %  \item{overwrite}{
+#! %  logical indicating whether an existing archive may be overwritten
+#! %}
 #!   \item{move}{
 #!   logical indicating whether ff files shall be moved instead of copied into the \code{<file>.ffData}
 #! }
@@ -216,6 +230,7 @@ function (
 , compress = !move
 , compression_level = 6
 , precheck = TRUE
+#, overwrite = FALSE
 )
 {
     if (!is.character(file) || file == "")
@@ -268,6 +283,15 @@ function (
       setwd(rootpath)
       rootpath <- sub("//$","/",paste(getwd(), "/", sep=""))
 
+      #if (!overwrite && file.exists(imgfile))
+      #  stop("must not overwrite '", imgfile, "'")
+      if (file.exists(zipfile)){
+        #if (overwrite)
+        #  stop("must not overwrite '", zipfile, "'")
+        #else
+          file.remove(zipfile)
+      }
+
       assign(".ff.rootpath", rootpath, envir=envir)
 
       on.exit(rm(list=".ff.rootpath", envir=envir), add=TRUE)
@@ -279,9 +303,6 @@ function (
       savecall$rootpath <- NULL
       savecall$precheck <- FALSE
       eval(savecall)
-
-      if (file.exists(zipfile))
-        file.remove(zipfile)
     }
 
     # filter ffdf and ff only
@@ -531,12 +552,15 @@ function (
     ffData <- system(cmd, intern=TRUE)
 
     haslist <- !!length(list)
-    if (haslist || !is.null(rootpath)){
-
+    if (!overwrite || haslist || !is.null(rootpath)){
       tempenvir <- new.env()
       load(imgfile, envir=tempenvir)
       temprootpath <- get(".ff.rootpath", envir=tempenvir)
-      if (!length(list)){
+      if (length(list)){
+        isinenv <- sapply(list, exists, envir=tempenvir)
+        if (!all(isinenv))
+          stop("not in ffarchive: ", paste('"', list[!isinenv]), '"', collapse=",", sep="")
+      }else{
         list <- ls(all.names=TRUE, envir=tempenvir)
         list <- list[list!=".ff.rootpath"]
       }
@@ -544,19 +568,22 @@ function (
       if (is.null(rootpath)){
         rootpath <- temprootpath
         list <- unlist(lapply(list, function(i){
-          x <- get(i, envir = tempenvir)
-            rm(i, envir = tempenvir)
-          if (is.ffdf(x)){
-            assign(i, x, envir=envir)
-            unlist(lapply(physical(x), filename))
-          }else if(is.ff(x)){
-            assign(i, x, envir=envir)
-            filename(x)
+          if (!overwrite && exists(i, envir)){
+            warning("did not overwrite object '", i, "'")
+            ret <- NULL
           }else{
-            if (haslist)
-              warning(paste("'", i, "' not an ff or ffdf file", sep=""))
-            NULL
+            x <- get(i, envir = tempenvir)
+            assign(i, x, envir=envir)
+            if (is.ffdf(x)){
+              ret <- unlist(lapply(physical(x), filename))
+            }else if(is.ff(x)){
+              ret <- filename(x)
+            }else{
+              ret <- NULL
+            }
           }
+          rm(list=i, envir = tempenvir)
+          ret
         }))
       }else{
         if (!file.exists(rootpath))
@@ -572,37 +599,45 @@ function (
         rootpathsep <- paste(sub("/$", "", rootpath), "/", sep="")
 
         list <- unlist(lapply(list, function(i){
-          x <- get(i, envir = tempenvir)
-          rm(list=i, envir = tempenvir)
-          if (is.ffdf(x)){
-            newnames <- unlist(lapply(physical(x), function(y){
-              newnam <- sub(temprootpathsep, rootpathsep, filename(y))
-              physical(y)$filename <- newnam
-              newnam
-            }))
-            assign(i, x, envir=envir)
-            newnames
-          }else if(is.ff(x)){
-            newnam <- sub(temprootpathsep, rootpathsep, filename(x))
-            physical(x)$filename <- newnam
-            assign(i, x, envir=envir)
-            newnam
+          if (!overwrite && exists(i, envir)){
+            warning("did not overwrite object '", i, "'")
+            ret <- NULL
           }else{
-            if (haslist)
-              warning(paste("'", i, "' not an ff or ffdf file", sep=""))
-            NULL
+            x <- get(i, envir = tempenvir)
+            if (is.ffdf(x)){
+              ret <- unlist(lapply(physical(x), function(y){
+                newnam <- sub(temprootpathsep, rootpathsep, filename(y))
+                physical(y)$filename <- newnam
+                newnam
+              }))
+              assign(i, x, envir=envir)
+              ret
+            }else if(is.ff(x)){
+              newnam <- sub(temprootpathsep, rootpathsep, filename(x))
+              physical(x)$filename <- newnam
+              assign(i, x, envir=envir)
+              ret <- newnam
+            }else{
+              assign(i, x, envir=envir)
+              ret <- NULL
+            }
           }
+          rm(list=i, envir = tempenvir)
+          ret
         }))
       }
       list <- unique(list)
+
+      if (!length(list))
+        return(character())
 
       # determine those filenames in zip file (e.g. /tmp/x) that match the filename in the ff object (e.g. d:/tmp/x)
       i <- unlist(lapply(ffData, function(x){
         i <- grep(x, list)
         n <- length(i)
-        if (n){
+        if (n==1){
           if (n>1)
-            stop("multiple matches on output ", x)
+            stop("zip ff name '", x, "'matches multiply in list")
           i
         }else{
           NA
@@ -610,7 +645,7 @@ function (
       }))
       j <- match(1:length(list), i)
       if (any(is.na(j)))
-        stop("could not match input", paste('"', list[is.na(j)]), '"', collapse=",", sep="")
+        stop("could not match list in zip: ", paste('"', list[is.na(j)]), '"', collapse=",", sep="")
 
       ffData <- ffData[!is.na(i)]
 
@@ -639,9 +674,13 @@ function (
       n <- length(i)
       if (n){
         if (n>1)
-          stop("multiple matches on output ", x)
+          warning("multiple matches of '", x, "' in unzip output")
         TRUE
       }else{
+        if (overwrite)
+          warning("ERROR: did not extract file '", x, "'")
+        else
+          warning("NOTE: did not overwrite file '", x, "'")
         FALSE
       }
     }))

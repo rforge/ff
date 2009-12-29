@@ -1746,6 +1746,7 @@ chunk.ff_vector <- function(x, RECORDBYTES = .rambytes[vmode(x)], BATCHBYTES = g
       }
       l$by <- b
     }
+    l$maxindex <- n
     ret <- do.call("chunk.default", l)
 
   }else{
@@ -1771,6 +1772,7 @@ chunk.ffdf <- function(x, RECORDBYTES = sum(.rambytes[vmode(x)]), BATCHBYTES = g
       }
       l$by <- b
     }
+    l$maxindex <- n
     ret <- do.call("chunk.default", l)
 
   }else{

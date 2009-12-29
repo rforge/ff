@@ -58,14 +58,14 @@ as.bitwhich.hi <- function(x, ...){
   }
 }
 
-as.hi.bitwhich <- function(x, maxindex=length(x), ...){
+as.hi.bitwhich <- function(x, maxindex=length(x), pack=FALSE, ...){
   poslength <- sum(x)
   if (poslength==0){
-    as.hi(integer(), maxindex=maxindex, ...)
+    as.hi(integer(), maxindex=maxindex, pack=pack, ...)
   }else if (poslength==maxindex){
-    as.hi(quote(1L:poslength), maxindex=maxindex, ...)
+    as.hi(quote(1L:poslength), maxindex=maxindex, pack=pack, ...)
   }else{
-    as.hi(unclass(x), maxindex=maxindex, ...)
+    as.hi(unclass(x), maxindex=maxindex, pack=pack, ...)
   }
 }
 
@@ -79,6 +79,7 @@ as.hi.bit <- function(x
 , vw = NULL
 , dim = NULL
 , dimorder = NULL
+, pack = TRUE
 , ...
 ){
   if (is.null(dim) && is.null(dimorder) && is.null(dim(vw))){
@@ -92,9 +93,10 @@ as.hi.bit <- function(x
         stop("illegal range")
     }
 
+    ret <- as.hi(1L, pack=FALSE, ...)
+
     if (is.null(vw)){
       dat <- .Call("R_bit_as_hi", x, range, 0L, PACKAGE="bit")
-      ret <- as.hi(1L, ...)
       ret$length <- sum(x, range=range)
       dat$len <- NULL
       ret$maxindex <- maxindex
@@ -104,7 +106,6 @@ as.hi.bit <- function(x
         stop("length(vw) != 3")
 
       dat <- .Call("R_bit_as_hi", x, range, vw[1], PACKAGE="bit")
-      ret <- as.hi(1L, ...)
       ret$length <- sum(x, range=range)
       dat$len <- NULL
       ret$minindex <- vw[[1]]
@@ -114,7 +115,7 @@ as.hi.bit <- function(x
     ret$x <- dat
     ret
   }else{
-    as.hi(as.bitwhich(x, range=range), maxindex=maxindex, vw=vw, dim=dim, dimorder=dimorder, ...)
+    as.hi(as.bitwhich(x, range=range), maxindex=maxindex, vw=vw, dim=dim, dimorder=dimorder, pack=pack, ...)
   }
 }
 
@@ -360,6 +361,7 @@ chunk.bit <- function(x, RECORDBYTES = .rambytes["logical"], BATCHBYTES = getOpt
       }
       l$by <- b
     }
+    l$maxindex <- n
     ret <- do.call("chunk.default", l)
 
   }else{
