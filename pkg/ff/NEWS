@@ -62,6 +62,8 @@ BUG FIXES
 
     o	chunk.default no longer uses seq.int or seq because these were buggy
 
+    o	now also compiles under latest max os snow leopard
+
 
 
 
