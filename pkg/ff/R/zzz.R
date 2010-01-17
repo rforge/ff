@@ -29,13 +29,15 @@
     # memory.limit is windows specific
     if (.Platform$OS.type=="windows")
     {
+      cat('setting options("ffbatchbytes") to 1% of available RAM, you might need somethin else\n')
       if (getRversion()>="2.6.0")  # memory.limit was silently changed from 2.6.0 to return in MB instead of bytes
         options(ffbatchbytes=as.integer(memory.limit()*(1024^2/100)))
       else
         options(ffbatchbytes=as.integer(memory.limit()/100))
     } else {
+      cat('setting options("ffbatchbytes") to 16MB RAM, you might need something else\n')
       # some magic constant
-      options(ffbatchbytes=65536)
+      options(ffbatchbytes=16*1024^2)
     }
   }
   cat('- getOption("fftempdir")=="',getOption("fftempdir"),'"\n',sep='')
