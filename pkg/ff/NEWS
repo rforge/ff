@@ -64,6 +64,8 @@ BUG FIXES
 
     o	now also compiles under latest max os snow leopard
 
+    o	default for options("ffbatchbytes") is now 1% of RAM under windows and 
+	16MB on other OSes (was much too small on other)
 
 
 
