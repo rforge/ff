@@ -52,6 +52,8 @@ echo $contents; } ?>
 <p>Oehlschl&auml;gel (2010) <A HREF="bit&ff2.1-2_WU_Vienna2010.pdf"><I>Managing large datasets in R - ff examples and concepts</I></A>. Invited presentation at Institute for Statistics and Mathematics,
 Vienna University of Economics and Business. <A HREF="bit&ff2.1-2_WU_Vienna2010.R"><I>Example source code</I></A></p>
 
+<p>Oehlschl&auml;gel, Adler (2009) <A HREF="bit&ff_dsc2009.pdf"><I>Coordinating package 'ff' for large objects with R base</I></A>. Presentation at The sixth international workshop on Directions in Statistical Computing (DSC 2009), Copenhagen</p>
+
 <p>Oehlschl&auml;gel, Adler (2009) <A HREF="ff&bit_UseR!2009.pdf"><I>Managing data.frames with package 'ff' and fast filtering with package 'bit'</I></A>. Presentation at UseR!2009, Agrocampus, Rennes</p>
 
 <p>Adler, Oehlschl&auml;gel, Nenadic, Zucchini (2008) <A HREF="ff2.0_UseR!2008.pdf"><I>Large atomic data in R package 'ff'</I></A>. Presentation at UseR!2008, statistics department, University of Dortmund</p>
