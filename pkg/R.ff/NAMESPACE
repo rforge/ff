@@ -1,0 +1,14 @@
+# Namespace for R.ff (currently trying to export everything in order to facilitate debugging)
+# (c) 2007 Jens Oehlschägel
+# Licence: Proprietary
+# Provided 'as is', use at your own risk
+# Created: 2007-11-01
+# Last changed: 2007-11-30
+
+#useDynLib(R.ff)
+
+export(
+
+ ffchunk
+
+)

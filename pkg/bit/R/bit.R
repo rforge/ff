@@ -960,7 +960,7 @@ as.which.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)
+    range <- as.integer(range[1:2])
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1099,7 +1099,7 @@ as.bitwhich.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, maxindex)
   else{
-    range <- as.integer(range)
+    range <- as.integer(range[1:2])
     if (range[1]<1L || range[2]>maxindex)
       stop("illegal range")
   }
@@ -1612,7 +1612,7 @@ sum.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)[1:2]
+    range <- as.integer(range[1:2])
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1623,7 +1623,7 @@ all.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)[1:2]
+    range <- as.integer(range[1:2])
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1634,7 +1634,7 @@ any.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)[1:2]
+    range <- as.integer(range[1:2])
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1645,7 +1645,7 @@ min.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)[1:2]
+    range <- as.integer(range[1:2])
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1656,7 +1656,7 @@ max.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)[1:2]
+    range <- as.integer(range[1:2])
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1667,7 +1667,7 @@ range.bit <- function(x, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(x))
   else{
-    range <- as.integer(range)[1:2]
+    range <- as.integer(range[1:2])
     if (range[1]<1L || range[2]>length(x))
       stop("illegal range")
   }
@@ -1684,7 +1684,7 @@ summary.bit <- function(object, range=NULL, ...){
   if (is.null(range))
     range <- c(1L, length(object))
   else{
-    range <- as.integer(range)[1:2]
+    range <- as.integer(range[1:2])
     if (range[1]<1L || range[2]>length(object))
       stop("illegal range")
   }

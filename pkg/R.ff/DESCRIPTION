@@ -1,0 +1,11 @@
+Package: R.ff
+Version: 0.02
+Date: 2010-03-14
+Title: R functions for large ff data
+Author:
+  Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>,
+Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
+Depends: R (>= 2.10.1), ff, snowfall
+Description: So far only a stub with ffchunk() supporting convenient chunked lopping
+License: GPL (>= 2)
+Encoding: latin1

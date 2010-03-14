@@ -494,8 +494,9 @@ read.table.ffdf <- function(
     while(TRUE){
       if (nrows>=0L && N+next.rows > nrows)
         rt.args$nrows <- nrows - N
-      if (rt.args$nrows<1L)
+      if (rt.args$nrows<1L){
         break
+      }
 
       if (VERBOSE){
         cat("read.table.ffdf ", N+1L,"..", sep="")
@@ -543,8 +544,9 @@ read.table.ffdf <- function(
         cat(" ffdf-write=", round(write.stop-write.start, 3), "sec\n", sep="")
       }
 
-      if (n<rt.args$nrows)
+      if (n<rt.args$nrows){
         break
+      }
 
       rt.args$skip <- 0L
       rt.args$header <- FALSE
