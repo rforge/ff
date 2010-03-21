@@ -75,13 +75,13 @@ as.ffdf <- function(x, ...)UseMethod("as.ffdf")
 
 # querying is.factor and is.ordered
 if (!exists("is.factor.default")){
-  cat("creating generic 'is.factor'\n")
+  packageStartupMessage("creating generic 'is.factor'\n")
   is.factor.default <- get("is.factor", mode = "function") #pos = NULL,
   is.factor <- function (x)
     UseMethod("is.factor")
 }
 if (!exists("is.ordered.default")){
-  cat("creating generic 'is.ordered'\n")
+  packageStartupMessage("creating generic 'is.ordered'\n")
   is.ordered.default <- get("is.ordered", mode = "function") #pos = NULL,
   is.ordered <- function (x)
     UseMethod("is.ordered")

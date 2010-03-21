@@ -1,9 +1,9 @@
 # Namespace for R.ff (currently trying to export everything in order to facilitate debugging)
-# (c) 2007 Jens Oehlschägel
+# (c) 2010 Jens Oehlschägel
 # Licence: Proprietary
 # Provided 'as is', use at your own risk
-# Created: 2007-11-01
-# Last changed: 2007-11-30
+# Created: 2010-03-21
+# Last changed: 2010-03-21
 
 #useDynLib(R.ff)
 

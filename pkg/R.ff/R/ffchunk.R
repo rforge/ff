@@ -1,3 +1,10 @@
+# ffchunk in R.ff
+# (c) 2010 Jens Oehlschägel
+# Licence: GPL2
+# Provided 'as is', use at your own risk
+# Created: 2010-03-21
+# Last changed: 2010-03-21
+
 # source("d:/mwp/eanalysis/R.ff/R/ffchunk.R")
 
 sfIsInit <- function() {
@@ -24,6 +31,7 @@ sfIsInit <- function() {
 #! , funcvar = "chunkFUN"
 #! , parallel = NULL
 #! , cpus = NULL
+#! , method = c("ind","pos","nam")
 #! , RETURN = NULL
 #! , RECORDBYTES = NULL
 #! , BATCHBYTES = getOption("ffbatchbytes")
@@ -42,6 +50,7 @@ sfIsInit <- function() {
 #!   \item{funcvar}{ the name of the function realizing the expression on snowfall slaves }
 #!   \item{parallel}{ set to FALSE to force local sequential evaluation }
 #!   \item{cpus}{ the number of cpus (ignored if snowfall cluster is already initialized) }
+#!   \item{method}{ either "ind" or "pos" or "nam", see details }
 #!   \item{RETURN}{ set to TRUE or FALSE to force/suppress returning from the expression }
 #!   \item{RECORDBYTES}{ the number of bytes required for processing one single element of the loop, used for automatic chunk size determination }
 #!   \item{BATCHBYTES}{ the maximum number of bytes available for processing one chunk }
@@ -99,6 +108,7 @@ ffchunk <- function(
 , funcvar = "chunkFUN"
 , parallel = NULL
 , cpus     = NULL
+, method   = c("ind","pos", "nam")
 , RETURN   = NULL
 , RECORDBYTES = NULL
 , BATCHBYTES  = getOption("ffbatchbytes")   # batch size restriction in bytes
@@ -106,6 +116,7 @@ ffchunk <- function(
 )
 {
   start.time <- proc.time()[3]
+  method <- match.arg(method)
 
   MUST_RETURN <- FALSE
   HAS_ASSIGN <- FALSE
@@ -154,9 +165,6 @@ ffchunk <- function(
       e <- call("{", e, quote(invisible()))
     }
   }
-
-  if (VERBOSE)
-    print(e)
 
   k <- length(tokens)
   tokdup <- duplicated(tokens)
@@ -282,7 +290,16 @@ ffchunk <- function(
       #if (is.ff(FF_RETURN)){
       #  stop("not yet")
       #}else{
-        ret <- sfLapply(chunks, f)
+        if (method=="ind"){
+          ret <- sfLapply(chunks, f)
+        }else if (method=="pos"){
+          ret <- sfLapply(1:length(chunks), f)
+        }else{
+          nams <- names(chunks)
+          if (is.null(nams))
+            stop("chunks have no names")
+          ret <- sfLapply(nams, f)
+        }
       #}
 
       sfRemove("funcvar")
@@ -301,13 +318,31 @@ ffchunk <- function(
       #ex <- substitute(lapply(x, y), list(x=chunks, y=f))
       #ret <- eval(ex, envir=envir)
       ret <- vector("list", nchunks)
-      names(ret) <- names(chunks)
+      nams <- names(chunks)
+      names(ret) <- nams
       namlist <- list(NULL)
       names(namlist) <- loopvar
-      for (j in seq(length.out=nchunks)){
-        namlist[[1]] <- chunks[[j]]
-        ex <- do.call("substitute", list(e, namlist))
-        ret[[j]] <- eval(ex, envir=envir)
+
+      if (method=="ind"){
+        for (j in 1:length(chunks)){
+          namlist[[1]] <- chunks[[j]]
+          ex <- do.call("substitute", list(e, namlist))
+          ret[[j]] <- eval(ex, envir=envir)
+        }
+      }else if (method=="pos"){
+        for (j in 1:length(chunks)){
+          namlist[[1]] <- j
+          ex <- do.call("substitute", list(e, namlist))
+          ret[[j]] <- eval(ex, envir=envir)
+        }
+      }else{
+        if (is.null(nams))
+          stop("chunks have no names")
+        for (j in 1:length(chunks)){
+          namlist[[1]] <- nams[[j]]
+          ex <- do.call("substitute", list(e, namlist))
+          ret[[j]] <- eval(ex, envir=envir)
+        }
       }
     }
   }else{
