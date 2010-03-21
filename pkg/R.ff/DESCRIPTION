@@ -6,6 +6,6 @@ Author:
   Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>,
 Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Depends: R (>= 2.10.1), ff, snowfall
-Description: So far only an experimental stub with ffchunk() supporting convenient chunked lopping
+Description: So far only an experimental stub with ffchunk() supporting convenient chunked looping
 License: GPL (>= 2)
 Encoding: latin1
