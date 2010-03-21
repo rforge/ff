@@ -62,7 +62,12 @@ sfIsInit <- function() {
 #! Currently snowfall is used.
 #! If no snowfall cluster is initialized, \code{ffchunk} will call \code{\link[snowfall]{sfInit}} and \code{\link[snowfall]{sfStop}} on.exit.
 #! \code{ffchunk} makes sure that packages \code{bit} and/or \code{ff} are loaded if needed.
-#! \code{ffchunk} also copies all objects used in the expression to the snowfall slaves.
+#! \code{ffchunk} also copies all objects used in the expression to the snowfall slaves. \cr
+#!  By default (\code{method='ind'}) the \emph{loopvar} represents the \code{\link[bit:ri]{range index}} of the current chunk.
+#!  Sometimes it is necessary to loop simultaneously over several types of objects:
+#!  with \code{method='pos'} the loopvar represents the position of the chunk in the list of \code{chunks},
+#!  with \code{method='nam'} the loopvar represents the name of the chunk in in the list of \code{chunks},
+#!  note that the latter only works if you submit argument \code{chunks} as a named list of \code{\link[bit]{ri}}.
 #! }
 #! \value{
 #! Either invisible() or a list with the returned values per chunk.
@@ -75,7 +80,7 @@ sfIsInit <- function() {
 #!   Jens Oehlschlägel
 #! }
 #! \seealso{
-#!   \code{\link[ff]{ffvecapply}}, \code{\link[ff]{chunk}}
+#!   \code{\link[ff]{ffvecapply}}, \code{\link[bit]{chunk}}
 #! }
 #! \examples{
 #!   n <- 1e3
