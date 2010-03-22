@@ -1277,7 +1277,6 @@ ffdf <- function(
       rownam <- .subset2(x,"row.names")
       physical <- .subset2(x,"physical")
       ncols <- length(x)
-      n <- d[[1]] * d[[2]]
       if (ncols){
 
         valuedim <- dim(value)

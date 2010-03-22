@@ -1,15 +1,13 @@
+		CHANGES IN ff VERSION 2.1.4
+
+BUG FIXES
+
+    o	[<-.ffdf no longer does calculate the number of elements in an ffdf
+    	which could led to an integer overflow
+
+
+
 		CHANGES IN ff VERSION 2.1.3
-
-
-NEW FEATURES
-
-    o	xx.
-
-
-
-USER VISIBLE CHANGES
-
-    o	xx
 
 
 BUG FIXES
