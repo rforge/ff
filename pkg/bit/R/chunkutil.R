@@ -144,7 +144,8 @@ repfromto <- function(x, from, to){
     }
     a <- attributes(x[1])
     a$names <- NULL
-    attributes(ret) <- a
+    #attributes(ret) <- a
+    setattributes(ret, a)
     return(ret)
   }else{
     return(NA[from:to])

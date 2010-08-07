@@ -1,6 +1,6 @@
 .onLoad <- function(lib, pkg) {
   ##library.dynam("bit", pkg, lib) use useDynLib(bit) in NAMESPACE instead
-  packageStartupMessage("Loading package bit", installed.packages()["bit","Version"], "\n")
+  packageStartupMessage("Loading package bit", packageDescription("bit", fields="Version"), "\n")
   bit_init()
   packageStartupMessage("package:bit (c) 2008/2009 Jens Oehlschlaegel (GPL-2)\n")
   packageStartupMessage("creators: bit bitwhich\n")

@@ -1,4 +1,32 @@
+    CHANGES IN bit VERSION 1.1.5
+
+
+NEW FEATURES
+
+    o new utility functions setattr() and setattributes() allow to set attributes 
+      by reference (unlike attr()<- attributes()<- without copying the object)
+
+    o new utility unattr() returns copy of input with attributes removed
+
+
+USER VISIBLE CHANGES
+
+    o certain operations like creating a bit object are even faster now: need 
+      half the time and RAM through the use of setattr() instead of attr()<-
+
+    o [.bit now decorates its logical return vector with attr(,'vmode')='boolean',
+      i.e. we retain the information that there are no NAs.
+
+
+BUG FIXES
+
+    o .onLoad() no longer calls installed.packages() which substantially 
+      improves startup time (thanks to Brian Ripley)
+
+
+
     CHANGES IN bit VERSION 1.1.2
+
 
 USER VISIBLE CHANGES
 
@@ -6,7 +34,9 @@ USER VISIBLE CHANGES
 
 
 
+
     CHANGES IN bit VERSION 1.1.1
+
 
 USER VISIBLE CHANGES
 
@@ -20,7 +50,9 @@ USER VISIBLE CHANGES
 
 
 BUG FIXES
+
     o as.bitwhich.ri now generates correct negative subscripts.
+
 
 
 

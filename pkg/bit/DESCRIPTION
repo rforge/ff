@@ -1,7 +1,7 @@
 Package: bit
 Type: Package
 Title: A class for vectors of 1-bit booleans
-Version: 1.1-4
+Version: 1.1-5
 Date: 2009-07-07
 Author: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
@@ -30,3 +30,4 @@ License: GPL-2
 LazyLoad: yes
 URL: http://ff.r-forge.r-project.org/
 Encoding: latin1
+Packaged: 2010-08-06 21:52:56 UTC; Jens Oehlschlaegel

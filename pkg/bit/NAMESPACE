@@ -6,15 +6,21 @@
 
 useDynLib(bit)
 
-importFrom(utils, installed.packages)
+importFrom(utils, packageDescription)
 
 export(
 
 # == this is a complete list of R functions and metadata of this package sorted by filenames, non-exported functions are commented away ==
 
+# -- attrutil.R - modify attributes inplace without memory copying --
+
+  "setattr"
+, "setattributes"
+, "unattr"
+
 # -- generics.R - new generics for bit and ff --
 
- "as.bit"
+,"as.bit"
 ,"as.bitwhich"
 ,"as.which"
 ,"xor"
