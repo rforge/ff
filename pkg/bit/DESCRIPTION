@@ -2,7 +2,7 @@ Package: bit
 Type: Package
 Title: A class for vectors of 1-bit booleans
 Version: 1.1-5
-Date: 2009-07-07
+Date: 2010-08-07
 Author: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Depends: R (>= 2.9.2)

@@ -164,7 +164,8 @@ Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
        x <- as.bit(x)
        y <- as.bit(y)
     })
-    system.time( x | y )
+    system.time( z <- x | y )
+    system.time( as.logical(z) )
     cat("Even more so if multiple operations are needed :-)\n")
 
     cat("\nEven for a single set operation transforming subscripts to bit pays off\n")
@@ -199,6 +200,14 @@ Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
        l2 <- as.logical(b)
        rm(l2)
     })/100
+    # copy bit to bit
+    b <- as.bit(l)
+    system.time(for(i in 1:100){  # 0.009
+       b2 <- b
+       b2[1] <- TRUE   # force new memory allocation (copy on modify)
+       rm(b2)
+    })/100
+
 
     l2 <- l
     # replace logical by TRUE
