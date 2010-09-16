@@ -9,7 +9,7 @@
 
 .onLoad <- function(lib, pkg) {
   ##library.dynam("ff", pkg, lib) use useDynLib(ff) in NAMESPACE instead
-  packageStartupMessage("Loading package ff", installed.packages()["ff","Version"], "\n")
+  packageStartupMessage("Loading package ff", packageDescription("ff", lib, fields="Version"), "\n")
   # allow fftempdir to be set before package is loaded
   if (is.null(getOption("fftempdir"))){
     # create tempdir and make tempdir name independent of platform (otherwise dirname(tempfile)!=getOption("fftempdir"))
@@ -38,6 +38,19 @@
       options(ffbatchbytes=16*1024^2)
     }
   }
+  if (is.null(getOption("ffmaxbytes"))){
+    # memory.limit is windows specific
+    if (.Platform$OS.type=="windows")
+    {
+      if (getRversion()>="2.6.0")  # memory.limit was silently changed from 2.6.0 to return in MB instead of bytes
+        options(ffmaxbytes=as.integer(0.5*memory.limit()*(1024^2)))
+      else
+        options(ffmaxbytes=as.integer(0.5*memory.limit()))
+    } else {
+      # some magic constant
+      options(ffmaxbytes=0.5*1024^3)
+    }
+  }
   packageStartupMessage('- getOption("fftempdir")=="',getOption("fftempdir"),'"\n',sep='')
   packageStartupMessage('- getOption("ffextension")=="',getOption("ffextension"),'"\n',sep='')
   packageStartupMessage('- getOption("ffdrop")==',getOption("ffdrop"),'\n',sep='')
@@ -45,6 +58,7 @@
   packageStartupMessage('- getOption("ffpagesize")==',getOption("ffpagesize"),'\n',sep='')
   packageStartupMessage('- getOption("ffcaching")=="',getOption("ffcaching"),'"  -- consider "ffeachflush" if your system stalls on large writes\n',sep='')
   packageStartupMessage('- getOption("ffbatchbytes")==',getOption("ffbatchbytes"),' -- consider a different value for tuning your system\n',sep='')
+  packageStartupMessage('- getOption("ffmaxbytes")==',getOption("ffmaxbytes"),' -- consider a different value for tuning your system\n',sep='')
   # if we want an explicit list of ff objects, we should store them in an environment with hash=TRUE (much faster than a list)
   #assign(".fftemp", new.env(hash=TRUE), envir=globalenv())
 
@@ -137,5 +151,5 @@
    if (unlink(getOption("fftempdir"), recursive = TRUE))
      packageStartupMessage("Error in unlinking fftempdir\n")
    else
-     options(fftempdir=NULL, ffextension=NULL, fffinonexit=NULL, ffpagesize=NULL, ffcaching=NULL, ffdrop=NULL, ffbatchbytes=NULL)
+     options(fftempdir=NULL, ffextension=NULL, fffinonexit=NULL, ffpagesize=NULL, ffcaching=NULL, ffdrop=NULL, ffbatchbytes=NULL, ffmaxbytes=NULL)
 }

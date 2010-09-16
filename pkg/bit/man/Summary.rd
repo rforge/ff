@@ -85,8 +85,8 @@
     n <- .Machine$integer.max
     x <- !bit(n)
     N <- 1000000L  # batchsize
-    B <- n %/% N   # number of batches
-    R <- n %% N    # rest
+    B <- n \%/\% N   # number of batches
+    R <- n \%\% N    # rest
 
     cat("Batched sum (52.5 sec on Centrino duo)\n")
     system.time({

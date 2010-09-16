@@ -37,10 +37,18 @@
 colClass <- function(x)
 UseMethod("colClass")
 
-colClass.default <- function(x){
-  cl <- class(x)
-  cl[length(cl)]
+if(getRversion() < "2.12.0"){
+  colClass.default <- function(x){
+    cl <- class(x)
+    cl[length(cl)]
+  }
+}else{
+  colClass.default <- function(x){
+    cl <- class(x)
+    if(inherits(x, "POSIXct")) "POSIXct" else cl[length(cl)]
+  }
 }
+
 
 colClass.ff <- function(x){
   if (length(x))
@@ -425,11 +433,12 @@ read.table.ffdf <- function(
 
     rt.args$nrows <- first.rows
 
-    if (is.null(transFUN))
-      dat <- do.call(FUN, rt.args)
-    else
-      dat <- transFUN(do.call(FUN, rt.args))
+    dat <- do.call(FUN, rt.args)
+    n.orig <- nrow(dat)
+    if (!is.null(transFUN))
+      dat <- transFUN(dat)
 
+    need.next <- n.orig==first.rows
     n <- nrow(dat)
     N <- n
 
@@ -467,7 +476,7 @@ read.table.ffdf <- function(
     rt.args$header <- FALSE
   }
 
-  if (append || N==first.rows){
+  if (append || need.next){
 
     k <- ncol(x)
     rt.args$col.names <- colnames(x)
@@ -503,10 +512,10 @@ read.table.ffdf <- function(
         read.start <- proc.time()[3]
       }
 
-      if (is.null(transFUN))
-        dat <- do.call(FUN, rt.args)
-      else
-        dat <- transFUN(do.call(FUN, rt.args))
+      dat <- do.call(FUN, rt.args)
+      n.orig <- nrow(dat)
+      if (!is.null(transFUN))
+        dat <- transFUN(dat)
 
       n <- nrow(dat)
       N <- N + n
@@ -544,7 +553,7 @@ read.table.ffdf <- function(
         cat(" ffdf-write=", round(write.stop-write.start, 3), "sec\n", sep="")
       }
 
-      if (n<rt.args$nrows){
+      if (n.orig<rt.args$nrows){
         break
       }
 

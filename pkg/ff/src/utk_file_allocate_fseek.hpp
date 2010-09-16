@@ -23,9 +23,16 @@
 #define UTK_FILE_ALLOCATE_FSEEK_HPP
 
 #include "utk_config.hpp"
+// D.A. #include <cstdio>
+//{ J.O. 16.9.2010 interpreting B.R.
+#if defined(__sun__) || defined(__sun) || defined(sun)
+#include <stdio.h>
+#else
 #include <cstdio>
+#endif
+//} J.O. 16.9.2010
 
-namespace utk 
+namespace utk
 {
   typedef unsigned long long fsize_t;
   int file_allocate_fseek(const char* path, fsize_t size);

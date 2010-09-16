@@ -160,6 +160,8 @@ void addgetsetV(ImplT* impl, IndexT i, SizeT s, T* ret, T* value)
   }
 }
 
+
+
 // ----------------------------------------------------------------------------
 // filters
 
@@ -316,11 +318,13 @@ void ff_##NAME##_addgetset_contiguous(FF handle, INDEX index, int size, TYPE* re
 void ff_##NAME##_addset_contiguous(   FF handle, INDEX index, int size, TYPE* value) \
 { addsetV<TYPE,IMPL,INDEX,SIZE>( reinterpret_cast<IMPL*>(handle), index, size, value); }
 
+
 // front-end generator triggers int and double-index versions
 
 #define FF_DEF_TYPE(NAME,TYPE,IMPL) \
   FF_DEF_TYPE2(NAME,TYPE,IMPL,int,int) \
   FF_DEF_TYPE2(NAME##_d,TYPE,IMPL,double,int)
+
 
 using namespace ff;
 
@@ -338,3 +342,4 @@ FF_DEF_TYPE(integer,int,IntegerImpl)
 FF_DEF_TYPE(single,double,SingleImpl)
 FF_DEF_TYPE(double,double,DoubleImpl)
 FF_DEF_TYPE(raw,unsigned char,RawImpl)
+

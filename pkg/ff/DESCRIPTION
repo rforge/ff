@@ -1,6 +1,6 @@
 Package: ff
-Version: 2.1-4
-Date: 2008-08-03
+Version: 2.2-0
+Date: 2009-09-16
 Title: memory-efficient storage of large data on disk and fast access functions
 Author: Daniel Adler <dadler@uni-goettingen.de>, 
 	Christian Gläser <christian_glaeser@gmx.de>,
@@ -60,3 +60,4 @@ License: file LICENSE
 LazyLoad: yes
 URL: http://ff.r-forge.r-project.org/
 Encoding: latin1
+Packaged: 2010-08-21 17:39:03 UTC; Jens Oehlschlaegel

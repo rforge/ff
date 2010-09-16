@@ -39,6 +39,7 @@ pattern    <- function(x, ...)UseMethod("pattern")    # (physical attribute, par
 "pattern<-" <- function(x, ..., value)UseMethod("pattern<-")    # (physical attribute, part of the HCS concept)
 is.readonly <- function(x, ...)UseMethod("is.readonly") # (physical attribute, part of the HCS concept)
 is.open     <- function(x, ...)UseMethod("is.open")     # readonly
+pagesize    <- function(x, ...)UseMethod("pagesize")     # readonly
 
 # querying and coercing vmode (physical attribute, part of the HCS concept)
     vmode <- function(x, ...)UseMethod("vmode")

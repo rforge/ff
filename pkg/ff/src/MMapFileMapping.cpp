@@ -30,6 +30,17 @@
 #include <sys/types.h>
 #endif
 #ifdef HAVE_SYS_MMAN_H
+/* B.R. 1.2.2010
+#ifdef __sun
+#define _XPG4_2
+#endif
+*/
+//{ J.O. 16.9.2010
+#if defined(__sun__) || defined(__sun) || defined(sun)
+#define _XOPEN_SOURCE 1
+#define _XOPEN_SOURCE_EXTENDED 1
+#endif
+//} J.O. 16.9.2010
 #include <sys/mman.h>
 #endif
 #ifdef HAVE_SYS_STAT_H
@@ -38,7 +49,14 @@
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
+// D.A. #include <cstdlib>
+//{ J.O. 16.9.2010 interpreting B.R.
+#if defined(__sun__) || defined(__sun) || defined(sun)
+#include <stdlib.h>
+#else
 #include <cstdlib>
+#endif
+//} J.O. 16.9.2010
 #include <cstring>
 #include <strings.h>
 #include <sys/file.h>
@@ -95,34 +113,34 @@ MMapFileMapping::MMapFileMapping(const char* path, fsize_t size, bool readonly, 
   _fd = open(path, flags, 0777);
   if (_fd == -1) {
     _error = E_UNABLE_TO_OPEN;
-    return; 
+    return;
   }
 /*
   err = ::flock(_fd, LOCK_EX|LOCK_NB);
-  if (err) { 
-    close(_fd); 
-    _fd = -1; 
+  if (err) {
+    close(_fd);
+    _fd = -1;
     _error = E_UNABLE_TO_OPEN;
-    return; 
+    return;
   }
 */
   if (size) { // create new file
-#if 0      
+#if 0
     // clamp size to page-size
 
     // size += getPageSize()-1;
     // size = size / getPageSize() * getPageSize();
- 
+
     // check space on device
 
     FSInfo fsinfo;
     getFSInfo(path,fsinfo);
-    if (fsinfo.free_space < size) { 
-      close(_fd); 
-      _fd = -1; 
+    if (fsinfo.free_space < size) {
+      close(_fd);
+      _fd = -1;
       _error = E_NO_DISKSPACE;
-      return; 
-    } 
+      return;
+    }
 
     // write zero pages to file with given size
 
@@ -139,7 +157,7 @@ MMapFileMapping::MMapFileMapping(const char* path, fsize_t size, bool readonly, 
   } else { // open existing file
     // get filesize
     struct stat sb;
-    fstat(_fd, &sb); 
+    fstat(_fd, &sb);
     _size = sb.st_size;
   }
 }
@@ -165,7 +183,7 @@ void MMapFileMapping::remapSection(MMapFileSection& section, foff_t offset, msiz
 msize_t MMapFileMapping::getPageSize()
 {
   static int _pagesize = -1;
-  if (_pagesize == -1) 
+  if (_pagesize == -1)
     _pagesize = getpagesize();
   return _pagesize;
 }
@@ -205,8 +223,10 @@ void MMapFileSection::reset(foff_t offset, msize_t size, void* addr)
 
   if ( (size) && (_fd != -1) ) {
     int prot = PROT_READ | (( _readonly) ? 0 : PROT_WRITE );
-    int flags = MAP_SHARED 
-#if !defined(__sun__)
+    int flags = MAP_SHARED
+//D.A. #if defined(__sun__)
+//J.O. 16.9.2010
+#if defined(__sun__) || defined(__sun) || defined(sun)
      | MAP_FILE
 #endif
     ;
@@ -214,7 +234,7 @@ void MMapFileSection::reset(foff_t offset, msize_t size, void* addr)
     if (_addr) {
       _offset = offset;
       _size   = size;
-	  _end    = _offset + size;
+    _end    = _offset + size;
     }
   }
 }
