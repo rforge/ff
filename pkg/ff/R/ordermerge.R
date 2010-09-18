@@ -687,13 +687,9 @@ ffsort <- function(
 
   if (is.null(names(x))){
 
-    if (!inplace)
-      x <- clone(x)
-
     recbytes <- .rambytes[v]
 
     if (k && (k < .vvalues["short"])){
-
       keybytes <- (k+2L) * .rambytes["integer"]
       maxbytes <- max(BATCHBYTES, 3L*keybytes)
       maxordersize <- (maxbytes - 2L*keybytes) %/% recbytes
@@ -701,25 +697,7 @@ ffsort <- function(
         BATCHSIZE <- bbatch(n, maxordersize)$b
       else
         BATCHSIZE <- n
-
-      if (VERBOSE)
-        cat("method=ffkeysort  BATCHSIZE=", BATCHSIZE, "\n", sep="")
-
-      nNA <- .Call("ffkeysort"
-      , .ffmode[v]
-      , ff_           = attr(x, "physical")
-      , left_         = 1L
-      , right_        = n
-      , keyrange_     = as.integer(keyrange)
-      , ordersize_    = as.integer(BATCHSIZE)
-      , has_na_       = as.logical(has.na)
-      , na_last_      = as.logical(na.last)
-      , decreasing_   = as.logical(decreasing)
-      , PACKAGE="ff"
-      )
-
     }else{
-
       keybytes <- (.vvalues["short"]+1L) * .rambytes["integer"]
       maxbytes <- max(BATCHBYTES, 3L*keybytes)
       allbytes <- 2 * n * recbytes
@@ -731,38 +709,70 @@ ffsort <- function(
         BATCHSIZE <- n
       }else{
         method <- 1L  # shellsort
-        BATCHSIZE <- ceiling(n / 2 ^ ceiling(max(0, log(n*recbytes/maxbytes, 2))))
-
-        if (is.null(aux)){
-          aux <- clone(x, pattern="tmpffsort")
-        }else{
-          if (vmode(aux) != v)
-            stop("vmode(aux) does not match vmode(x)")
-          if (length(aux) != n)
-            stop("length(aux) does not match length(x)")
-        }
-
+        BATCHSIZE <- ceiling(n / 2 ^ ceiling(max(0, log(n*(recbytes/maxbytes), 2))))
       }
-
+    }	
+    if (BATCHSIZE>=n){
+     # tuning: do it in-ram
+     y <- read.ff(x, 1L, n)
       if (VERBOSE)
-        cat("method=", c("merge","shell","radix","key","quick")[method+1L],"  BATCHSIZE=", BATCHSIZE, "\n", sep="")
+        cat("method=")
+      nNA <- ramsort(y, has.na = has.na, na.last = na.last, decreasing = decreasing, optimize = if (method==1L) "memory" else "time", VERBOSE = VERBOSE)
+      if (!inplace)
+        x <- clone(x, initdata=NULL)
+      write.ff(x, 1L, y)  
+      rm(y)
+    }else{
+      # fallback: do it on-disk
+      if (!inplace)
+        x <- clone(x)
 
-      nNA <- .Call("ffsortmerge"
-      , ffmode_       = .ffmode[v]
-      , ff_           = attr(x, "physical")
-      , auxff_        = attr(aux, "physical")
-      , left_         = 1L
-      , right_        = n
-      , method_       = as.integer(method)
-      , keyrange_     = NULL  # in sorting, we always use ffkeysort if we can use keysort
-      , ordersize_    = as.integer(BATCHSIZE)  # here we use as much as possible
-      , mergesize_    = pagesize(x)            # while here we save as much as possible to support the file system cache
-      , has_na_       = as.logical(has.na)
-      , na_last_      = as.logical(na.last)
-      , decreasing_   = as.logical(decreasing)
-      , PACKAGE="ff"
-      )
+        if (k && (k < .vvalues["short"])){
 
+          if (VERBOSE)
+            cat("method=ffkeysort  BATCHSIZE=", BATCHSIZE, "\n", sep="")
+          nNA <- .Call("ffkeysort"
+          , .ffmode[v]
+          , ff_           = attr(x, "physical")
+          , left_         = 1L
+          , right_        = n
+          , keyrange_     = as.integer(keyrange)
+          , ordersize_    = as.integer(BATCHSIZE)
+          , has_na_       = as.logical(has.na)
+          , na_last_      = as.logical(na.last)
+          , decreasing_   = as.logical(decreasing)
+          , PACKAGE="ff"
+          )
+
+        }else{
+
+          if (VERBOSE)
+            cat("method=", c("merge","shell","radix","key","quick")[method+1L],"  BATCHSIZE=", BATCHSIZE, "\n", sep="")
+          if (is.null(aux)){
+            aux <- clone(x, pattern="tmpffsort")
+          }else{
+            if (vmode(aux) != v)
+            stop("vmode(aux) does not match vmode(x)")
+            if (length(aux) != n)
+            stop("length(aux) does not match length(x)")
+          }
+          nNA <- .Call("ffsortmerge"
+          , ffmode_       = .ffmode[v]
+          , ff_           = attr(x, "physical")
+          , auxff_        = attr(aux, "physical")
+          , left_         = 1L
+          , right_        = n
+          , method_       = as.integer(method)
+          , keyrange_     = NULL  # in sorting, we always use ffkeysort if we can use keysort
+          , ordersize_    = as.integer(BATCHSIZE)  # here we use as much as possible
+          , mergesize_    = pagesize(x)            # while here we save as much as possible to support the file system cache
+          , has_na_       = as.logical(has.na)
+          , na_last_      = as.logical(na.last)
+          , decreasing_   = as.logical(decreasing)
+          , PACKAGE="ff"
+          )
+
+        }
     }
 
   }else{

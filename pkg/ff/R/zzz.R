@@ -30,9 +30,9 @@
     if (.Platform$OS.type=="windows")
     {
       if (getRversion()>="2.6.0")  # memory.limit was silently changed from 2.6.0 to return in MB instead of bytes
-        options(ffbatchbytes=as.integer(memory.limit()*(1024^2/100)))
+        options(ffbatchbytes=memory.limit()*(1024^2/100))
       else
-        options(ffbatchbytes=as.integer(memory.limit()/100))
+        options(ffbatchbytes=memory.limit()/100)
     } else {
       # some magic constant
       options(ffbatchbytes=16*1024^2)
@@ -43,9 +43,9 @@
     if (.Platform$OS.type=="windows")
     {
       if (getRversion()>="2.6.0")  # memory.limit was silently changed from 2.6.0 to return in MB instead of bytes
-        options(ffmaxbytes=as.integer(0.5*memory.limit()*(1024^2)))
+        options(ffmaxbytes=0.5*memory.limit()*(1024^2))
       else
-        options(ffmaxbytes=as.integer(0.5*memory.limit()))
+        options(ffmaxbytes=0.5*memory.limit())
     } else {
       # some magic constant
       options(ffmaxbytes=0.5*1024^3)
