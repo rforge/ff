@@ -21,6 +21,7 @@
 #define less(a,b) a<b
 #define greater(a,b) a<b
 #define exch(A,B) {t=A; A=B; B=t;}
+#define exchi(A,B) {ti=A; A=B; B=ti;}
 #define keyequal(A,B) (equal(key(A),key(B)))
 #define keyless(A,B) (less(key(A),key(B)))
 #define compexch(A,B) if (less(B,A)) exch(A,B)
@@ -271,6 +272,248 @@ void ram_integer_insitu(IndexT *data, IndexT *index, IndexT N)
 /* } === end pure C insitu apply order ================================================ */
 
 
+/* xx some experimental check: more cache-friendly and faster but requires more RAM
+  { === begin pure C stable mergeorder2 for doubles ================================================
+
+// Sedgewick 6.3 Insertion sort with sentinel
+//   sort index by data from left pos l to right pos r
+void ram_double_insertionorder2_asc(ValueT *data, IndexT *index, IndexT l, IndexT r){
+    IndexT i;
+    ValueT t;
+    IndexT ti;
+    for (i=r;i>l;i--){
+      if (less(data[i],data[i-1])){
+        exch(data[i-1], data[i])
+        exchi(index[i-1], index[i])
+      }
+    }
+    for (i=l+2;i<=r;i++){
+      IndexT j=i;
+      ValueT v = data[i];
+      IndexT vi = index[i];
+      while (less(v,data[j-1])){
+        data[j]=data[j-1];
+        index[j]=index[j-1];
+        j--;
+      }
+      data[j]=v;
+      index[j]=vi;
+    }
+}
+void ram_double_insertionorder2_desc(ValueT *data, IndexT *index, IndexT l, IndexT r){
+    IndexT i;
+    ValueT t;
+    IndexT ti;
+    for (i=l;i<r;i++){
+      if (less(data[i],data[i+1])){
+        exch(data[i+1], data[i])
+        exchi(index[i+1], index[i])
+      }
+    }
+    for (i=r-2;i>=l;i--){
+      IndexT j=i;
+      ValueT v = data[i];
+      IndexT vi = index[i];
+      while (less(v,data[j+1])){
+        data[j]=data[j+1];
+        index[j]=index[j+1];
+        j++;
+      }
+      data[j]=v;
+      index[j]=vi;
+    }
+}
+
+// Sedgewick 8.1 Merging
+//   stable merge c=a+b where N=len(a) and M=len(b)
+
+void ram_double_mergeindex2_asc(ValueT *c, IndexT *ci, ValueT *a, IndexT *ai, IndexT N, ValueT *b, IndexT *bi, IndexT M){
+  IndexT i,j,k;
+  for (i=0,j=0,k=0;k<N+M;k++){
+    if (i==N){
+      for (;k<N+M;k++){
+        c[k]=b[j];
+        ci[k]=bi[j];
+        j++;
+      }
+      break;
+    }
+    if (j==M){
+      for (;k<N+M;k++){
+        c[k]=a[i];
+        ci[k]=ai[i];
+        i++;
+      }
+      break;
+    }
+    if (less(b[j],a[i])){
+      c[k] = b[j];
+      ci[k] = bi[j];
+      j++;
+    }else{
+      c[k] = a[i];
+      ci[k] = ai[i];
+      i++;
+    }
+  }
+}
+void ram_double_mergeindex2_desc(ValueT *c, IndexT *ci, ValueT *a, IndexT *ai, IndexT N, ValueT *b, IndexT *bi, IndexT M){
+  IndexT i,j,k;
+  for (i=N-1,j=M-1,k=N+M-1;k>=0;k--){
+    if (i<0){
+      for (;k>=0;k--){
+        c[k]=b[j];
+        ci[k]=bi[j];
+        j--;
+      }
+      break;
+    }
+    if (j<0){
+      for (;k>=0;k--){
+        c[k]=a[i];
+        ci[k]=ai[i];
+        i--;
+      }
+      break;
+    }
+    if (less(a[i],b[j])){
+      c[k] = a[i];
+      ci[k] = ai[i];
+      i--;
+    }else{
+      c[k] = b[j];
+      ci[k] = bi[j];
+      j--;
+    }
+  }
+}
+
+
+// Sedgewick 8.4 Mergesort with no copying
+//   sorts b and leaves result in a
+
+void ram_double_mergeorder2_asc_rec(ValueT *a, ValueT *b, IndexT *ai, IndexT *bi, IndexT l, IndexT r){
+  IndexT m;
+  if (r-l <= INSERTIONSORT_LIMIT){
+    ram_double_insertionorder2_asc(a, ai, l, r);
+    return;
+  }
+  m = (l+r)/2;
+  ram_double_mergeorder2_asc_rec(b, a, bi, ai, l, m);
+  ram_double_mergeorder2_asc_rec(b, a, bi, ai, m+1, r);
+  ram_double_mergeindex2_asc(a+l, ai+l, b+l, bi+l, m-l+1, b+m+1, bi+m+1, r-m);
+}
+void ram_double_mergeorder2_desc_rec(ValueT *a, ValueT *b, IndexT *ai, IndexT *bi, IndexT l, IndexT r){
+  IndexT m;
+  if (r-l <= INSERTIONSORT_LIMIT){
+    ram_double_insertionorder2_desc(a, ai, l, r);
+    return;
+  }
+  m = (l+r)/2;
+  ram_double_mergeorder2_desc_rec(b, a, bi, ai, l, m);
+  ram_double_mergeorder2_desc_rec(b, a, bi, ai, m+1, r);
+  ram_double_mergeindex2_desc(a+l, ai+l, b+l, bi+l, m-l+1, b+m+1, bi+m+1, r-m);
+}
+
+
+
+// mergsort interface:
+//  - sort data
+//  - handles NAs
+//  - returns number of NAs
+//
+
+IndexT ram_double_mergeorder2(ValueT *data, ValueT *auxdata, IndexT *index, IndexT *auxindex, IndexT l, IndexT r
+, int has_na     // 0 for pure doubles, 1 if NA or NaN can be present
+, int na_last    // 0 for NA NaN left, 1 for NA NaN right
+, int decreasing // 0 for ascending, 1 for descending
+){
+  IndexT i;
+  IndexT l2,r2,nNA;
+  r2 = r;
+  if (has_na){
+    l2 = l;
+    if (na_last){
+      for (i = l; i <= r; i++){
+        if (ISNAN(data[i])){
+          auxdata[r2] = data[i];
+          auxindex[r2] = index[i];
+          r2--;
+        }else{
+          auxdata[l2] = data[i];
+          auxindex[l2] = index[i];
+          l2++;
+        }
+      }
+      nNA = r-r2;
+      // reverse order in the right part which was written from right to left
+      for (i=0;i<l2;i++){
+        data[i] = auxdata[i];
+        index[i] = auxindex[i];
+      }
+      for (i=r;i>r2;i--,l2++){
+        data[l2] = auxdata[i];
+        index[l2] = auxindex[i];
+      }
+      for (i=r2+1;i<=r;i++){
+        auxdata[i] = data[i];
+        auxindex[i] = index[i];
+      }
+      if (decreasing)
+        ram_double_mergeorder2_desc_rec(data, auxdata, index, auxindex, l, r2);
+      else
+        ram_double_mergeorder2_asc_rec(data, auxdata, index, auxindex, l, r2);
+    }else{
+      for (i = l; i <= r; i++){
+        if (ISNAN(data[i])){
+          auxdata[l2] = data[i];
+          auxindex[l2] = index[i];
+          l2++;
+        }else{
+          auxdata[r2] = data[i];
+          auxindex[r2] = index[i];
+          r2--;
+        }
+      }
+      nNA = l2-l;
+      // reverse order in the right part which was written from right to left
+      for (i=0;i<l2;i++){
+        data[i] = auxdata[i];
+        index[i] = auxindex[i];
+      }
+      for (i=r;i>r2;i--,l2++){
+        data[l2] = auxdata[i];
+        index[l2] = auxindex[i];
+      }
+      for (i=r2+1;i<=r;i++){
+        auxdata[i] = data[i];
+        auxindex[i] = index[i];
+      }
+      if (decreasing)
+        ram_double_mergeorder2_desc_rec(data, auxdata, index, auxindex, r2+1, r);
+      else
+        ram_double_mergeorder2_asc_rec(data, auxdata, index, auxindex, r2+1, r);
+    }
+  }else{
+    for (i = l; i <= r; i++){
+      auxdata[i] = data[i];
+      auxindex[i] = index[i];
+    }
+    if (decreasing)
+      ram_double_mergeorder2_desc_rec(data, auxdata, index, auxindex, l, r);
+    else
+      ram_double_mergeorder2_asc_rec(data, auxdata, index, auxindex, l, r);
+    nNA = 0;
+  }
+  return nNA;
+}
+
+
+ } === begin pure C stable mergeorder2 for doubles ================================================ */
+
+
+
+
 /* { === begin pure C stable merge sort for doubles ================================================ */
 
 /* Sedgewick 6.3 Insertion sort with sentinel
@@ -441,6 +684,7 @@ IndexT ram_double_mergesort(ValueT *index, ValueT *aux, IndexT l, IndexT r
 
 
 
+
 /* { === begin pure C stable merge order for doubles ================================================ */
 
 
@@ -448,7 +692,7 @@ IndexT ram_double_mergesort(ValueT *index, ValueT *aux, IndexT l, IndexT r
    sort index by data from left pos l to right pos r */
 void ram_double_insertionorder_asc(ValueT *data, IndexT *index, IndexT l, IndexT r){
     IndexT i;
-    ValueT t;
+    IndexT t;
     for (i=r;i>l;i--)
       keycompexch(index[i-1], index[i]);
     for (i=l+2;i<=r;i++){
@@ -462,7 +706,7 @@ void ram_double_insertionorder_asc(ValueT *data, IndexT *index, IndexT l, IndexT
 }
 void ram_double_insertionorder_desc(ValueT *data, IndexT *index, IndexT l, IndexT r){
     IndexT i;
-    ValueT t;
+    IndexT t;
     for (i=l;i<r;i++)
       keycompexch(index[i+1],index[i]);
     for (i=r-2;i>=l;i--){
@@ -2092,8 +2336,6 @@ IndexT ram_integer_radixorder(
 /* { === end pure C unstable linear-time keysort and stable linear-time keyorder for integer ==================== */
 
 
-
-// in-ram merge order
 SEXP r_ram_mergeorder(
   SEXP x_            /* data vector */
 , SEXP index_        /* index vector, must be provided initialized with valid positions in R counting */
@@ -2114,8 +2356,8 @@ SEXP r_ram_mergeorder(
   int *index;
   index = INTEGER(index_);
 
-  IndexT *aux;
-  aux = (IndexT *) R_alloc(n, sizeof(IndexT));
+  IndexT *auxindex;
+  auxindex = (IndexT *) R_alloc(n, sizeof(IndexT));
 
   switch (TYPEOF(x_)){
     case LGLSXP:
@@ -2123,14 +2365,19 @@ SEXP r_ram_mergeorder(
     {
       int *y;
       y = INTEGER(x_);
-      INTEGER(ret_)[0] = ram_integer_mergeorder(y, index, aux, 1, 0, n-1, has_na, na_last, decreasing);
+      INTEGER(ret_)[0] = ram_integer_mergeorder(y, index, auxindex, 1, 0, n-1, has_na, na_last, decreasing);
       break;
     }
     case REALSXP:
     {
       double *x;
       x = REAL(x_);
-      INTEGER(ret_)[0] = ram_double_mergeorder(x, index, aux, 1, 0, n-1, has_na, na_last, decreasing);
+      INTEGER(ret_)[0] = ram_double_mergeorder(x, index, auxindex, 1, 0, n-1, has_na, na_last, decreasing);
+      /* xx some experimental check: more cache-friendly and faster but requires more RAM
+      double *auxdata;
+      auxdata = (double *) R_alloc(n, sizeof(double));
+      INTEGER(ret_)[0] = ram_double_mergeorder2(x, auxdata, index, auxindex, 0, n-1, has_na, na_last, decreasing);
+      */
       break;
     }
     default:
@@ -2140,6 +2387,9 @@ SEXP r_ram_mergeorder(
   UNPROTECT(1);
   return ret_;
 }
+
+
+
 
 
 // in-ram merge sort
