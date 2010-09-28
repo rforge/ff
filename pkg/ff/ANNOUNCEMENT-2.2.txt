@@ -9,7 +9,7 @@ The next release of package ff is available. With kind help of Brian Ripley it n
 a) is achieved by careful implementation of NA-handling and exploiting context information
 b) although permanently stored, sorting and ordering of ff objects can be faster than the standard routines in R
 c) applying an order to ff vectors and ffdf dataframes is substantially slower than in pure R because it involves disk-access AND sorting index positions (to avoid random access). 
-There is still room for improvement, however, the current status should already be useful. I run some comparisons against SAS: 
+There is still room for improvement, however, the current status should already be useful. I run some comparisons with SAS: 
 
 - both could sort German census size (81e6) on 3GB notebook
 - ff sorts and orders faster on single columns
