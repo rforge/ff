@@ -25,8 +25,7 @@ USER VISIBLE CHANGES
     	For example reading a factor from a (well-cached) file is now 20%
     	faster and thus as fast as just creating this factor in-RAM using 
     	levels()<- and class()<- assignments. 
-    	(of course file access will compare less favorable once the R-core 
-    	team exploits this tuning opportunity)
+    	(consider this tuning temporary, hoping for a generic fix in base R)
     o	ff() can now open files larger than .Machine$integer.max elements
     	(but gives access only to the first .Machine$integer.max elements)
     o	ff now has default pattern NULL which translates to the pattern in 'filename'

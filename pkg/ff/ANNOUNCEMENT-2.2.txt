@@ -1,26 +1,25 @@
 Dear R community,
 
-The next release of package ff is available. There are two major enhancements
+The next release of package ff is available. With kind help of Brian Ripley it now supports the Win64 version of R. It has three major functional enhancements:
 
     a	new fast in-memory sorting and ordering functions (single-threaded)
     b	ff now supports on-disk sorting and ordering of ff vectors and ffdf dataframes
     c	ff vectors now can be used as subscripts of ff vectors and ffdf dataframes
 
 a) is achieved by careful implementation of NA-handling and exploiting context information
+b) although permanently stored, sorting and ordering of ff objects can be faster than the standard routines in R
+c) applying an order to ff vectors and ffdf dataframes is substantially slower than in pure R because it involves disk-access AND sorting index positions (to avoid random access). 
+There is still room for improvement, however, the current status should already be useful. I run some comparisons against SAS: 
 
-b) although permanently stored, sorting and ordering of ff objects is often faster than the original routines in R
+- both could sort German census size (81e6) on 3GB notebook
+- ff sorts and orders faster on single columns
+- sorting big multicolumn-tables is faster in SAS
 
-c) applying an order to ff vectors and ffdf dataframes is substantially slower than in pure R because it involves disk-access AND sorting index positions (to avoid random access).
+Non-Windows users: please note that you need to set appropriate values for options 'ffbatchbytes' and 'ffmaxbytes' yourself.
 
-I also run some comparisons against SAS: on my notebook ff sorts faster on single columns, reordering complete tables is faster in SAS.
-Several improvements are certainly possible, however, I thought the current status might already be useful. 
+Feedback, ideas and contributions appreciated. To those who offered code during the last months: please forgive me that integrating and documenting was not possible with this release. 
 
-Feedback, ideas and contributions appreciated.
-
-
-Jens
-
-
+Jens Oehlschlägel
 
 
 
@@ -29,7 +28,6 @@ P.S. Below are some timings in seconds at 3e6, 9e6, 27e6 and 81e6 elements from 
 (3GB RAM, i5 m520, 2 real cores, 4 hyperthreaded cores, SSD drive, Windows7 32bit)
 
 Legend for software
-
   ram:  new in-ram inplace operations receiving enough RAM to optimize for speed, not for memory
    ff:  new on-disk operations limiting RAM for this operation at ~500GB
     R:  timings from standard sort() and order()
@@ -37,28 +35,27 @@ Legend for software
 
 
 Legend for type of random data
-
-  rboolean bi-boolean with 50% FALSE and TRUE
-  rlogical tri-boolean with 33% NA, FALSE and TRUE
-    rubyte integers from 0..255
-     rbyte 33% NA and 67% -127..127
-   rushort integers from 0..65535
-    rshort 33% NA and 67% -32767..32767
- ruinteger 50% NA and 50% integers
-  rinteger random integers
-  rusingle 50% NA and 50% singles
-   rsingle random singles
-  rudouble 50% NA and 50% doubles
-   rdouble doubles
-   rfactor factor with 64 levels of length 66 (being different at bytes 65 and 66)
-     rchar 64 strings of length 66 (being different at bytes 65 and 66)
+  rboolean:  bi-boolean with 50% FALSE and TRUE
+  rlogical:  tri-boolean with 33% NA, FALSE and TRUE
+    rubyte:  integers from 0..255
+     rbyte:  33% NA and 67% -127..127
+   rushort:  integers from 0..65535
+    rshort:  33% NA and 67% -32767..32767
+ ruinteger:  50% NA and 50% integers
+  rinteger:  random integers
+  rusingle:  50% NA and 50% singles
+   rsingle:  random singles
+  rudouble:  50% NA and 50% doubles
+   rdouble:  doubles
+   rfactor:  factor with 64 levels of length 66 (being different at bytes 65 and 66)
+     rchar:  64 strings of length 66 (being different at bytes 65 and 66)
 
 
 Legend for abbreviations
-  OOM  out of memory
-  OOD  out of disk
-   NT  not timed because too slow
-   NA  not available
+  OOM:  out of memory
+  OOD:  out of disk
+   NT:  not timed because too slow
+   NA:  not available
    
 
 
