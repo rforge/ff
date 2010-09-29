@@ -29,7 +29,7 @@ namespace utk
 {
   typedef uint64_t fsize_t;
   int file_resize(const char* path, fsize_t newfsize);
-};
+}
 
 #endif // UTK_FILE_RESIZE_HPP
 
