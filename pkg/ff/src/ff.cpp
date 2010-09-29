@@ -26,7 +26,7 @@
 #include "ff.h"
 #include "Array.hpp"
 #include <climits>
-
+#include <stdint.h>
 // --- common interface --------------------------------------------------------
 
 // TODO: ff driver properties get/set ffGet/SetProperty  e.g. ffGetProperty("pagesize")
@@ -251,7 +251,7 @@ template<typename T> inline int clamp_na(int x)
     return x;
 }
 
-template<typename T> inline int clamp_na(long long x)
+template<typename T> inline int clamp_na(int64_t x)
 {
   if ( ( x >= (1LL<<((sizeof(T)*8)-1)) ) || ( x < -((1LL<<(sizeof(T)*8)-1) ) ) ) return INT_MIN;
     return x;
@@ -268,7 +268,7 @@ template<> inline int add<ShortImpl,int>(int a, int b)
 { return ( (a==INT_MIN) || (b==INT_MIN) ) ? INT_MIN : clamp_na<short>(a+b); }
 template<> inline int add<IntegerImpl,int>(int a, int b)
 {
-  return ( (a==INT_MIN) || (b==INT_MIN) ) ? INT_MIN : (int) clamp_na<int>( ((long long)a) + ((long long)b ) );
+  return ( (a==INT_MIN) || (b==INT_MIN) ) ? INT_MIN : (int) clamp_na<int>( ((int64_t)a) + ((int64_t)b ) );
 }
 
 }
