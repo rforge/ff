@@ -68,6 +68,7 @@ static msize_t getZeroPageSize()
   return MMapFileMapping::getPageSize();
 }
 
+#if 0
 static void* getZeroPage()
 {
   static void* ptr = 0;
@@ -77,6 +78,7 @@ static void* getZeroPage()
   }
   return ptr;
 }
+#endif
 
 MMapFileMapping::MMapFileMapping(const char* path, fsize_t size, bool readonly, bool autoflush)
  : _fd(-1)
@@ -190,12 +192,12 @@ msize_t MMapFileMapping::getPageSize()
 
 MMapFileSection::MMapFileSection(int fd, foff_t offset, msize_t size, void* addr, bool readonly, bool autoflush)
  : _fd(fd)
- , _addr(0)
+ , _readonly(readonly)
+ , _autoflush(autoflush)
  , _offset(0)
  , _end(0)
  , _size(0)
- , _readonly(readonly)
- , _autoflush(autoflush)
+ , _addr(0)
 {
   reset(offset,size,addr);
 }
