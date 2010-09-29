@@ -247,13 +247,13 @@ typedef FFType< Array   <uchar >                > RawImpl      ;
 
 template<typename T> inline int clamp_na(int x)
 {
-  if ( ( x >= (1<<((sizeof(T)*8)-1)) ) || ( x < -((1<<(sizeof(T)*8)-1) ) ) ) return INT_MIN;
+  if ( ( x >= (1<<((sizeof(T)*8)-1)) ) || ( x < -((1<<((sizeof(T)*8)-1)) ) ) ) return INT_MIN;
     return x;
 }
 
 template<typename T> inline int clamp_na(int64_t x)
 {
-  if ( ( x >= (1LL<<((sizeof(T)*8)-1)) ) || ( x < -((1LL<<(sizeof(T)*8)-1) ) ) ) return INT_MIN;
+  if ( ( x >= (1LL<<((sizeof(T)*8)-1)) ) || ( x < -((1LL<<((sizeof(T)*8)-1)) ) ) ) return INT_MIN;
     return x;
 }
 
