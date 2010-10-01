@@ -3,7 +3,7 @@
 
 NEW FEATURES
 
-    o	ff now supports the 64 bit Windows ans Sun version of R 
+    o	ff now supports the 64 bit Windows and Sun versions of R 
     	(thanks to Brian Ripley)
     o	ff now supports sorting and ordering of ff vectors and dataframes
     	(see ramsort, ffsort, ffdfsort, ramorder, fforder, ffdforder)
