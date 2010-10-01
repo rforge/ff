@@ -1,6 +1,6 @@
 Dear R community,
 
-The next release of package ff is available. With kind help of Brian Ripley it now supports the Win64 version of R. It has three major functional enhancements:
+The next release of package ff is available. With kind help of Brian Ripley it now supports the Win64 and Sun versions of R. It has three major functional enhancements:
 
     a	new fast in-memory sorting and ordering functions (single-threaded)
     b	ff now supports on-disk sorting and ordering of ff vectors and ffdf dataframes

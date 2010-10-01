@@ -30,16 +30,10 @@
 #include <sys/types.h>
 #endif
 #ifdef HAVE_SYS_MMAN_H
-// B.R. 1.2.2010
-#ifdef __sun
-#define _XPG4_2
-#endif
-/*{ J.O. 16.9.2010
+// B.R. 1.10.2010
 #if defined(__sun__) || defined(__sun) || defined(sun)
-#define _XOPEN_SOURCE 1
-#define _XOPEN_SOURCE_EXTENDED 1
+#define _POSIX_C_SOURCE 200112L
 #endif
-//} J.O. 16.9.2010 */
 #include <sys/mman.h>
 #endif
 #ifdef HAVE_SYS_STAT_H
@@ -233,6 +227,18 @@ void MMapFileSection::reset(foff_t offset, msize_t size, void* addr)
     ;
     _addr = mmap(addr, size, prot,flags, _fd, offset);
     if (_addr) {
+      _offset = offset;
+      _size   = size;
+    _end    = _offset + size;
+    }
+  }
+}
+
+}
+
+#endif
+
+
       _offset = offset;
       _size   = size;
     _end    = _offset + size;
