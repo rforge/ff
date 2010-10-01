@@ -19,7 +19,7 @@ Non-Windows users: please note that you need to set appropriate values for optio
 
 Feedback, ideas and contributions appreciated. To those who offered code during the last months: please forgive me that integrating and documenting was not possible with this release. 
 
-Jens Oehlschlägel
+Jens & Daniel
 
 
 

@@ -30,17 +30,16 @@
 #include <sys/types.h>
 #endif
 #ifdef HAVE_SYS_MMAN_H
-/* B.R. 1.2.2010
+// B.R. 1.2.2010
 #ifdef __sun
 #define _XPG4_2
 #endif
-*/
-//{ J.O. 16.9.2010
+/*{ J.O. 16.9.2010
 #if defined(__sun__) || defined(__sun) || defined(sun)
 #define _XOPEN_SOURCE 1
 #define _XOPEN_SOURCE_EXTENDED 1
 #endif
-//} J.O. 16.9.2010
+//} J.O. 16.9.2010 */
 #include <sys/mman.h>
 #endif
 #ifdef HAVE_SYS_STAT_H
@@ -226,9 +225,9 @@ void MMapFileSection::reset(foff_t offset, msize_t size, void* addr)
   if ( (size) && (_fd != -1) ) {
     int prot = PROT_READ | (( _readonly) ? 0 : PROT_WRITE );
     int flags = MAP_SHARED
-//D.A. #if defined(__sun__)
+//D.A. #if !defined(__sun__)
 //J.O. 16.9.2010
-#if defined(__sun__) || defined(__sun) || defined(sun)
+#if !(defined(__sun__) || defined(__sun) || defined(sun))
      | MAP_FILE
 #endif
     ;
