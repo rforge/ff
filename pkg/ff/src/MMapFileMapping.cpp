@@ -237,16 +237,3 @@ void MMapFileSection::reset(foff_t offset, msize_t size, void* addr)
 }
 
 #endif
-
-
-      _offset = offset;
-      _size   = size;
-    _end    = _offset + size;
-    }
-  }
-}
-
-}
-
-#endif
-
