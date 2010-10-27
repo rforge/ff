@@ -1,3 +1,18 @@
+		CHANGES IN ff VERSION 2.2.2
+
+
+
+USER VISIBLE CHANGES
+
+    o	In read.table.ffdf arguments 'colClasses' and 'col.names' are now 
+        enforced also during 'next.rows' chunks. If they are not provided
+        by the user, they are derived now BEFORE argument 'transFUN' is 
+        applied. This allows dropping columns in transFUN - and still
+        having all columns info ready for next chunk's call.
+
+
+
+
 		CHANGES IN ff VERSION 2.2.0
 
 

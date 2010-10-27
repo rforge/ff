@@ -175,13 +175,14 @@ colClass.ff <- function(x){
 #!   \cr
 #!   \code{read.table.ffdf} has been designed to behave as much like \code{\link{read.table}} as possible. Hoever, note the following differences:
 #!   \enumerate{
+#!     \item Arguments 'colClasses' and 'col.names' are now enforced also during 'next.rows' chunks.
+#!           For example giving \code{colClasses=NA} will force that no colClasses are derived from the \code{first.rows} respective from the \code{\link{ffdf}} object in parameter \code{x}.
 #!     \item colClass 'ordered' is allowed and will create an \code{\link{ordered}} factor
 #!     \item character vector are not supported, character data must be read as one of the following colClasses: 'Date', 'POSIXct', 'factor, 'ordered'.
 #!           By default character columns are read as factors.
 #!           Accordingly arguments 'as.is' and 'stringsAsFactors' are not allowed.
 #!     \item the sequence of \code{\link{levels.ff}} from chunked reading can depend on chunk size: by default new levels found on a chunk are appended to the levels found in previous chunks, no attempt is made to sort and recode the levels during chunked processing, levels can be sorted and recoded most efficiently \emph{after} all records have been read using \code{\link{sortLevels}}.
 #!     \item the default for argument 'comment.char' is \code{""} even for those FUN that have a different default. However, explicit specification of 'comment.char' will have priority.
-#!     \item Arguments 'colClasses' and 'col.names' are ignored during 'next.rows' chunks and thus can be completely ignored if no 'first.rows' chunk is read because argument \code{x} has given a \code{\link{ffdf}} object.
 #!   }
 #! }
 #! \note{
@@ -405,6 +406,9 @@ read.table.ffdf <- function(
   nrows <- as.integer(nrows)
   N <- 0L
 
+  no.colClasses <- is.na(match("colClasses", names(rt.args)))
+  no.col.names <- is.na(match("col.names", names(rt.args)))
+
   if (!append){
 
     if (VERBOSE){
@@ -412,8 +416,9 @@ read.table.ffdf <- function(
       read.start <- proc.time()[3]
     }
 
-    if (is.null(rt.args$colClasses))
-      rt.args$colClasses <- NA
+
+    if (no.colClasses)
+      rt.args$colClasses <- as.character(NA)
     # xx fix a failure of read.table to properly handle "ordered"
     colClasses <- rt.args$colClasses
     rt.args$colClasses[!is.na(colClasses) & colClasses=="ordered"] <- "factor"
@@ -434,6 +439,17 @@ read.table.ffdf <- function(
     rt.args$nrows <- first.rows
 
     dat <- do.call(FUN, rt.args)
+
+    # do this already here
+    if (no.col.names){
+      rt.args$col.names <- colnames(dat)
+      no.col.names <- FALSE
+    }
+    if (no.colClasses){
+      rt.args$colClasses <- sapply(seq.int(length.out=ncol(dat)), function(i)colClass(dat[[i]]))
+      no.colClasses <- FALSE
+    }
+
     n.orig <- nrow(dat)
     if (!is.null(transFUN))
       dat <- transFUN(dat)
@@ -479,8 +495,12 @@ read.table.ffdf <- function(
   if (append || need.next){
 
     k <- ncol(x)
-    rt.args$col.names <- colnames(x)
-    rt.args$colClasses <- sapply(seq.int(length.out=ncol(x)), function(i)colClass(x[[i]]))
+    if (no.col.names){
+      rt.args$col.names <- colnames(x)
+    }
+    if (no.colClasses){
+      rt.args$colClasses <- sapply(seq.int(length.out=ncol(x)), function(i)colClass(x[[i]]))
+    }
 
     if (is.null(next.rows)){
       recordsize <- sum(.rambytes[vmode(x)])
@@ -494,7 +514,7 @@ read.table.ffdf <- function(
     }
     rt.args$nrows <- next.rows
 
-    appendLevels <- repnam(appendLevels, rt.args$col.names, default=TRUE)
+    appendLevels <- repnam(appendLevels, colnames(x), default=TRUE)
     if(any(appendLevels)){
       i.fac <- seq.int(length=k)
       i.fac <- i.fac[appendLevels & sapply(i.fac, function(i)is.factor(x[[i]]))]

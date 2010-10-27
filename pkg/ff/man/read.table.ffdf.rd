@@ -113,13 +113,14 @@ This is necessary because we cannot provide \code{x} with zero rows (we cannot c
   \cr
   \code{read.table.ffdf} has been designed to behave as much like \code{\link{read.table}} as possible. Hoever, note the following differences:
   \enumerate{
+    \item Arguments 'colClasses' and 'col.names' are now enforced also during 'next.rows' chunks.
+          For example giving \code{colClasses=NA} will force that no colClasses are derived from the \code{first.rows} respective from the \code{\link{ffdf}} object in parameter \code{x}.
     \item colClass 'ordered' is allowed and will create an \code{\link{ordered}} factor
     \item character vector are not supported, character data must be read as one of the following colClasses: 'Date', 'POSIXct', 'factor, 'ordered'.
           By default character columns are read as factors.
           Accordingly arguments 'as.is' and 'stringsAsFactors' are not allowed.
     \item the sequence of \code{\link{levels.ff}} from chunked reading can depend on chunk size: by default new levels found on a chunk are appended to the levels found in previous chunks, no attempt is made to sort and recode the levels during chunked processing, levels can be sorted and recoded most efficiently \emph{after} all records have been read using \code{\link{sortLevels}}.
     \item the default for argument 'comment.char' is \code{""} even for those FUN that have a different default. However, explicit specification of 'comment.char' will have priority.
-    \item Arguments 'colClasses' and 'col.names' are ignored during 'next.rows' chunks and thus can be completely ignored if no 'first.rows' chunk is read because argument \code{x} has given a \code{\link{ffdf}} object.
   }
 }
 \note{
