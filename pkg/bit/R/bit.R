@@ -166,7 +166,7 @@
 #!   summary(x)                                   # aggregate count of FALSE and TRUE
 #!
 #!   \dontrun{
-#!     cat("\nEven for a single boolean operation transforming logical to bit pays off\n")
+#!     message("\nEven for a single boolean operation transforming logical to bit pays off")
 #!     n <- 10000000
 #!     x <- sample(c(FALSE, TRUE), n, TRUE)
 #!     y <- sample(c(FALSE, TRUE), n, TRUE)
@@ -177,9 +177,9 @@
 #!     })
 #!     system.time( z <- x | y )
 #!     system.time( as.logical(z) )
-#!     cat("Even more so if multiple operations are needed :-)\n")
+#!     message("Even more so if multiple operations are needed :-)")
 #!
-#!     cat("\nEven for a single set operation transforming subscripts to bit pays off\n")
+#!     message("\nEven for a single set operation transforming subscripts to bit pays off\n")
 #!     n <- 10000000
 #!     x <- sample(n, n/2)
 #!     y <- sample(n, n/2)
@@ -189,9 +189,9 @@
 #!      y <- as.bit.which(y, n)
 #!     })
 #!     system.time( as.which.bit( x | y ) )
-#!     cat("Even more so if multiple operations are needed :-)\n")
+#!     message("Even more so if multiple operations are needed :-)")
 #!
-#!     cat("\nSome timings WITH memory allocation\n")
+#!     message("\nSome timings WITH memory allocation")
 #!     n <- 2000000
 #!     l <- sample(c(FALSE, TRUE), n, TRUE)
 #!     # copy logical to logical
@@ -251,7 +251,7 @@
 #!        b[]
 #!     })/100
 #!
-#!     cat("\nSome timings WITHOUT memory allocation (Serge, that's for you)\n")
+#!     message("\nSome timings WITHOUT memory allocation (Serge, that's for you)")
 #!     n <- 2000000L
 #!     l <- sample(c(FALSE, TRUE), n, TRUE)
 #!     b <- as.bit(l)
@@ -578,7 +578,7 @@ is.bitwhich <- function(x)
 #!   x <- as.bitwhich(ri(1, 31, 32))
 #!   stopifnot(length(x)==32)
 #!   stopifnot(sum(x)==31)
-#!   cat("NOTE the change from 'some excluded' to 'all excluded' here\n")
+#!   message("NOTE the change from 'some excluded' to 'all excluded' here")
 #!   length(x) <- 16
 #!   stopifnot(length(x)==16)
 #!   stopifnot(sum(x)==16)
@@ -643,7 +643,7 @@ length.bitwhich <- function(x)
         else if (l==value)
           x <- TRUE
         else if (l>(value%/%2L))
-          x <- -as.integer(seq.int(length=value))[-x]
+          x <- -as.integer(seq_len(value))[-x]
         #attr(x, "poslength") <- l
         setattr(x, "poslength", l)
       }else{
@@ -654,7 +654,7 @@ length.bitwhich <- function(x)
         else if (l==value)
           x <- FALSE
         else if (!((value-l)>(value%/%2L)))
-          x <- -as.integer(seq.int(length=value))[-x]
+          x <- -as.integer(seq_len(value))[-x]
         #attr(x, "poslength") <- value - l
         setattr(x, "poslength", value - l)
       }
@@ -708,7 +708,7 @@ c.bit <- function(...){
   ncum <- cumsum(nold)
   offsets <- c(0L, ncum[-length(ncum)])
   x <- bit(nnew)
-  for (i in as.integer(seq.int(1, nl, by=1))){
+  for (i in as.integer(seq.int(from=1, to=nl, by=1))){
     b <- as.bit(l[[i]])
     .Call("R_bit_shiftcopy", bsource_=b, btarget_=x, otarget_=offsets[i], n_=nold[i], FALSE, PACKAGE="bit")
   }
@@ -1003,7 +1003,7 @@ as.which.bit <- function(x, range=NULL, ...){
   if (s==0L){
     x <- integer()
   }else if (s==n){
-    x <- as.integer(seq.int(range[1], range[2], by=1))
+    x <- as.integer(seq.int(from=range[1], to=range[2], by=1))
   }else
     x <- .Call("R_bit_which", x, s, range, negative=FALSE, PACKAGE="bit")
   #class(x) <- "which"
@@ -1014,12 +1014,12 @@ as.which.bit <- function(x, range=NULL, ...){
 as.which.bitwhich <- function(x, ...){
   if (is.logical(x)){
     if (unclass(x))
-      x <- as.integer(seq.int(length=length(x)))
+      x <- as.integer(seq_len(length(x)))
     else
       x <- integer()
   }else{
     if (x[[1]]<0)
-      x <- as.integer(seq.int(length=length(x)))[x]
+      x <- as.integer(seq_len(length(x)))[x]
     else{
       attributes(x) <- NULL
     }
@@ -1088,7 +1088,7 @@ as.bitwhich.which <- function(x, maxindex, ...){
   else if (poslength==maxindex)
     bitwhich(maxindex, poslength, TRUE)
   else if (poslength>(maxindex%/%2L)){
-    bitwhich(maxindex, poslength, -as.integer(seq.int(length=maxindex))[-x])
+    bitwhich(maxindex, poslength, -as.integer(seq_len(maxindex))[-x])
   }else{
     bitwhich(maxindex, poslength, x)
   }
@@ -1614,7 +1614,7 @@ xor.bitwhich(e1, e2)
 #!     B <- n \%/\% N   # number of batches
 #!     R <- n \%\% N    # rest
 #!
-#!     cat("Batched sum (52.5 sec on Centrino duo)\n")
+#!     message("Batched sum (52.5 sec on Centrino duo)")
 #!     system.time({
 #!       s <- 0L
 #!       for (b in 1:B){
@@ -1624,7 +1624,7 @@ xor.bitwhich(e1, e2)
 #!         s <- s + sum(x[(n-R+1L):n])
 #!     })
 #!
-#!     cat("Batched sum saving repeated memory allocation for the return vector (44.4 sec on Centrino duo)\n")
+#!     message("Batched sum saving repeated memory allocation for the return vector (44.4 sec on Centrino duo)")
 #!     system.time({
 #!       s <- 0L
 #!       l <- logical(N)
@@ -1636,7 +1636,7 @@ xor.bitwhich(e1, e2)
 #!         s <- s + sum(x[(n-R+1L):n])
 #!     })
 #!
-#!     cat("C-coded sum (3.1 sec on Centrino duo)\n")
+#!     message("C-coded sum (3.1 sec on Centrino duo)")
 #!     system.time(sum(x))
 #!  }
 #! }
@@ -1831,13 +1831,13 @@ if (FALSE){
 
   # test correctness of max.bit
   for (n in c(0, 1, 2, 31, 32, 33, 63, 64, 65, 95, 96, 97, 127,128,129)){
-    for (to1 in seq.int(length=n)){
+    for (to1 in seq_len(n)){
       cat("n", n, "to", to1, "\n")
       for (from1 in seq.int(from=1, to=to1, by=1L)){
       x <- bit(n)
       if (!identical(max(x, from=from1, to=to1), as.integer(NA)))
         stop("wrong")
-      for (i in seq.int(length=n)){
+      for (i in seq_len(n)){
         x[i] <- TRUE
         if (!identical(i, max(x, from=from1, to=to1)))
           stop("wrong")
@@ -1849,13 +1849,13 @@ if (FALSE){
 
   # test correctness of min.bit
   for (n in c(0, 1, 2, 31, 32, 33, 63, 64, 65, 95, 96, 97, 127,128,129)){
-    for (to1 in seq.int(length=n)){
+    for (to1 in seq_len(n)){
       cat("n", n, "to", to1, "\n")
       for (from1 in seq.int(from=1, to=to1, by=1L)){
       x <- bit(n)
       if (!identical(min(x, from=from1, to=to1), as.integer(NA)))
         stop("wrong")
-      for (i in rev(seq.int(length=n))){
+      for (i in rev(seq_len(n))){
         x[i] <- TRUE
         if (!identical(i, min(x, from=from1, to=to1)))
           stop("wrong")
@@ -1988,7 +1988,7 @@ if (FALSE){
         ret <- logical()
       }else{
         if (i[1]<0){
-          i <- (as.integer(seq.int(length=N)))[i]
+          i <- (as.integer(seq_len(N)))[i]
           ret <- logical(N-n)
         }else{
           ret <- logical(length(i))
@@ -2045,7 +2045,7 @@ if (FALSE){
       if (n==0)
         return(x)
       if (i[1]<0){
-        i <- (as.integer(seq.int(length=N)))[i]
+        i <- (as.integer(seq_len(N)))[i]
         n <- N - n
       }
       if (length(value)==n){
@@ -2299,9 +2299,9 @@ print.virtual <- function(x, ...){
 #! \seealso{ \code{\link{bit}}, \code{\link{as.bit}}, \code{\link{as.logical}}, \code{\link{as.integer}}, \code{\link{which}} }
 #! \examples{
 #!   if (regtest.bit()){
-#!     cat("regtest.bit is OK\n")
+#!     message("regtest.bit is OK")
 #!   }else{
-#!     stop("regtest.bit failed")
+#!     message("regtest.bit failed")
 #!   }
 #!
 #!   \dontrun{
@@ -2325,9 +2325,9 @@ regtest.bit <- function(
     b <- as.bit(l)
     l2 <- as.logical(b)
     if (!identical(l,l2)){
-      cat("\nregression test difference between logical\n")
+      message("\nregression test difference between logical")
       print(l)
-      cat("and as.logical(as.bit(logical))\n")
+      message("and as.logical(as.bit(logical))")
       print(l2)
       OK <- FALSE
     }
@@ -2335,9 +2335,9 @@ regtest.bit <- function(
     s <- c(all=all(l), any=any(l))
     s2 <- c(all=all(b), any=any(b))
     if (!identical(s,s2)){
-      cat("\nregression test difference between logical summaries\n")
+      message("\nregression test difference between logical summaries")
       print(s)
-      cat("and bit summaries\n")
+      message("and bit summaries")
       print(s2)
       OK <- FALSE
     }
@@ -2349,9 +2349,9 @@ regtest.bit <- function(
     }
     s2 <- c(min=min(b), max=max(b), range=range(b), sum=sum(b), summary=summary(b))
     if (!identical(s,s2)){
-      cat("\nregression test difference between logical summaries\n")
+      message("\nregression test difference between logical summaries")
       print(s)
-      cat("and bit summaries\n")
+      message("and bit summaries")
       print(s2)
       OK <- FALSE
     }
@@ -2359,9 +2359,9 @@ regtest.bit <- function(
     w <- as.which(l)
     w2 <- as.which(as.bit.which(w, n))
     if (!identical(w,w2)){
-      cat("\nregression test difference between which\n")
+      message("\nregression test difference between which")
       print(w)
-      cat("and as.which(as.bit.which(which))\n")
+      message("and as.which(as.bit.which(which))")
       print(w2)
       OK <- FALSE
     }
@@ -2378,9 +2378,9 @@ regtest.bit <- function(
     }
     w2 <- as.vector(as.bitwhich(as.bit(l)))
     if (!identical(w,w2)){
-      cat("\nregression test difference between which\n")
+      message("\nregression test difference between which")
       print(w)
-      cat("and as.which(as.bit.which(which))\n")
+      message("and as.which(as.bit.which(which))")
       print(w2)
       OK <- FALSE
     }
@@ -2396,7 +2396,7 @@ regtest.bit <- function(
     , EQ = identical(l==l2, as.logical(b==b2))
     )
     if (!all(ops)){
-      cat("\nbit differs for boolean operators(s)\n")
+      message("\nbit differs for boolean operators(s)")
       print(ops)
       print(cbind(l=l, l2=l))
       OK <- FALSE
@@ -2412,7 +2412,7 @@ regtest.bit <- function(
     , EQ = identical(l==l2, as.logical(w==w2))
     )
     if (!all(ops)){
-      cat("\nbitwhich differs for boolean operators(s)\n")
+      message("\nbitwhich differs for boolean operators(s)")
       print(ops)
       print(cbind(l=l, l2=l))
       OK <- FALSE
@@ -2422,7 +2422,7 @@ regtest.bit <- function(
     n2 <- sample(1:n, 1)
     j <- sample(1:n, n2)
     if (!identical(l[j], unattr(b[j]))){
-      cat("\nregression test difference when extracting\n")
+      message("\nregression test difference when extracting")
       OK <- FALSE
     }
     # check replacement (index)
@@ -2430,7 +2430,7 @@ regtest.bit <- function(
     l[j] <- new
     b[j] <- new
     if (!identical(l, unattr(b[]))){
-      cat("\nregression test difference when replacing with index\n")
+      message("\nregression test difference when replacing with index")
       OK <- FALSE
     }
     # check replacement (recycle)
@@ -2443,7 +2443,7 @@ regtest.bit <- function(
       b[] <- pool
     }
     if (!identical(l, as.logical(b))){
-      cat("\nregression test difference when replacing with recylcling\n")
+      message("\nregression test difference when replacing with recylcling")
       OK <- FALSE
     }
   }
@@ -2553,7 +2553,7 @@ regtest.bit <- function(
     l[i] <- TRUE
     b[i] <- TRUE
     if (!identical(l,as.logical(b))){
-      cat("\nregression test difference when replacing at position", i, "\n")
+      message("\nregression test difference when replacing at position", i, "")
       OK <- FALSE
     }
   }

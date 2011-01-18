@@ -39,12 +39,12 @@ chunk(\dots)
       m <- 10000
       k <- 1000
       n <- m*k
-      cat("Four ways to loop from 1 to n. Slowest foreach to fastest chunk is 1700:1 on a dual core notebook with 3GB RAM\n")
+      message("Four ways to loop from 1 to n. Slowest foreach to fastest chunk is 1700:1 on a dual core notebook with 3GB RAM\n")
       z <- 0L; print(k*system.time({it <- icount(m); foreach (i = it) \%do\% { z <- i; NULL }})); z
       z <- 0L; print(system.time({i <- 0L;while (i<n) {i <- i + 1L; z <- i}})); z
       z <- 0L; print(system.time(for (i in 1:n) z <- i)); z
       z <- 0L; n <- m*k; print(system.time(for (ch in chunk(1, n, by=m)){for (i in ch[1]:ch[2])z <- i})); z
-      cat("Seven ways to calculate sum(1:n). Slowest foreach to fastest chunk is 61000:1 on a dual core notebook with 3GB RAM\n")
+      message("Seven ways to calculate sum(1:n). Slowest foreach to fastest chunk is 61000:1 on a dual core notebook with 3GB RAM\n")
       print(k*system.time({it <- icount(m); foreach (i = it, .combine="+") \%do\% { i }}))
       z <- 0; print(k*system.time({it <- icount(m); foreach (i = it) \%do\% { z <- z + i; NULL }})); z
       z <- 0; print(system.time({i <- 0L;while (i<n) {i <- i + 1L; z <- z + i}})); z

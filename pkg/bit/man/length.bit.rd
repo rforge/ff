@@ -113,7 +113,7 @@
   x <- as.bitwhich(ri(1, 31, 32))
   stopifnot(length(x)==32)
   stopifnot(sum(x)==31)
-  cat("NOTE the change from 'some excluded' to 'all excluded' here\n")
+  message("NOTE the change from 'some excluded' to 'all excluded' here")
   length(x) <- 16
   stopifnot(length(x)==16)
   stopifnot(sum(x)==16)

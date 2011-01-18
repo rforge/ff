@@ -20,9 +20,9 @@ regtest.bit(N = 100)
 \seealso{ \code{\link{bit}}, \code{\link{as.bit}}, \code{\link{as.logical}}, \code{\link{as.integer}}, \code{\link{which}} }
 \examples{
   if (regtest.bit()){
-    cat("regtest.bit is OK\n")
+    message("regtest.bit is OK")
   }else{
-    stop("regtest.bit failed")
+    message("regtest.bit failed")
   }
 
   \dontrun{

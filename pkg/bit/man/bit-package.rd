@@ -155,7 +155,7 @@ Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
   summary(x)                                   # aggregate count of FALSE and TRUE
 
   \dontrun{
-    cat("\nEven for a single boolean operation transforming logical to bit pays off\n")
+    message("\nEven for a single boolean operation transforming logical to bit pays off")
     n <- 10000000
     x <- sample(c(FALSE, TRUE), n, TRUE)
     y <- sample(c(FALSE, TRUE), n, TRUE)
@@ -166,9 +166,9 @@ Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
     })
     system.time( z <- x | y )
     system.time( as.logical(z) )
-    cat("Even more so if multiple operations are needed :-)\n")
+    message("Even more so if multiple operations are needed :-)")
 
-    cat("\nEven for a single set operation transforming subscripts to bit pays off\n")
+    message("\nEven for a single set operation transforming subscripts to bit pays off\n")
     n <- 10000000
     x <- sample(n, n/2)
     y <- sample(n, n/2)
@@ -178,9 +178,9 @@ Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
      y <- as.bit.which(y, n)
     })
     system.time( as.which.bit( x | y ) )
-    cat("Even more so if multiple operations are needed :-)\n")
+    message("Even more so if multiple operations are needed :-)")
 
-    cat("\nSome timings WITH memory allocation\n")
+    message("\nSome timings WITH memory allocation")
     n <- 2000000
     l <- sample(c(FALSE, TRUE), n, TRUE)
     # copy logical to logical
@@ -240,7 +240,7 @@ Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
        b[]
     })/100
 
-    cat("\nSome timings WITHOUT memory allocation (Serge, that's for you)\n")
+    message("\nSome timings WITHOUT memory allocation (Serge, that's for you)")
     n <- 2000000L
     l <- sample(c(FALSE, TRUE), n, TRUE)
     b <- as.bit(l)

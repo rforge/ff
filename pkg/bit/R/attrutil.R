@@ -148,7 +148,7 @@ setattr <- function(x, which, value)
 setattributes <- function(x, attributes)
 {
   nam <- names(attributes)
-  for (i in seq.int(length.out=length(attributes))){
+  for (i in seq_len(length(attributes))){
     .Call("R_bit_set_attr", x, nam[[i]], attributes[[i]], PACKAGE="bit")
   }
   invisible()

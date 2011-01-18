@@ -25,7 +25,7 @@ repfromto(x, from, to) <- value
 \author{ Jens Oehlschlägel }
 \seealso{ \code{\link{rep}}, \code{\link[ff]{ffvecapply}} }
 \examples{
-  cat("a simple example")
+  message("a simple example")
   repfromto(0:9, 11, 20)
 }
 \keyword{ IO }

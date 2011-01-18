@@ -88,7 +88,7 @@
     B <- n \%/\% N   # number of batches
     R <- n \%\% N    # rest
 
-    cat("Batched sum (52.5 sec on Centrino duo)\n")
+    message("Batched sum (52.5 sec on Centrino duo)")
     system.time({
       s <- 0L
       for (b in 1:B){
@@ -98,7 +98,7 @@
         s <- s + sum(x[(n-R+1L):n])
     })
 
-    cat("Batched sum saving repeated memory allocation for the return vector (44.4 sec on Centrino duo)\n")
+    message("Batched sum saving repeated memory allocation for the return vector (44.4 sec on Centrino duo)")
     system.time({
       s <- 0L
       l <- logical(N)
@@ -110,7 +110,7 @@
         s <- s + sum(x[(n-R+1L):n])
     })
 
-    cat("C-coded sum (3.1 sec on Centrino duo)\n")
+    message("C-coded sum (3.1 sec on Centrino duo)")
     system.time(sum(x))
  }
 }
