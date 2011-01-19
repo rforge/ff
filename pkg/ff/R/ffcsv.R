@@ -213,7 +213,7 @@ colClass.ff <- function(x){
 #!     ffx
 #!     sapply(ffx[,], class)
 #!
-#!     cat("NOTE that read.table fails for ordered factors, this is fixed in read.table.ffdf\n")
+#!     message("NOTE that read.table fails for ordered factors, this is fixed in read.table.ffdf")
 #!     try(read.csv(file=csvfile, header=TRUE, colClasses=c(ord="ordered")))
 #!     # could fix this with the following two lines (Gabor Grothendieck) but does not know what bad side-effects this could have
 #!      #setOldClass("ordered")
@@ -225,40 +225,40 @@ colClass.ff <- function(x){
 #!     ffx
 #!     sapply(ffx[,], class)
 #!
-#!     cat("NOTE that reading in chunks can change the sequence of levels and thus the coding\n")
-#!     cat("(Sorting levels during chunked reading can be too expensive)\n")
+#!     message("NOTE that reading in chunks can change the sequence of levels and thus the coding")
+#!     message("(Sorting levels during chunked reading can be too expensive)")
 #!     ffx <- read.csv.ffdf(file=csvfile, header=TRUE, colClasses=c(ord="ordered", dct="POSIXct", dat="Date"), first.rows=6, next.rows=10, VERBOSE=TRUE)
 #!     y <- ffx$fac[]
 #!     print(levels(y))
 #!     data.frame(values=as.character(y), codes=as.integer(y))
 #!
-#!     cat("If we don't know the levels we can sort then after reading\n")
-#!     cat("(Will rewrite all factor codes)\n")
-#!     cat("NOTE that you MUST assign the return value of sortLevels()\n")
+#!     message("If we don't know the levels we can sort then after reading")
+#!     message("(Will rewrite all factor codes)")
+#!     message("NOTE that you MUST assign the return value of sortLevels()")
 #!     ffx <- sortLevels(ffx)
 #!     y <- ffx$fac[]
 #!     print(levels(y))
 #!     data.frame(values=as.character(y), codes=as.integer(y))
 #!
-#!     cat("If we KNOW the levels we can fix levels upfront\n")
+#!     message("If we KNOW the levels we can fix levels upfront")
 #!     ffx <- read.csv.ffdf(file=csvfile, header=TRUE, colClasses=c(ord="ordered", dct="POSIXct", dat="Date"), first.rows=6, next.rows=10, levels=list(fac=letters, ord=LETTERS))
 #!     y <- ffx$fac[]
 #!     print(levels(y))
 #!     data.frame(values=as.character(y), codes=as.integer(y))
 #!
-#!     cat("Or we inspect a sufficiently large chunk of data and use those\n")
+#!     message("Or we inspect a sufficiently large chunk of data and use those")
 #!     ffx1 <- read.csv.ffdf(file=csvfile, header=TRUE, colClasses=c(ord="ordered", dct="POSIXct", dat="Date"), nrows=13)
 #!     ffx <- read.csv.ffdf(x=ffx1, file=csvfile, header=FALSE, skip=1+nrow(ffx1), VERBOSE=TRUE)
 #!
-#!     cat("We can check for unexpected factor levels, say we only allowed a:l\n")
+#!     message("We can check for unexpected factor levels, say we only allowed a:l")
 #!     ffx <- read.csv.ffdf(file=csvfile, header=TRUE, colClasses=c(ord="ordered", dct="POSIXct", dat="Date"), levels=list(fac=letters[1:12], ord=LETTERS[1:12]), appendLevels=FALSE)
 #!     sapply(colnames(ffx), function(i)sum(is.na(ffx[[i]][])))
 #!
-#!     cat("We can fine-tune the creation of the ffdf:\n")
-#!     cat("- let's create the ff files outside of fftempdir\n")
-#!     cat("- let's reduce required disk space and thus file.system cache RAM\n")
+#!     message("We can fine-tune the creation of the ffdf:")
+#!     message("- let's create the ff files outside of fftempdir")
+#!     message("- let's reduce required disk space and thus file.system cache RAM")
 #!     vmode(ffx)
-#!     cat("By default we had record size\n")
+#!     message("By default we had record size")
 #!     sum(.ffbytes[vmode(ffx)])
 #!
 #!     ffy <- read.csv.ffdf(file=csvfile, header=TRUE, colClasses=c(ord="ordered", dct="POSIXct", dat="Date")
@@ -268,12 +268,12 @@ colClass.ff <- function(x){
 #!       )
 #!     )
 #!     vmode(ffy)
-#!     cat("This recordsize is more than 50\% reduced\n")
+#!     message("This recordsize is more than 50\% reduced")
 #!     sum(.ffbytes[vmode(ffy)])
 #!
-#!     cat("Don't forget to wrap-up files that are not in fftempdir\n")
+#!     message("Don't forget to wrap-up files that are not in fftempdir")
 #!     delete(ffy); rm(ffy)
-#!     cat("It's a good habit to also wrap-up temporary stuff (or at least know how this is done)\n")
+#!     message("It's a good habit to also wrap-up temporary stuff (or at least know how this is done)")
 #!     rm(ffx); gc()
 #!
 #!     fwffile <- tempfile()
@@ -446,7 +446,7 @@ read.table.ffdf <- function(
       no.col.names <- FALSE
     }
     if (no.colClasses){
-      rt.args$colClasses <- sapply(seq.int(length.out=ncol(dat)), function(i)colClass(dat[[i]]))
+      rt.args$colClasses <- sapply(seq_len(ncol(dat)), function(i)colClass(dat[[i]]))
       no.colClasses <- FALSE
     }
 
@@ -478,7 +478,7 @@ read.table.ffdf <- function(
 
     # now fix ordered
     colClasses <- repnam(colClasses, colnames(x), default=NA)
-    i.fix <- seq.int(length=ncol(dat))[!is.na(match(colClasses, "ordered"))]
+    i.fix <- seq_len(ncol(dat))[!is.na(match(colClasses, "ordered"))]
     for (i in i.fix)
       virtual(x[[i]])$ramclass <- c("ordered","factor")
 
@@ -499,7 +499,7 @@ read.table.ffdf <- function(
       rt.args$col.names <- colnames(x)
     }
     if (no.colClasses){
-      rt.args$colClasses <- sapply(seq.int(length.out=ncol(x)), function(i)colClass(x[[i]]))
+      rt.args$colClasses <- sapply(seq_len(ncol(x)), function(i)colClass(x[[i]]))
     }
 
     if (is.null(next.rows)){
@@ -516,7 +516,7 @@ read.table.ffdf <- function(
 
     appendLevels <- repnam(appendLevels, colnames(x), default=TRUE)
     if(any(appendLevels)){
-      i.fac <- seq.int(length=k)
+      i.fac <- seq_len(k)
       i.fac <- i.fac[appendLevels & sapply(i.fac, function(i)is.factor(x[[i]]))]
     }
 
@@ -700,7 +700,7 @@ read.table.ffdf <- function(
 #!   # Attention, this takes very long
 #!   vmodes <- c(log="boolean", int="byte", dbl="single", fac="short", ord="short", dct="single", dat="single")
 #!
-#!   cat("create a ffdf with 7 columns and 78 mio rows\n")
+#!   message("create a ffdf with 7 columns and 78 mio rows")
 #!   system.time({
 #!     x <- data.frame(log=rep(c(FALSE, TRUE), length.out=26), int=1:26, dbl=1:26 + 0.1, fac=factor(letters), ord=ordered(LETTERS), dct=Sys.time()+1:26, dat=seq(as.Date("1910/1/1"), length.out=26, by=1))
 #!     x <- do.call("rbind", rep(list(x), 10))
@@ -709,7 +709,7 @@ read.table.ffdf <- function(
 #!     x <- do.call("rbind", rep(list(x), 10))
 #!     ffx <- as.ffdf(x, vmode = vmodes)
 #!     for (i in 2:300){
-#!       cat(i, "\n")
+#!       message(i, "\n")
 #!       last <- nrow(ffx) + nrow(x)
 #!       first <- last - nrow(x) + 1L
 #!       nrow(ffx) <- last
@@ -902,9 +902,9 @@ read.delim.ffdf <- function(...)
 read.delim2.ffdf <- function(...)
   read.table.ffdf(FUN="read.delim2", ...)
 
-cat("we fix write.csv and write.csv2 such that:\n")
-cat("- match.call identifies abbreviated arguments (matching against write.table)\n")
-cat("- we allow col.names=FALSE in combination with append=TRUE\n")
+packageStartupMessage("we fix write.csv and write.csv2 such that:")
+packageStartupMessage("- match.call identifies abbreviated arguments (matching against write.table)")
+packageStartupMessage("- we allow col.names=FALSE in combination with append=TRUE")
 write.csv <-
 function (...)
 {

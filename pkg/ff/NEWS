@@ -10,6 +10,9 @@ USER VISIBLE CHANGES
         applied. This allows dropping columns in transFUN - and still
         having all columns info ready for next chunk's call.
 
+    o	all calls to 'seq.int' have been replaced by 'seq_along' or 'seq_len'
+
+    o	most calls to 'cat' have been replaced by 'message' or 'packageStartupMessage'
 
 
 
