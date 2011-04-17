@@ -967,7 +967,7 @@ fforder <- function(
     pieces <- 2 ^ ceiling(max(0, log(allbytes/maxbytes, 2)))
     if (pieces>1 && !use.index){
       maxbytes <- BATCHBYTES
-      allbytes <- n*(recvalbytes+recindbytes)
+      allbytes <- as.double(n)*(recvalbytes+recindbytes)
       shellpieces <- 2 ^ ceiling(max(0, log(allbytes/maxbytes, 2)))
       if (shellpieces<pieces){
         method <- 1L
