@@ -14,6 +14,11 @@ USER VISIBLE CHANGES
 
     o	most calls to 'cat' have been replaced by 'message' or 'packageStartupMessage'
 
+    
+BUG FIXES
+
+    o	fforder no longer creates an integer overflow (thanks to Edwin de Jonge)
+
 
 
 		CHANGES IN ff VERSION 2.2.0
