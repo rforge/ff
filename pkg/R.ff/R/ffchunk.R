@@ -8,7 +8,7 @@
 # source("d:/mwp/eanalysis/R.ff/R/ffchunk.R")
 
 sfIsInit <- function() {
-  exists( ".sfOption" ) && ( length( .sfOption ) > 0 ) && .sfOption$init && !.sfOption$stopped
+  exists("sfOption", envir=asNamespace("snowfall")) && ( length( snowfall:::.sfOption ) > 0 ) && snowfall:::.sfOption$init && !snowfall:::.sfOption$stopped
 }
 
 #! \name{ffchunk}
