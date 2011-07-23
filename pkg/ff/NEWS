@@ -1,3 +1,12 @@
+		CHANGES IN ff VERSION 2.2.3
+
+BUG FIXES
+
+    o	ff again compiles on NEtBSD (reported by Thomas Vaughan)
+    o	as.integer.hi() now correctly returns integer() for an empty subscript (reported by Ivan Zhang)
+
+    
+
 		CHANGES IN ff VERSION 2.2.2
 
 
