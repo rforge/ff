@@ -234,6 +234,12 @@ function (
     if (!is.character(file) || file == "")
         stop("'file' must be non-empty string")
 
+    opts <- getOption("save.defaults")
+    if (missing(compress) && !is.null(opts$compress))
+        compress <- opts$compress
+    if (missing(compression_level) && !is.null(opts$compression_level))
+        compression_level <- opts$compression_level
+
     cwd <- getwd()
     on.exit(setwd(cwd))
 
@@ -251,12 +257,6 @@ function (
     zipfile <- paste(file, "ffData", sep=".")
     imgfile <- paste(file, "RData", sep=".")
 
-    opts <- getOption("save.defaults")
-    if (missing(compress) && !is.null(opts$compress))
-        compress <- opts$compress
-    if (missing(compression_level) && !is.null(opts$compression_level))
-        compression_level <- opts$compression_level
-
     names <- as.character(substitute(list(...)))[-1L]
     list <- c(list, names)
     if (precheck) {
@@ -269,45 +269,8 @@ function (
         }
     }
 
-    if (add){
-      tempenvir <- new.env()
-      oldlist<- load(imgfile, tempenvir)
-      rootpath <- get(".ff.rootpath", tempenvir)
-      setwd(rootpath)
-      save(list=c(oldlist, list), envir=tempenvir, file=imgfile, compress=compress, precheck=FALSE)
-    }else{
-      # make sure we have a rootpath and it has absolute path
-      if (is.null(rootpath))
-        rootpath <- "/"
-      setwd(rootpath)
-      rootpath <- sub("//$","/",paste(getwd(), "/", sep=""))
-
-      #if (!overwrite && file.exists(imgfile))
-      #  stop("must not overwrite '", imgfile, "'")
-      if (file.exists(zipfile)){
-        #if (overwrite)
-        #  stop("must not overwrite '", zipfile, "'")
-        #else
-          file.remove(zipfile)
-      }
-
-      assign(".ff.rootpath", rootpath, envir=envir)
-
-      on.exit(rm(list=".ff.rootpath", envir=envir), add=TRUE)
-      savecall <- match.call(save)
-      savecall[[1]] <- as.name("save")
-      savecall$file <- imgfile
-      savecall$list <- c(".ff.rootpath", list)
-      savecall$move <- NULL
-      savecall$rootpath <- NULL
-      savecall$precheck <- FALSE
-      savecall$add <- NULL
-      savecall$move <- NULL
-      eval(savecall)
-    }
-
     # filter ffdf and ff only
-    list <- unlist(lapply(list, function(i){
+    filelist <- unlist(lapply(list, function(i){
       x <- get(i, envir = envir)
       if (is.ffdf(x)){
         io <- is.open(x)
@@ -321,18 +284,57 @@ function (
       }
     }))
     # filter out duplicates
-    list <- unique(list)
-    i <- grepl(paste("^", rootpath, sep=""), list)
+    filelist <- unique(filelist)
+    
+    if (add){
+      tempenvir <- new.env()
+      oldlist<- load(imgfile, tempenvir)
+      rootpath <- get(".ff.rootpath", tempenvir)
+      setwd(rootpath)
+      save(list=c(oldlist, list), envir=tempenvir, file=imgfile, compress=compress, precheck=FALSE)
+    }else{
+      # make sure we have a rootpath and it has absolute path
+      if (is.null(rootpath))
+        rootpath <- "/"
+      setwd(dirname(filelist[[1]]))
+      setwd(rootpath)
+      rootpath <- sub("//$","/",paste(getwd(), "/", sep=""))
+
+      #if (!overwrite && file.exists(imgfile))
+      #  stop("must not overwrite '", imgfile, "'")
+      if (file.exists(zipfile)){
+        #if (overwrite)
+        #  stop("must not overwrite '", zipfile, "'")
+        #else
+          file.remove(zipfile)
+      }
+
+      assign(".ff.rootpath", rootpath, envir=envir)
+      on.exit(rm(list=".ff.rootpath", envir=envir), add=TRUE)
+      savecall <- match.call(save)
+      savecall[[1]] <- as.name("save")
+      savecall$file <- imgfile
+      savecall$list <- c(".ff.rootpath", list)
+      savecall$move <- NULL
+      savecall$rootpath <- NULL
+      savecall$precheck <- FALSE
+      savecall$add <- NULL
+      savecall$move <- NULL
+      eval(savecall, envir=envir)
+    }
+
+    # check rootpath compatibility
+    i <- grepl(paste("^", rootpath, sep=""), filelist)
     if (!all(i)){
-      print(list[!i])
+      print(filelist[!i])
       stop("the previous files do not match the rootpath (case sensitive)")
     }
-    nlist <- nchar(list)
+    nlist <- nchar(filelist)
     nroot <- nchar(rootpath)
-    list <- substr(list, nroot+1, nlist)
+    filelist <- substr(filelist, nroot+1, nlist)
 
     cmd <- paste('zip -@ -', if (compress) compression_level  else 0, if (move) ' -m', ' "', zipfile, '"', sep="")
-    ret <- system(cmd, input=list, intern=TRUE)
+    ret <- system(cmd, input=filelist, intern=TRUE)
     ret
 }
 
