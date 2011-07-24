@@ -549,8 +549,6 @@ function (
     # make sure the *.RData and *.ffData files have absolute paths
     dfile <- dirname(file)
     bfile <- basename(file)
-    if (!file.exists(dfile))
-      dir.create(dfile, recursive=TRUE)
     setwd(dfile)
     dfile <- getwd()
     setwd(cwd)  # looks silly but prevents problems with upper/lower case
@@ -567,7 +565,7 @@ function (
     if (!overwrite || haslist || !is.null(rootpath)){
       tempenvir <- new.env()
       load(imgfile, envir=tempenvir)
-      temprootpath <- get(".ff.rootpath", envir=tempenvir)
+      oldrootpath <- get(".ff.rootpath", envir=tempenvir)
       if (length(list)){
         isinenv <- sapply(list, exists, envir=tempenvir)
         if (!all(isinenv))
@@ -578,7 +576,7 @@ function (
       }
       names(list) <- list
       if (is.null(rootpath)){
-        rootpath <- temprootpath
+        rootpath <- oldrootpath
         list <- unlist(lapply(list, function(i){
           if (!overwrite && exists(i, envir)){
             warning("did not overwrite object '", i, "'")
@@ -600,15 +598,15 @@ function (
       }else{
         if (!file.exists(rootpath))
           dir.create(rootpath, recursive=TRUE)
-        if (!file.exists(temprootpath))
-          dir.create(temprootpath, recursive=TRUE)
-        setwd(temprootpath)
-        temprootpath <- getwd()
-        setwd(cwd) # looks silly but prevents problems with upper/lower case
+        if (!file.exists(oldrootpath))
+          dir.create(oldrootpath, recursive=TRUE)
+        setwd(oldrootpath)
+        oldrootpath <- getwd()
+        #setwd(cwd) # looks silly but prevents problems with upper/lower case
         setwd(rootpath)
         rootpath <- getwd()
 
-        temprootpathsep <- paste(sub("/$", "", temprootpath), "/", sep="")
+        oldrootpathsep <- paste(sub("/$", "", oldrootpath), "/", sep="")
         rootpathsep <- paste(sub("/$", "", rootpath), "/", sep="")
 
         list <- unlist(lapply(list, function(i){
@@ -619,14 +617,14 @@ function (
             x <- get(i, envir = tempenvir)
             if (is.ffdf(x)){
               ret <- unlist(lapply(physical(x), function(y){
-                newnam <- sub(temprootpathsep, rootpathsep, filename(y))
+                newnam <- sub(oldrootpathsep, rootpathsep, filename(y))
                 physical(y)$filename <- newnam
                 newnam
               }))
               assign(i, x, envir=envir)
               ret
             }else if(is.ff(x)){
-              newnam <- sub(temprootpathsep, rootpathsep, filename(x))
+              newnam <- sub(oldrootpathsep, rootpathsep, filename(x))
               physical(x)$filename <- newnam
               assign(i, x, envir=envir)
               ret <- newnam

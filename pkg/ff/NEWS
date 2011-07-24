@@ -5,8 +5,10 @@ BUG FIXES
     o	ff again compiles on NEtBSD (reported by Thomas Vaughan)
     o	as.integer.hi() now correctly returns integer() for an empty subscript (reported by Ivan Zhang)
     o	ffsave now respects argument 'envir'
-    o	ffsave now generates a proper default for rootpath if the archive is on a different windows drive
+    o	ffsave now generates as default for rootpath the root of the drive on which the ff data is (not the current drive)
+    o	ffload no longer tries to create the archive directory if not existing
 
+    
     
 
 		CHANGES IN ff VERSION 2.2.2
