@@ -598,10 +598,10 @@ function (
       }else{
         if (!file.exists(rootpath))
           dir.create(rootpath, recursive=TRUE)
-        if (!file.exists(oldrootpath))
-          dir.create(oldrootpath, recursive=TRUE)
-        setwd(oldrootpath)
-        oldrootpath <- getwd()
+        #if (!file.exists(oldrootpath))
+        #  dir.create(oldrootpath, recursive=TRUE)
+        #setwd(oldrootpath)
+        #oldrootpath <- getwd()
         #setwd(cwd) # looks silly but prevents problems with upper/lower case
         setwd(rootpath)
         rootpath <- getwd()
