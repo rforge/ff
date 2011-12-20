@@ -1,0 +1,11 @@
+Dear R community,
+
+Package 'bit64' Version 0.5 is available on CRAN. 
+It provides 64bit (signed) integers, coercion from and to logicals, integers, doubles, characters and it  requires by factor 7 less RAM than those from package int64. 
+It has the usual vector operations and summary functions and they are up to about factor 1000 faster than those from package int64. 
+
+Best regards
+
+
+Jens Oehlschlägel
+Munich, 21.12.2011
