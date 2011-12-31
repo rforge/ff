@@ -11,7 +11,7 @@
 }
 \description{
   Summary functions for integer64 vectors. 
-  Function 'range' without returns the smallest and largest value of the 'integer64' class.
+  Function 'range' without arguments returns the smallest and largest value of the 'integer64' class.
 }
 \usage{
 \method{all}{integer64}(\dots, na.rm = FALSE)

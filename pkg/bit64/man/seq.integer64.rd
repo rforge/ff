@@ -17,11 +17,16 @@
   \item{along.with}{ scalar }
   \item{\dots}{ ignored }
 }
+\details{
+  \code{seq.integer64} does coerce its arguments 'from', 'to' and 'by' to \code{integer64}.
+  If not provided, the argument 'by' is automatically determined as \code{+1} or \code{-1},
+  but the size of 'by' is not calculated as in \code{\link{seq}} (because this might result in a non-integer value).
+}
 \value{
   an integer64 vector with the generated sequence
 }
 \note{
-  In base R \code{\link{:}} currently is not generic and does not dispatch, therefor we make it generic.
+  In base R \code{\link{:}} currently is not generic and does not dispatch, see section "Limitations inherited from Base R" in \code{\link{integer64}}
 }
 \author{
 Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
@@ -32,7 +37,7 @@ Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
           \code{\link{as.data.frame.integer64}} \code{\link{integer64}}  
 }
 \examples{
-  #as.integer64(1):12
+  # colon not activated: as.integer64(1):12
   seq(as.integer64(1), 12, 2)
   seq(as.integer64(1), by=2, length.out=6)
 }

@@ -7,12 +7,11 @@
   Coercing integer64 vector to data.frame.
 }
 \usage{
-  \method{as.data.frame}{integer64}(x, row.names = NULL, \dots)
+  \method{as.data.frame}{integer64}(x, \dots)
 }
 \arguments{
   \item{x}{ an integer64 vector }
-  \item{row.names}{ NULL or character vector }
-  \item{\dots}{ ignored }
+  \item{\dots}{ passed to NextMethod \code{\link{as.data.frame}} after removing the 'integer64' class attribute }
 }
 \value{
   a one-column data.frame containing an integer64 vector

@@ -25,6 +25,10 @@
   \item{x}{ an atomic vector }
   \item{\dots}{ further arguments to the \code{\link{NextMethod}} }
 }
+\details{
+  \code{as.integer64.character} is realized using C function \code{strtoll} which does not support scientific notation. 
+  Instead of '1e6' use '1000000'.
+}
 \value{
   The other methods return atomic vectors of the expected types
 }

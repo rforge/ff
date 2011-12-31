@@ -10,98 +10,6 @@
 
 if (FALSE){
 
-message("== Differences to packages int64 ==\n")
-require(bit64)
-require(int64)
-
-message("-- integer64 is atomic --\n")
-is.atomic(integer64())
-is.atomic(int64())
-str(integer64(3))
-str(int64(3))
-
-message("-- integer64 needs 7x less RAM than int64 (and twice the RAM of integer as it should be) --\n")
-as.vector(object.size(int64(1e6))/object.size(integer64(1e6)))
-
-message("-- the following timings are rather conservative since timings of integer64 include garbage collection -- due to looped calls\n")
-message("-- integer64 creates 2000x faster (and 3x the time of integer) --\n")
-system.time(int64(1e7))*10/system.time(for(i in 1:10)integer64(1e7))
-system.time(for(i in 1:10)integer64(1e7))/system.time(for(i in 1:10)integer(1e7))
-
-i32 <- sample(1e6)
-d64 <- as.double(i32)
-
-message("-- integer64 coerces 300x faster (and 2x the time of coercing to integer) --\n")
-system.time(I64 <- as.int64(d64))*1000/system.time(for(i in 1:1000)i64 <- as.integer64(d64))
-system.time(for(i in 1:1000)i64 <- as.integer64(d64))/system.time(for(i in 1:1000)i32 <- as.integer(d64))
-
-message("-- integer64 serializes 4x faster than int64 (and less than 2x the time of integer or double) --\n")
-system.time(for(i in 1:10)serialize(I64, NULL))/system.time(for(i in 1:10)serialize(i64, NULL))
-system.time(for(i in 1:10)serialize(i64, NULL))/system.time(for(i in 1:10)serialize(i32, NULL))
-system.time(for(i in 1:10)serialize(i64, NULL))/system.time(for(i in 1:10)serialize(d64, NULL))
-
-message("-- integer64 adds 100x faster than int64 (and less than 2x the time of integer or double) --\n")
-system.time(for(i in 1:10)I64+I64)*10/system.time(for(i in 1:100)i64+i64)
-system.time(for(i in 1:100)i64+i64)/system.time(for(i in 1:100)i32+i32)
-system.time(for(i in 1:100)i64+i64)/system.time(for(i in 1:100)d64+d64)
-
-message("-- integer64 sums 10x faster than int64 (and at about the same speed as integer and double) --\n")
-system.time(for(i in 1:100)sum(I64))/system.time(for(i in 1:100)sum(i64))
-system.time(for(i in 1:100)sum(i64))/system.time(for(i in 1:100)sum(i32))
-system.time(for(i in 1:100)sum(i64))/system.time(for(i in 1:100)sum(d64))
-
-message("-- integer64 diffs 5x faster than integer and double (int64 version 1.0 does not support diff) --\n")
-system.time(for(i in 1:10)diff(i64, lag=2L, differences=2L))/system.time(for(i in 1:10)diff(i32, lag=2L, differences=2L))
-system.time(for(i in 1:10)diff(i64, lag=2L, differences=2L))/system.time(for(i in 1:10)diff(d64, lag=2L, differences=2L))
-
-message("-- integer64 subscripts 50x faster than int64 (and at the same speed as integer) --\n")
-system.time(for(i in 1:100)I64[sample(1e6, 1e3)])/system.time(for(i in 1:100)i64[sample(1e6, 1e3)])
-system.time(for(i in 1:100)i64[sample(1e6, 1e3)])/system.time(for(i in 1:100)i32[sample(1e6, 1e3)])
-
-message("-- integer64 assigns 100x faster than int64 (and 6x slower than integer) --\n")
-system.time(for(i in 1:100)I64[sample(1e6, 1e3)] <- 1:1e3)/system.time(for(i in 1:100)i64[sample(1e6, 1e3)] <- 1:1e3)
-system.time(for(i in 1:100)i64[sample(1e6, 1e3)] <- 1:1e3)/system.time(for(i in 1:100)i32[sample(1e6, 1e3)] <- 1:1e3)
-
-message("-- integer64 coerces 4x faster to data.frame than int64(and factor 65 slower than integer) --\n")
-system.time(dfI64<-data.frame(a=I64, b=I64, c=I64))/system.time(dfi64<-data.frame(a=i64, b=i64, c=i64))
-system.time(dfi64<-data.frame(a=i64, b=i64, c=i64))/system.time(dfi32<-data.frame(a=i32, b=i32, c=i32))
-
-message("-- integer64 subscripts from data.frame 7x faster than int64 (and 4x slower than integer) --\n")
-system.time(dfI64[1e6:1,])/system.time(dfi64[1e6:1,])
-system.time(dfi64[1e6:1,])/system.time(dfi32[1e6:1,])
-
-message("-- integer64 csv writes and reads about 2x faster than int64 (and about 2x slower than integer) --\n")
-f1 <- tempfile()
-f2 <- tempfile()
-system.time(write.csv(dfI64, file=f1, row.names=FALSE))/system.time(write.csv(dfi64, file=f2, row.names=FALSE))
-system.time(read.csv(f1, colClasses=rep("int64", k)))/system.time(read.csv(f2, colClasses=rep("integer64", k)))
-unlink(c(f1,f2))
-
-f1 <- tempfile()
-f2 <- tempfile()
-system.time(write.csv(dfi64, file=f1, row.names=FALSE))/system.time(write.csv(dfi32, file=f2, row.names=FALSE))
-system.time(read.csv(f1, colClasses=rep("integer64", k)))/system.time(read.csv(f2, colClasses=rep("integer", k)))
-unlink(c(f1,f2))
-
-rm(i32, d64, i64, I64, dfi32, dfd64, dfi64, dfI64)
-
-
-
-
-
-
-
-
-
-
-d64 <- diffinv(rep(1, 10), lag=2, differences=2)
-i32 <- as.integer(d64)
-i64 <- as.integer64(d64)
-identical(diff(i32, lag=2, differences=2), as.integer(diff(i64, lag=2, differences=2)))
-identical(diff(d64, lag=2, differences=2), as.double(diff(i64, lag=2, differences=2)))
-
-x <- i32[]
-n <- length(x)
 
 
 }
@@ -113,6 +21,10 @@ n <- length(x)
 #! \alias{bit64}
 #! \alias{integer64}
 #! \alias{is.integer64}
+#! \alias{is.integer.integer64}
+#! \alias{is.double}
+#! \alias{is.double.default}
+#! \alias{is.double.integer64}
 #! \alias{is.vector.integer64}
 #! \alias{as.vector.integer64}
 #! \alias{length<-.integer64}
@@ -122,21 +34,31 @@ n <- length(x)
 #!    A S3 class for vectors of 64bit integers
 #! }
 #! \description{
-#! Package 'bit64' provides S3 atomic 64bit (signed) integers, coercion from and 
-#! to logicals, integers, doubles, characters and the usual vector and summary 
-#! functions. \cr
-#!
+#! Package 'bit64' provides serializable S3 atomic 64bit (signed) integers 
+#! that can be used in vectors, matrices, arrays and data.frames. Methods are 
+#! available for coercion from and to logicals, integers, doubles, characters  
+#! as well as many elementwise and summary functions. 
+#! \cr
 #! With 'integer64' vectors you can store very large integers at the expense
-#! of 64 bits only, which is by factor 7 better than 'int64' from package 'int64'.
-#! Due to the smaller memory footprint, the usual vector architecture and avoidance 
-#! of S4 classes, most operations are one to three orders of magnitude faster while 
-#! being more compatible: it only requires the more basic S3 class system. Example 
-#! speedups are: 4x for serialization, 100x for adding, 300x for coercion, 2000x 
-#! for object creation. \cr
+#! of 64 bits, which is by factor 7 better than 'int64' from package 'int64'.
+#! Due to the smaller memory footprint, the atomic vector architecture and  
+#! using only S3 instead of S4 classes, most operations are one to three orders 
+#! of magnitude faster: Example speedups are 4x for serialization, 250x for 
+#! adding, 900x for coercion and 2000x for object creation. Also 'integer64' 
+#! avoids an ongoing (potentially infinite) penalty for garbage collection
+#! observed during existence of 'int64' objects (see code in example section). 
+#! \cr
+#! Last but not least, this package has no commercial copyright attached, 
+#! it is not sponsored by any commercial company or otherwise influenced 
+#! by commercial interests. Its mix of high-level R code with low-level 
+#! C-code protects against misuse outside the GPLed R context.
 #! }
 #! \usage{
 #!  integer64(length)
 #!  \method{is}{integer64}(x)
+#!  is.double(x)
+#!  \method{is.double}{default}(x)
+#!  \method{is.double}{integer64}(x)
 #!  \method{length}{integer64}(x) <- value
 #!  \method{print}{integer64}(x, quote=FALSE, \dots)
 #! }
@@ -157,16 +79,89 @@ n <- length(x)
 #!    LazyLoad: \tab yes\cr
 #!    Encoding: \tab latin1\cr
 #! }
-#!
-#! Index:
+#! }
+#! \section{Design considerations}{
+#!   64 bit integers are related to big data: we need them to overcome address space limitations. 
+#!   Therefore performance of the 64 bit integer type is critical. 
+#!   In the S language -- designed in 1975 -- atomic objects were defined to be vectors for a couple of good reasons:
+#!   simplicity, option for implicit parallelization, good cache locality. 
+#!   In recent years many analytical databases have learnt that lesson: column based data bases provide superior performance
+#!   for many applications, the result are products such as MonetDB, Sybase IQ, Vertica, Exasol, Ingres Vectorwise.
+#!   If we introduce 64 bit integers not natively in Base R but as an external package, we should at least strive to 
+#!   make them as 'basic' as possible. Therefore the design choice of bit64 not only differs from \code{int64}, it is obvious: 
+#!   Like the other atomic types in Base R, we model data type 'integer64' as a contiguous \code{\link{atomic}} vector in memory, 
+#!   and we use the more basic \code{\link{S3}} class system, not \code{\link{S4}}. Like package \code{\link[int64]{int64}} we want our 'integer64' to be \code{\link{serialize}able}, 
+#!   therefore we also use an existing data type as the basis. Again the choice is obvious: R has only one 64 bit data type: doubles.
+#!   By using \code{\link{double}s}, \code{integer64} \code{\link{inherits}} some functionality such as \code{\link{is.atomic}}, \code{\link{length}}, 
+#!   \code{\link{length<-}}, \code{\link{names}}, \code{\link{names<-}}, \code{\link{dim}}, \code{\link{dim<-}}, \code{\link{dimnames}}, \code{\link{dimnames}}.
+#!   \cr
+#!   Our R level functions strictly follow the functional programming paragdim: 
+#!   no modification of arguments or other sideffects. However, internally we deviate from the strict paradigm
+#!   in order to boost performance. Our C functions do not create new return values, 
+#!   instead we pass-in the memory to be returned as an argument. This gives us the freedom to apply the C-function 
+#!   to new or old vectors, which helps to avoid unnecessary memory allocation, unnecessary copying and unnessary garbage collection.
+#!   \emph{Within} our R functions we also deviate from conventional R programming by not using \code{\link{attr<-}} and \code{\link{attributes<-}} 
+#!   because they always do new memory allocation and copying. If we want to set attributes of return values that we have freshly created,
+#!   we instead use functions \code{\link[bit]{setattr}} and \code{\link[bit]{setattributes}} from package \code{\link[bit]{bit}}. 
+#!   If you want to see both tricks at work, see method \code{integer64}. 
+#! }
+#! \section{Arithmetic precision and coercion}{
+#!   The fact that we introduce 64 bit long long integers -- without introducing 128-bit long doubles -- creates some subtle challenges:
+#!   Unlike 32 bit \code{\link{integer}s}, the \code{integer64} are no longer a proper subset of \code{\link{double}}. 
+#!   If a binary arithmetic operation does involve a \code{double} and a \code{integer}, it is a no-brainer to return \code{double} 
+#!   without loss of information. If an \code{integer64} meets a \code{double}, it is not trivial what type to return. 
+#!   Switching to \code{integer64} limits our ability to represent very large numbers, switching to \code{integer64} limits our ability 
+#!   to distinguish \code{x} from \code{x+1}. Since the latter is purpose of introducing 64 bit integers, we usually return \code{integer64} 
+#!   from functions involving \code{integer64}, for example in \code{\link[=c.integer64]{c}}, \code{\link[=cbind.integer64]{cbind}} 
+#!   and \code{\link[=rbind.integer64]{rbind}}. 
+#!   \cr
+#!   Different from Base R, our operators \code{\link[=+.integer64]{+}}, 
+#!   \code{\link[=-.integer64]{-}}, \code{\link[=\%/\%.integer64]{\%/\%}} and \code{\link[=\%\%.integer64]{\%\%}} coerce their arguments to 
+#!   \code{integer64} and always return \code{integer64}. 
+#!   \cr
+#!   The multiplication operator \code{\link[=*.integer64]{*}} coerces its first argument to \code{integer64} 
+#!   but allows its second argument to be also \code{double}: the second argument is internaly coerced to 'long double' 
+#!   and the result of the multiplication is returned as \code{integer64}. 
+#!   \cr
+#!   The division \code{\link[=/.integer64]{/}} and power \code{\link[=^.integer64]{^}} operators also coerce their first argument to \code{integer64} 
+#!   and coerce internally their second argument to 'long double', they return as \code{double}, like \code{\link[=sqrt.integer64]{sqrt}}, 
+#!   \code{\link[=log.integer64]{log}}, \code{\link[=log2.integer64]{log2}} and \code{\link[=log10.integer64]{log10}} do. 
+#! }
+#! \section{Creating and testing S3 class 'integer64'}{
+#!   Our creator function \code{integer64} takes an argument \code{length}, creates an atomic double vector of this length,
+#!   attaches an S3 class attribute 'integer64' to it, and that's it. We simply rely on S3 method dispatch and interpret those 
+#!   64bit elements as 'long long int'. As a second line of defense against misinterpretation we make \code{\link{is.double}}
+#!   return \code{FALSE} by making it S3 generic and adding a method \code{\link{as.double.integer64}}. 
+#!   The methods \code{\link{is.integer64}} and \code{\link{is.vector}} both return \code{TRUE} for \code{integer64}. 
+#!  Note that we did not patch \code{\link{storage.mode}} and \code{\link{typeof}}, which both continue returning 'double' 
+#!  Like for 32 bit \code{\link{integer}}, \code{\link{mode}} returns 'numeric' and \code{\link{as.double}}) tries coercing to \code{\link{double}}).
+#!  It is likely that 'integer64' becomes a \code{\link[ff]{vmode}} in package \code{\link[ff]{ff}}. 
+#!  \cr
+#!  Further methods for creating \code{integer64} are \code{\link[=range.integer64]{range}} which returns the range of the data type if calles without arguments,
+#!  \code{\link[=rep.integer64]{rep}}, \code{\link[=seq.integer64]{seq}}. 
+#!  \cr
+#!  For all available methods on \code{integer64} vectors see the index below and the examples.
+#! }
+#! \section{Index of implemented methods}{
 #! \tabular{rrl}{
 #!    \bold{creating,testing,printing} \tab \bold{see also}          \tab \bold{description} \cr
-#!    \code{\link{integer64}} \tab \code{\link{integer}} \tab create zero atomic vector \cr
+#!    \code{integer64} \tab \code{\link{integer}} \tab create zero atomic vector \cr
 #!    \code{\link{rep.integer64}} \tab \code{\link{rep}} \tab  \cr
 #!    \code{\link{seq.integer64}} \tab \code{\link{seq}} \tab  \cr
 #!    \code{\link{is.integer64}} \tab \code{\link{is}} \tab  \cr
+#!                                      \tab \code{\link{is.integer}} \tab inherited from Base R \cr
+#!    \code{\link{is.double.integer64}} \tab \code{\link{is.double}} \tab  \cr
 #!    \code{\link{is.vector.integer64}} \tab \code{\link{is.vector}} \tab  \cr
+#!    \code{\link{identical.integer64}} \tab \code{\link{identical}} \tab  \cr
 #!    \code{\link{length<-.integer64}} \tab \code{\link{length<-}} \tab  \cr
+#!                                      \tab \code{\link{length}} \tab inherited from Base R \cr
+#!                                      \tab \code{\link{names<-}} \tab inherited from Base R \cr
+#!                                      \tab \code{\link{names}} \tab inherited from Base R \cr
+#!                                      \tab \code{\link{dim<-}} \tab inherited from Base R \cr
+#!                                      \tab \code{\link{dim}} \tab inherited from Base R \cr
+#!                                      \tab \code{\link{dimnames<-}} \tab inherited from Base R \cr
+#!                                      \tab \code{\link{dimnames}} \tab inherited from Base R \cr
+#!                                     \tab \code{\link{str}} \tab inherited from Base R, does not print values correctly \cr
 #!    \code{\link{print.integer64}} \tab \code{\link{print}} \tab  \cr
 #!  \cr
 #!    \bold{coercing to integer64} \tab \bold{see also}          \tab \bold{description} \cr
@@ -174,7 +169,7 @@ n <- length(x)
 #!    \code{\link{as.integer64.character}} \tab \code{\link{character}} \tab  \cr
 #!    \code{\link{as.integer64.double}} \tab \code{\link{double}} \tab  \cr
 #!    \code{\link{as.integer64.integer}} \tab \code{\link{integer}} \tab  \cr
-#!    \code{\link{as.integer64.integer64}} \tab \code{\link{integer64}} \tab  \cr
+#!    \code{\link{as.integer64.integer64}} \tab \code{integer64} \tab  \cr
 #!    \code{\link{as.integer64.logical}} \tab \code{\link{logical}} \tab  \cr
 #!    \code{\link{as.integer64.NULL}} \tab \code{\link{NULL}} \tab  \cr
 #!  \cr
@@ -188,10 +183,11 @@ n <- length(x)
 #!    \code{\link{as.vector.integer64}} \tab \code{\link{as.vector}} \tab  \cr
 #!  \cr
 #!    \bold{data structures} \tab \bold{see also}          \tab \bold{description} \cr
-#!    \code{\link{c.integer64}} \tab \code{\link{c}} \tab concatenate \cr
+#!    \code{\link{c.integer64}} \tab \code{\link{c}} \tab vector concatenate \cr
 #!    \code{\link{cbind.integer64}} \tab \code{\link{cbind}} \tab column bind \cr
 #!    \code{\link{rbind.integer64}} \tab \code{\link{rbind}} \tab row bind \cr
-#!    \code{\link{as.data.frame.integer64}} \tab \code{\link{data.frame}} \tab coerce vector to column \cr
+#!    \code{\link{as.data.frame.integer64}} \tab \code{\link{as.data.frame}} \tab coerce atomic object to data.frame \cr
+#!                                          \tab \code{\link{data.frame}} \tab inherited from Base R since we have coercion \cr
 #!  \cr
 #!    \bold{subscripting} \tab \bold{see also}          \tab \bold{description} \cr
 #!    \code{\link{[.integer64}} \tab \code{\link{[}} \tab vector and array extract \cr
@@ -231,21 +227,21 @@ n <- length(x)
 #!    \code{\link{log10.integer64}} \tab \code{\link{log10}} \tab  returns double \cr
 #!    \code{\link{log2.integer64}} \tab \code{\link{log2}} \tab  returns double \cr
 #!    \code{\link{sqrt.integer64}} \tab \code{\link{sqrt}} \tab  returns double \cr
-#!    \code{\link{ceiling.integer64}} \tab \code{\link{ceiling}} \tab returns integer64 \cr
-#!    \code{\link{floor.integer64}} \tab \code{\link{floor}} \tab returns integer64 \cr
-#!    \code{\link{trunc.integer64}} \tab \code{\link{trunc}} \tab returns integer64 \cr
-#!    \code{\link{round.integer64}} \tab \code{\link{round}} \tab returns integer64 \cr
-#!    \code{\link{signif.integer64}} \tab \code{\link{signif}} \tab NOT IMPLEMENTED \cr
+#!    \code{\link{ceiling.integer64}} \tab \code{\link{ceiling}} \tab dummy returning its argument \cr
+#!    \code{\link{floor.integer64}} \tab \code{\link{floor}} \tab dummy returning its argument \cr
+#!    \code{\link{trunc.integer64}} \tab \code{\link{trunc}} \tab dummy returning its argument \cr
+#!    \code{\link{round.integer64}} \tab \code{\link{round}} \tab dummy returning its argument \cr
+#!    \code{\link{signif.integer64}} \tab \code{\link{signif}} \tab dummy returning its argument \cr
 #!  \cr
 #!    \bold{cumulative functions} \tab \bold{see also}          \tab \bold{description} \cr
-#!    \code{\link{cummin.integer64}} \tab \code{\link{cummin}} \tab x \cr
-#!    \code{\link{cummax.integer64}} \tab \code{\link{cummax}} \tab x \cr
-#!    \code{\link{cumsum.integer64}} \tab \code{\link{cumsum}} \tab x \cr
-#!    \code{\link{cumprod.integer64}} \tab \code{\link{cumprod}} \tab x \cr
-#!    \code{\link{diff.integer64}} \tab \code{\link{diff}} \tab x \cr
+#!    \code{\link{cummin.integer64}} \tab \code{\link{cummin}} \tab \cr
+#!    \code{\link{cummax.integer64}} \tab \code{\link{cummax}} \tab \cr
+#!    \code{\link{cumsum.integer64}} \tab \code{\link{cumsum}} \tab \cr
+#!    \code{\link{cumprod.integer64}} \tab \code{\link{cumprod}} \tab \cr
+#!    \code{\link{diff.integer64}} \tab \code{\link{diff}} \tab \cr
 #!  \cr
 #!    \bold{summary functions} \tab \bold{see also}          \tab \bold{description} \cr
-#!    \code{\link{range.integer64}} \tab \code{\link{range}} \tab also returns valid range \cr
+#!    \code{\link{range.integer64}} \tab \code{\link{range}} \tab returns valid range without arguments \cr
 #!    \code{\link{min.integer64}} \tab \code{\link{min}} \tab  \cr
 #!    \code{\link{max.integer64}} \tab \code{\link{max}} \tab  \cr
 #!    \code{\link{sum.integer64}} \tab \code{\link{sum}} \tab  \cr
@@ -256,7 +252,92 @@ n <- length(x)
 #!    \code{\link{minusclass}} \tab \code{\link{minusclass}} \tab removing class attritbute \cr
 #!    \code{\link{plusclass}} \tab \code{\link{plusclass}} \tab inserting class attribute \cr
 #!    \code{\link{binattr}} \tab \code{\link{binattr}} \tab define binary op behaviour \cr
+#!  \cr
+#!    \bold{tested I/O functions} \tab \bold{see also}          \tab \bold{description} \cr
+#!                                \tab \code{\link{read.table}} \tab inherited from Base R \cr
+#!                                \tab \code{\link{write.table}} \tab inherited from Base R \cr
+#!                                \tab \code{\link{serialize}} \tab inherited from Base R \cr
+#!                                \tab \code{\link{unserialize}} \tab inherited from Base R \cr
+#!                                \tab \code{\link{saveRDS}} \tab inherited from Base R \cr
+#!                                \tab \code{\link{readRDS}} \tab inherited from Base R \cr
+#!                                \tab \code{\link{save}} \tab inherited from Base R \cr
+#!                                \tab \code{\link{load}} \tab inherited from Base R \cr
+#!                                \tab \code{\link{dput}} \tab inherited from Base R \cr
+#!                                \tab \code{\link{dget}} \tab inherited from Base R \cr
 #! }
+#! }
+#! \section{Limitations inherited from implementing 64 bit integers via an external package}{
+#!   \itemize{
+#!     \item \bold{vector size} of atomic vectors is still limited to \code{\link{.Machine}$integer.max}. 
+#!     However, external memory extending packages such as \code{\link[ff]{ff}} or \code{bigmemory} 
+#!     can extend their address space now with \code{integer64}. Having 64 bit integers also help 
+#!     with those not so obvious address issues that arise once we exchange data with SQL databases 
+#!     and datawarehouses, which use big integers as surrogate keys, e.g. on indexed primary key columns.
+#!     This puts R into a relatively strong position compared to certain commercial statistical 
+#!     softwares, which sell database connectivity but neither have the range of 64 bit integers, 
+#!     nor have integers at all, nor have a single numeric data type in their macro-glue-language.
+#!
+#!     \item \bold{literals} such as \code{123LL} would require changes to Base R, up to then we need to write (and call) 
+#!     \code{as.integer64(123L)} or \code{as.integer64(123)} or \code{as.integer64('123')}. 
+#!     Only the latter allows to specify numbers beyond Base R's numeric data types and therefore is the recommended
+#!     way to use -- using only one way may facilitate migrating code to literals at a later stage.
+#!
+#!   }
+#! }
+#! \section{Limitations inherited from Base R, core team, consider changing this}{
+#!   \itemize{
+#!     \item \bold{\code{\link{identical}}} with default parameters does not distinguish all bit-patterns of doubles. 
+#!     For testing purposes we provide a wrapper \code{\link{identical.integer64}} that will distinguish all bit-patterns.
+#!     It would be desireable to have a single call of \code{\link{identical}} handle both, \code{\link{double}} and \code{integer64}.
+#! 
+#!     \item the \bold{colon} operator \code{\link{:}} officially does not dispatches S3 methods, therefor we have not patched it.
+#!    However, the following code seems to work: \preformatted{
+#!      ":.default" <- get(":")
+#!      ":" <- function(from,to)UseMethod(":")
+#!      ":.integer64" <- function(from, to)seq.integer64(from=from, to=to)
+#!    }
+#!    Try for example: \preformatted{
+#!      from <- range.integer64()[1]
+#!      to <- from+99
+#!      from:to
+#!    }
+#! 
+#!     \item \bold{\code{\link{c}}} only dispatches \code{\link{c.integer64}} if the first argument is \code{integer64}
+#!     and it does not recursively dispatch the proper method when called with argument \code{recursive=TRUE}
+#!     Therefore \preformatted{
+#!       c(list(integer64,integer64))
+#!     }
+#!      does not work and for now you can only call \preformatted{
+#!        c.integer64(list(x,x))
+#!      }
+#!
+#!     \item \bold{\code{\link{unlist}}} is not generic and if it were, we would face similar problems as with \code{c()}
+#!
+#!     \item \bold{\code{\link{vector}}} with argument \code{mode='integer64'} cannot work without adjustment of Base R
+#!     \item \bold{\code{\link{as.vector}}} with argument \code{mode='integer64'} cannot work without adjustment of Base R
+#!
+#!     \item \bold{\code{\link{is.vector}}} does not dispatch its method \code{\link{is.vector.integer64}}
+#!
+#!     \item \bold{\code{\link{mode<-}}} drops the class 'integer64' which is returned from \code{as.integer64}.
+#!        Also it does not remove an existing class 'integer64' when assigning mode 'integer'. 
+#!
+#!     \item \bold{\code{\link{storage.mode<-}}} does not support external data types such as \code{as.integer64}
+#!
+#!     \item \bold{\code{\link{matrix}}}  does drop the 'integer64' class attribute, 
+#!          while \bold{\code{\link{array}}} works correctly with \code{integer64}
+#!
+#!     \item \bold{\code{\link{str}}} does not print the values of \code{integer64} correctly
+#!
+#!   }
+#! }
+#! \section{Limitations to be blamed on the current implementation}{
+#!   \itemize{
+#!     \item \bold{\code{\link{sort}}} is not yet implemented 
+#!     \item \bold{\code{\link{order}}} is not yet implemented 
+#!     \item \bold{\code{\link{match}}} is not yet implemented 
+#!     \item \bold{\code{\link{duplicated}}} is not yet implemented 
+#!     \item \bold{\code{\link{unique}}} is not yet implemented 
+#!   }
 #! }
 #! \value{
 #!   \code{integer64} returns a vector of 'integer64', 
@@ -266,21 +347,490 @@ n <- length(x)
 #! Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 #! Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 #! }
-#! \note{
-#!   xx
-#! }
 #! \keyword{ package }
 #! \keyword{ classes }
 #! \keyword{ manip }
 #! \seealso{ \code{\link{integer}} in base R and \code{\link[int64]{int64}} in package 'int64' }
 #! \examples{
-#!   x <- integer64(12)                           # create integer64 vector
+#! message("Using integer64 in vector")
+#! x <- integer64(8)    # create 64 bit vector
+#! x
+#! is.atomic(x)         # TRUE
+#! is.integer64(x)      # TRUE
+#! is.numeric(x)        # TRUE
+#! is.integer(x)        # FALSE - debatable
+#! is.double(x)         # FALSE
+#! x[] <- 1:2           # assigned value is recycled as usual
+#! x[1:6]               # subscripting as usual
+#! length(x) <- 13      # changing length as usual
+#! x
+#! rep(x, 2)            # replicate as usual
+#! seq(as.integer64(1), 10)     # seq.integer64 is dispatched on first given argument
+#! seq(to=as.integer64(10), 1)  # seq.integer64 is dispatched on first given argument
+#! seq.integer64(along.with=x)  # or call seq.integer64 directly
+#! x <- c(x,runif(length(x), max=100)) # c.integer64 is dispatched only if *first* argument is integer64 ...
+#! x                                   # ... and coerces everything to integer64 - including double
+#! names(x) <- letters  # use names as usual
+#! x
+#! 
+#! message("Using integer64 in array - note that 'matrix' currently does not work")
+#! y <- array(as.integer64(NA), dim=c(3,4), dimnames=list(letters[1:3], LETTERS[1:4]))
+#! y["a",] <- 1:2       # assigning as usual
+#! y
+#! y[1:2,-4]            # subscripting as usual
+#! cbind(E=1:3, F=runif(3, 0, 100), G=c("-1","0","1"), y)  # cbind.integer64 dispatched on any argument and coerces everything to integer64
+#! 
+#! message("Using integer64 in data.frame")
+#! str(as.data.frame(x))
+#! str(as.data.frame(y))
+#! str(data.frame(y))
+#! str(data.frame(I(y)))
+#! d <- data.frame(x=x, y=runif(length(x), 0, 100))
+#! d
+#! d$x
+#! 
+#! message("Using integer64 with csv files")
+#! fi64 <- tempfile()
+#! write.csv(d, file=fi64, row.names=FALSE)
+#! e <- read.csv(fi64, colClasses=c("integer64", NA))
+#! unlink(fi64)
+#! str(e)
+#! identical.integer64(d$x,e$x)
+#! 
+#! message("Serializing and unserializing integer64")
+#! dput(d, fi64)
+#! e <- dget(fi64)
+#! identical.integer64(d$x,e$x)
+#! saveRDS(d, fi64)
+#! e <- readRDS(fi64)
+#! identical.integer64(d,e)
+#! e <- d[,]
+#! save(e, file=fi64)
+#! rm(e)
+#! load(file=fi64)
+#! identical.integer64(d,e)
+#! 
+#! ### A couple of unit tests follow hidden in a dontshow{} directive ###
+#!   \dontshow{
+#! message("Testing identical.integer64")
+#! i64 <- as.double(NA); class(i64) <- "integer64"
+#! stopifnot(identical(unclass(i64-1), unclass(i64+1)))
+#! stopifnot(identical(i64-1, i64+1))
+#! stopifnot(!identical.integer64(i64-1, i64+1))
+#! 
+#! message("Testing dispatch of 'c' method")
+#! stopifnot(identical.integer64(c(integer64(0), NA), as.integer64(NA)))
+#! message("Dispatch on the second argument fails and we want to be notified once that changes")
+#! stopifnot(!identical.integer64(c(NA, integer64(0)), as.integer64(NA)))
+#! 
+#! message("Testing minus and plus")
+#! d64 <- c(-.Machine$double.base^.Machine$double.digits, -.Machine$integer.max, -1, 0, 1, .Machine$integer.max, .Machine$double.base^.Machine$double.digits)
+#! i64 <- as.integer64(d64)
+#! stopifnot(identical.integer64(i64-1+1,i64))
+#! stopifnot(identical.integer64(i64+1-1,i64))
+#! 
+#! message("Testing minus and plus edge cases and 'rev'\n")
+#! stopifnot(identical.integer64(range.integer64()+1-1, c(range.integer64()[1], NA)))
+#! stopifnot(identical.integer64(rev(range.integer64())-1+1, c(range.integer64()[2], NA)))
+#! 
+#! message("Testing 'range.integer64', multiplication and integer division")
+#! i64 <- integer64(63)
+#! i64[1] <- 1
+#! for (i in 2:63)
+#! 	i64[i] <- 2*i64[i-1]
+#! stopifnot(identical.integer64(i64 * rev(i64), rep(i64[63], 63)))
+#! for (i in 63:2)
+#! 	i64[i-1] <- i64[i]\%/\%2
+#! stopifnot(identical.integer64(i64 * rev(i64), rep(i64[63], 63)))
+#! for (i in 63:2)
+#! 	i64[i-1] <- i64[i]/2
+#! stopifnot(identical.integer64(i64 * rev(i64), rep(i64[63], 63)))
+#! stopifnot(identical.integer64(c( -i64[63] - (i64[63]-1), i64[63]+(i64[63]-1) ), range.integer64()))
+#! 
+#! stopifnot(identical.integer64(i64[-1]\%/\%2*as.integer64(2), i64[-1]))
+#! stopifnot(identical.integer64(i64[-1]\%/\%2L*as.integer64(2), i64[-1]))
+#! stopifnot(identical.integer64(i64[-1]/2*as.integer64(2), i64[-1]))
+#! stopifnot(identical.integer64(i64[-1]/2*as.integer64(2), i64[-1]))
+#! 
+#! stopifnot(identical.integer64(i64[-63]*2\%/\%2, i64[-63]))
+#! stopifnot(identical.integer64(i64[-63]*2L\%/\%2L, i64[-63]))
+#! stopifnot(identical.integer64(as.integer64(i64[-63]*2/2), i64[-63]))
+#! stopifnot(identical.integer64(as.integer64(i64[-63]*2L/2L), i64[-63]))
+#! 
+#! message("Testing sqrt, power and log")
+#! stopifnot(identical.integer64( as.integer64(sqrt(i64[-1][c(FALSE, TRUE)])*sqrt(i64[-1][c(FALSE, TRUE)])), i64[-1][c(FALSE, TRUE)] ))
+#! 
+#! stopifnot(identical.integer64(as.integer64(2)^(0:62), i64))
+#! stopifnot(identical.integer64(as.integer64(0:62), as.integer64(log2(i64))))
+#! stopifnot(identical.integer64(as.integer64(log(as.integer64(2)^(0:62), 2)), as.integer64(0:62)))
+#! stopifnot(identical.integer64(as.integer64(round(log(as.integer64(3)^(0:39), 3))), as.integer64(0:39)))
+#! stopifnot(identical.integer64(as.integer64(round(log(as.integer64(10)^(0:18), 10))), as.integer64(0:18)))
+#! stopifnot(identical.integer64(as.integer64(round(log10(as.integer64(10)^(0:18)))), as.integer64(0:18)))
+#! 
+#! stopifnot(identical.integer64((as.integer64(2)^(1:62))^(1/1:62), as.integer64(rep(2, 62))))
+#! stopifnot(identical.integer64((as.integer64(3)^(1:39))^(1/1:39), as.integer64(rep(3, 39))))
+#! stopifnot(identical.integer64((as.integer64(10)^(1:18))^(1/1:18), as.integer64(rep(10, 18))))
+#! 
+#! message("Testing c and rep")
+#! stopifnot(identical.integer64( as.integer64(rep(1:3, 1:3)), rep(as.integer64(1:3), 1:3)))
+#! stopifnot(identical.integer64( as.integer64(rep(1:3, 3)), rep(as.integer64(1:3), 3)))
+#!  
+#! x <- as.double(c(NA,NA,NA))
+#! class(x) <- "integer64"
+#! x <- x + -1:1
+#! stopifnot(identical.integer64(rep(x, 3), c(x,x,x) ))
+#! stopifnot(identical.integer64(c.integer64(list(x,x,x), recursive=TRUE), c(x,x,x) ))
+#! 
+#! message("Testing seq")
+#! stopifnot(identical.integer64(seq(as.integer64(1), 10, 2), as.integer64(seq(1, 10, 2)) ))
+#! stopifnot(identical.integer64(seq(as.integer64(1), by=2, length.out=5), as.integer64(seq(1, by=2, length.out=5)) ))
+#! stopifnot(identical.integer64(seq(as.integer64(1), by=2, length.out=6), as.integer64(seq(1, by=2, length.out=6)) ))
+#! stopifnot(identical.integer64(seq.integer64(along.with=3:5), as.integer64(seq(along.with=3:5)) ))
+#! stopifnot(identical.integer64(seq(as.integer64(1), to=-9), as.integer64(seq(1, to=-9)) ))
+#! 
+#! message("Testing cbind and rbind")
+#! stopifnot(identical.integer64( cbind(as.integer64(1:3), 1:3), array(as.integer64(1:3), c(3,2))))
+#! stopifnot(identical.integer64( rbind(as.integer64(1:3), 1:3), t(array(as.integer64(1:3), c(3,2)))))
+#! 
+#! message("Testing coercion")
+#! stopifnot(identical( as.double(as.integer64(c(NA, seq(0, 9, 0.25)))), as.double(as.integer(c(NA, seq(0, 9, 0.25))))))
+#! stopifnot(identical( as.character(as.integer64(c(NA, seq(0, 9, 0.25)))), as.character(as.integer(c(NA, seq(0, 9, 0.25))))))
+#! stopifnot(identical( as.integer(as.integer64(c(NA, seq(0, 9, 0.25)))), as.integer(c(NA, seq(0, 9, 0.25)))))
+#! stopifnot(identical( as.logical(as.integer64(c(NA, seq(0, 9, 0.25)))), as.logical(as.integer(c(NA, seq(0, 9, 0.25))))))
+#! stopifnot(identical( as.integer(as.integer64(c(NA, FALSE, TRUE))), as.integer(c(NA, FALSE, TRUE))))
+#! stopifnot(identical( as.integer64(as.integer(as.integer64(-9:9))), as.integer64(-9:9)))
+#! stopifnot(identical( as.integer64(as.double(as.integer64(-9:9))), as.integer64(-9:9)))
+#! stopifnot(identical( as.integer64(as.character(as.integer64(-9:9))), as.integer64(-9:9)))
+#! stopifnot(identical( as.integer64(as.character(range.integer64())), range.integer64()))
 #!
-#!   \dontrun{
-#!     message("\nEven for a single boolean operation transforming logical to bit pays off")
+#! message("-- testing logical operators --")
+#! stopifnot(identical.integer64(!c(NA, -1:1), !c(as.integer64(NA), -1:1)))
+#! stopifnot(identical.integer64(rep(c(NA, -1:1), 4)&rep(c(NA, -1:1), rep(4, 4)), as.integer64(rep(c(NA, -1:1), 4))&as.integer64(rep(c(NA, -1:1), rep(4, 4)))))
+#! stopifnot(identical.integer64(rep(c(NA, -1:1), 4)|rep(c(NA, -1:1), rep(4, 4)), as.integer64(rep(c(NA, -1:1), 4))|as.integer64(rep(c(NA, -1:1), rep(4, 4)))))
+#! stopifnot(identical.integer64(xor(rep(c(NA, -1:1), 4),rep(c(NA, -1:1), rep(4, 4))), xor(as.integer64(rep(c(NA, -1:1), 4)),as.integer64(rep(c(NA, -1:1), rep(4, 4))))))
+#! 
+#! message("-- testing comparison operators --")
+#! stopifnot(identical.integer64(rep(c(NA, -1:1), 4)==rep(c(NA, -1:1), rep(4, 4)), as.integer64(rep(c(NA, -1:1), 4))==as.integer64(rep(c(NA, -1:1), rep(4, 4)))))
+#! stopifnot(identical.integer64(rep(c(NA, -1:1), 4)!=rep(c(NA, -1:1), rep(4, 4)), as.integer64(rep(c(NA, -1:1), 4))!=as.integer64(rep(c(NA, -1:1), rep(4, 4)))))
+#! stopifnot(identical.integer64(rep(c(NA, -1:1), 4)>rep(c(NA, -1:1), rep(4, 4)), as.integer64(rep(c(NA, -1:1), 4))>as.integer64(rep(c(NA, -1:1), rep(4, 4)))))
+#! stopifnot(identical.integer64(rep(c(NA, -1:1), 4)>=rep(c(NA, -1:1), rep(4, 4)), as.integer64(rep(c(NA, -1:1), 4))>=as.integer64(rep(c(NA, -1:1), rep(4, 4)))))
+#! stopifnot(identical.integer64(rep(c(NA, -1:1), 4)<rep(c(NA, -1:1), rep(4, 4)), as.integer64(rep(c(NA, -1:1), 4))<as.integer64(rep(c(NA, -1:1), rep(4, 4)))))
+#! stopifnot(identical.integer64(rep(c(NA, -1:1), 4)<=rep(c(NA, -1:1), rep(4, 4)), as.integer64(rep(c(NA, -1:1), 4))<=as.integer64(rep(c(NA, -1:1), rep(4, 4)))))
+#!
+#! message("-- testing vector functions --")
+#! stopifnot(identical.integer64( is.na(as.integer64(c(NA, -1:1))), is.na(c(NA, -1:1)) ))
+#! stopifnot(identical.integer64( format(as.integer64(c(NA, -1:1))), format(c(NA, -1:1)) ))
+#! stopifnot(identical.integer64( abs(as.integer64(c(NA, -1:1))), as.integer64(abs(c(NA, -1:1))) ))
+#! stopifnot(identical.integer64( sign(as.integer64(c(NA, -1:1))), as.integer64(sign(c(NA, -1:1))) ))
+#! stopifnot(identical.integer64( ceiling(as.integer64(c(NA, -1:1))), as.integer64(ceiling(c(NA, -1:1))) ))
+#! stopifnot(identical.integer64( floor(as.integer64(c(NA, -1:1))), as.integer64(floor(c(NA, -1:1))) ))
+#! stopifnot(identical.integer64( trunc(as.integer64(c(NA, -1:1))), as.integer64(trunc(c(NA, -1:1))) ))
+#! stopifnot(identical.integer64( signif(as.integer64(c(NA, -1:1))), as.integer64(c(NA, -1:1)) ))
+#!
+#! message("Testing summary functions")
+#! stopifnot(identical(all(as.integer(1)), all(as.integer64(1))))
+#! stopifnot(identical(all(as.integer(0)), all(as.integer64(0))))
+#! stopifnot(identical(all(as.integer(NA)), all(as.integer64(NA))))
+#! stopifnot(identical(all(as.integer(NA), na.rm=TRUE), all(as.integer64(NA), na.rm=TRUE)))
+#! stopifnot(identical(all(as.integer(1), NA), all(as.integer64(1), NA)))
+#! stopifnot(identical(all(as.integer(0), NA), all(as.integer64(0), NA)))
+#! stopifnot(identical(all(as.integer(1), NA, na.rm=TRUE), all(as.integer64(1), NA, na.rm=TRUE)))
+#! stopifnot(identical(all(as.integer(0), NA, na.rm=TRUE), all(as.integer64(0), NA, na.rm=TRUE)))
+#! stopifnot(identical(all(as.integer(c(1, NA))), all(as.integer64(c(1, NA)))))
+#! stopifnot(identical(all(as.integer(c(0, NA))), all(as.integer64(c(0, NA)))))
+#! stopifnot(identical(all(as.integer(c(1, NA)), na.rm=TRUE), all(as.integer64(c(1, NA)), na.rm=TRUE)))
+#! stopifnot(identical(all(as.integer(c(0, NA)), na.rm=TRUE), all(as.integer64(c(0, NA)), na.rm=TRUE)))
+#! 
+#! stopifnot(identical(any(as.integer(1)), any(as.integer64(1))))
+#! stopifnot(identical(any(as.integer(0)), any(as.integer64(0))))
+#! stopifnot(identical(any(as.integer(NA)), any(as.integer64(NA))))
+#! stopifnot(identical(any(as.integer(NA), na.rm=TRUE), any(as.integer64(NA), na.rm=TRUE)))
+#! stopifnot(identical(any(as.integer(1), NA), any(as.integer64(1), NA)))
+#! stopifnot(identical(any(as.integer(0), NA), any(as.integer64(0), NA)))
+#! stopifnot(identical(any(as.integer(1), NA, na.rm=TRUE), any(as.integer64(1), NA, na.rm=TRUE)))
+#! stopifnot(identical(any(as.integer(0), NA, na.rm=TRUE), any(as.integer64(0), NA, na.rm=TRUE)))
+#! stopifnot(identical(any(as.integer(c(1, NA))), any(as.integer64(c(1, NA)))))
+#! stopifnot(identical(any(as.integer(c(0, NA))), any(as.integer64(c(0, NA)))))
+#! stopifnot(identical(any(as.integer(c(1, NA)), na.rm=TRUE), any(as.integer64(c(1, NA)), na.rm=TRUE)))
+#! stopifnot(identical(any(as.integer(c(0, NA)), na.rm=TRUE), any(as.integer64(c(0, NA)), na.rm=TRUE)))
+#! 
+#! stopifnot(identical.integer64(as.integer64(sum(c(2, 3, NA))), sum(as.integer64(c(2, 3, NA)))))
+#! stopifnot(identical.integer64(as.integer64(sum(c(2, 3, NA), na.rm=TRUE)), sum(as.integer64(c(2, 3, NA)), na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(sum(c(2, 3, NA))), sum(as.integer64(c(2, 3, NA)))))
+#! stopifnot(identical.integer64(as.integer64(sum(c(2, 3, NA), na.rm=TRUE)), sum(as.integer64(c(2, 3, NA)), na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(sum(2, 3, NA)), sum(as.integer64(2), 3, NA)))
+#! stopifnot(identical.integer64(as.integer64(sum(2, 3, NA, na.rm=TRUE)), sum(as.integer64(2), 3, NA, na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(sum(2, 3, NA)), sum(as.integer64(2), 3, NA)))
+#! stopifnot(identical.integer64(as.integer64(sum(2, 3, NA, na.rm=TRUE)), sum(as.integer64(2), 3, NA, na.rm=TRUE)))
+#! 
+#! stopifnot(identical.integer64(as.integer64(prod(c(2, 3, NA))), prod(as.integer64(c(2, 3, NA)))))
+#! stopifnot(identical.integer64(as.integer64(prod(c(2, 3, NA), na.rm=TRUE)), prod(as.integer64(c(2, 3, NA)), na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(prod(c(2, 3, NA))), prod(as.integer64(c(2, 3, NA)))))
+#! stopifnot(identical.integer64(as.integer64(prod(c(2, 3, NA), na.rm=TRUE)), prod(as.integer64(c(2, 3, NA)), na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(prod(2, 3, NA)), prod(as.integer64(2), 3, NA)))
+#! stopifnot(identical.integer64(as.integer64(prod(2, 3, NA, na.rm=TRUE)), prod(as.integer64(2), 3, NA, na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(prod(2, 3, NA)), prod(as.integer64(2), 3, NA)))
+#! stopifnot(identical.integer64(as.integer64(prod(2, 3, NA, na.rm=TRUE)), prod(as.integer64(2), 3, NA, na.rm=TRUE)))
+#! 
+#! stopifnot(identical.integer64(as.integer64(min(c(2, 3, NA))), min(as.integer64(c(2, 3, NA)))))
+#! stopifnot(identical.integer64(as.integer64(min(c(2, 3, NA), na.rm=TRUE)), min(as.integer64(c(2, 3, NA)), na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(min(c(2, 3, NA))), min(as.integer64(c(2, 3, NA)))))
+#! stopifnot(identical.integer64(as.integer64(min(c(2, 3, NA), na.rm=TRUE)), min(as.integer64(c(2, 3, NA)), na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(min(2, 3, NA)), min(as.integer64(2), 3, NA)))
+#! stopifnot(identical.integer64(as.integer64(min(2, 3, NA, na.rm=TRUE)), min(as.integer64(2), 3, NA, na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(min(2, 3, NA)), min(as.integer64(2), 3, NA)))
+#! stopifnot(identical.integer64(as.integer64(min(2, 3, NA, na.rm=TRUE)), min(as.integer64(2), 3, NA, na.rm=TRUE)))
+#! 
+#! stopifnot(identical.integer64(as.integer64(max(c(2, 3, NA))), max(as.integer64(c(2, 3, NA)))))
+#! stopifnot(identical.integer64(as.integer64(max(c(2, 3, NA), na.rm=TRUE)), max(as.integer64(c(2, 3, NA)), na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(max(c(2, 3, NA))), max(as.integer64(c(2, 3, NA)))))
+#! stopifnot(identical.integer64(as.integer64(max(c(2, 3, NA), na.rm=TRUE)), max(as.integer64(c(2, 3, NA)), na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(max(2, 3, NA)), max(as.integer64(2), 3, NA)))
+#! stopifnot(identical.integer64(as.integer64(max(2, 3, NA, na.rm=TRUE)), max(as.integer64(2), 3, NA, na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(max(2, 3, NA)), max(as.integer64(2), 3, NA)))
+#! stopifnot(identical.integer64(as.integer64(max(2, 3, NA, na.rm=TRUE)), max(as.integer64(2), 3, NA, na.rm=TRUE)))
+#! 
+#! stopifnot(identical.integer64(as.integer64(range(c(2, 3, NA))), range(as.integer64(c(2, 3, NA)))))
+#! stopifnot(identical.integer64(as.integer64(range(c(2, 3, NA), na.rm=TRUE)), range(as.integer64(c(2, 3, NA)), na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(range(c(2, 3, NA))), range(as.integer64(c(2, 3, NA)))))
+#! stopifnot(identical.integer64(as.integer64(range(c(2, 3, NA), na.rm=TRUE)), range(as.integer64(c(2, 3, NA)), na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(range(2, 3, NA)), range(as.integer64(2), 3, NA)))
+#! stopifnot(identical.integer64(as.integer64(range(2, 3, NA, na.rm=TRUE)), range(as.integer64(2), 3, NA, na.rm=TRUE)))
+#! stopifnot(identical.integer64(as.integer64(range(2, 3, NA)), range(as.integer64(2), 3, NA)))
+#! stopifnot(identical.integer64(as.integer64(range(2, 3, NA, na.rm=TRUE)), range(as.integer64(2), 3, NA, na.rm=TRUE)))
+#! 
+#! message("-- testing cummulative functions --")
+#! stopifnot(identical.integer64(as.integer64(cumsum(c(2, 3, NA, 1, 4))), cumsum(as.integer64(c(2, 3, NA, 1, 4)))))
+#! stopifnot(identical.integer64(as.integer64(cumprod(c(2, 3, NA, 1, 4))), cumprod(as.integer64(c(2, 3, NA, 1, 4)))))
+#! stopifnot(identical.integer64(as.integer64(cummin(c(2, 3, NA, 1, 4))), cummin(as.integer64(c(2, 3, NA, 1, 4)))))
+#! stopifnot(identical.integer64(as.integer64(cummax(c(2, 3, NA, 1, 4))), cummax(as.integer64(c(2, 3, NA, 1, 4)))))
+#! 
+#! message("testing diff")
+#! d64 <- diffinv(rep(.Machine$integer.max, 100), lag=2, differences=2)
+#! i64 <- as.integer64(d64)
+#! identical(diff(d64, lag=2, differences=2), as.double(diff(i64, lag=2, differences=2)))
 #!
 #!   }
+#!
+#!   \dontrun{
+#! message("== Differences between integer64 and int64 ==")
+#! require(bit64)
+#! require(int64)
+#! 
+#! message("-- integer64 is atomic --")
+#! is.atomic(integer64())
+#! is.atomic(int64())
+#! str(integer64(3))
+#! str(int64(3))
+#! 
+#! message("-- integer64 needs 7x/5x less RAM than int64 under 64/32 bit OS (and twice the RAM of integer as it should be) --")
+#! as.vector(object.size(int64(1e6))/object.size(integer64(1e6)))
+#! as.vector(object.size(integer64(1e6))/object.size(integer(1e6)))
+#! 
+#! message("-- integer64 creates 2000x/1300x faster than int64 under 64/32 bit OS (and 3x the time of integer) --")
+#! t32 <- system.time(integer(1e8))
+#! t64 <- system.time(integer64(1e8))
+#! T64 <- system.time(int64(1e7))*10  # using 1e8 as above stalls our R on an i7 8 GB RAM Thinkpad
+#! T64/t64
+#! t64/t32
+#! 
+#! i32 <- sample(1e6)
+#! d64 <- as.double(i32)
+#! 
+#! message("-- the following timings are rather conservative since timings of integer64 include garbage collection -- due to looped calls")
+#! message("-- integer64 coerces 900x/100x faster than int64 under 64/32 bit OS (and 2x the time of coercing to integer) --")
+#! t32 <- system.time(for(i in 1:1000)as.integer(d64))
+#! t64 <- system.time(for(i in 1:1000)as.integer64(d64))
+#! T64 <- system.time(as.int64(d64))*1000
+#! T64/t64
+#! t64/t32
+#! td64 <- system.time(for(i in 1:1000)as.double(i32))
+#! t64 <- system.time(for(i in 1:1000)as.integer64(i32))
+#! T64 <- system.time(for(i in 1:10)as.int64(i32))*100
+#! T64/t64
+#! t64/td64
+#! 
+#! message("-- integer64 serializes 4x/0.8x faster than int64 under 64/32 bit OS (and less than 2x/6x the time of integer or double) --")
+#! t32 <- system.time(for(i in 1:10)serialize(i32, NULL))
+#! td64 <- system.time(for(i in 1:10)serialize(d64, NULL))
+#! i64 <- as.integer64(i32); 
+#! t64 <- system.time(for(i in 1:10)serialize(i64, NULL))
+#! rm(i64); gc()
+#! I64 <- as.int64(i32); 
+#! T64 <- system.time(for(i in 1:10)serialize(I64, NULL))
+#! rm(I64); gc()
+#! T64/t64
+#! t64/t32
+#! t64/td64
+#! 
+#! 
+#! message("-- integer64 adds 250x/60x faster than int64 under 64/32 bit OS (and less than 6x the time of integer or double) --")
+#! td64 <- system.time(for(i in 1:100)d64+d64)
+#! t32 <- system.time(for(i in 1:100)i32+i32)
+#! i64 <- as.integer64(i32); 
+#! t64 <- system.time(for(i in 1:100)i64+i64)
+#! rm(i64); gc()
+#! I64 <- as.int64(i32); 
+#! T64 <- system.time(for(i in 1:10)I64+I64)*10
+#! rm(I64); gc()
+#! T64/t64
+#! t64/t32
+#! t64/td64
+#! 
+#! message("-- integer64 sums 3x/0.2x faster than int64 (and at about 5x/60X the time of integer and double) --")
+#! td64 <- system.time(for(i in 1:100)sum(d64))
+#! t32 <- system.time(for(i in 1:100)sum(i32))
+#! i64 <- as.integer64(i32); 
+#! t64 <- system.time(for(i in 1:100)sum(i64))
+#! rm(i64); gc()
+#! I64 <- as.int64(i32); 
+#! T64 <- system.time(for(i in 1:100)sum(I64))
+#! rm(I64); gc()
+#! T64/t64
+#! t64/t32
+#! t64/td64
+#! 
+#! message("-- integer64 diffs 5x/0.85x faster than integer and double (int64 version 1.0 does not support diff) --")
+#! td64 <- system.time(for(i in 1:10)diff(d64, lag=2L, differences=2L))
+#! t32 <- system.time(for(i in 1:10)diff(i32, lag=2L, differences=2L))
+#! i64 <- as.integer64(i32); 
+#! t64 <- system.time(for(i in 1:10)diff(i64, lag=2L, differences=2L))
+#! rm(i64); gc()
+#! t64/t32
+#! t64/td64
+#! 
+#! 
+#! message("-- integer64 subscripts 1000x/340x faster than int64 (and at the same speed / 10x slower as integer) --")
+#! ts32 <- system.time(for(i in 1:1000)sample(1e6, 1e3))
+#! t32<- system.time(for(i in 1:1000)i32[sample(1e6, 1e3)])
+#! i64 <- as.integer64(i32); 
+#! t64 <- system.time(for(i in 1:1000)i64[sample(1e6, 1e3)])
+#! rm(i64); gc()
+#! I64 <- as.int64(i32); 
+#! T64 <- system.time(for(i in 1:100)I64[sample(1e6, 1e3)])*10
+#! rm(I64); gc()
+#! (T64-ts32)/(t64-ts32)
+#! (t64-ts32)/(t32-ts32)
+#! 
+#! message("-- integer64 assigns 200x/90x faster than int64 (and 50x/160x slower than integer) --")
+#! ts32 <- system.time(for(i in 1:100)sample(1e6, 1e3))
+#! t32 <- system.time(for(i in 1:100)i32[sample(1e6, 1e3)] <- 1:1e3)
+#! i64 <- as.integer64(i32); 
+#! i64 <- system.time(for(i in 1:100)i64[sample(1e6, 1e3)] <- 1:1e3)
+#! rm(i64); gc()
+#! I64 <- as.int64(i32); 
+#! I64 <- system.time(for(i in 1:10)I64[sample(1e6, 1e3)] <- 1:1e3)*10
+#! rm(I64); gc()
+#! (T64-ts32)/(t64-ts32)
+#! (t64-ts32)/(t32-ts32)
+#! 
+#! 
+#! tdfi32 <- system.time(dfi32 <- data.frame(a=i32, b=i32, c=i32))
+#! tdfsi32 <- system.time(dfi32[1e6:1,])
+#! fi32 <- tempfile()
+#! tdfwi32 <- system.time(write.csv(dfi32, file=fi32, row.names=FALSE))
+#! tdfri32 <- system.time(read.csv(fi32, colClasses=rep("integer", 3)))
+#! unlink(fi32)
+#! rm(dfi32); gc()
+#! 
+#! i64 <- as.integer64(i32); 
+#! tdfi64 <- system.time(dfi64 <- data.frame(a=i64, b=i64, c=i64))
+#! tdfsi64 <- system.time(dfi64[1e6:1,])
+#! fi64 <- tempfile()
+#! tdfwi64 <- system.time(write.csv(dfi64, file=fi64, row.names=FALSE))
+#! tdfri64 <- system.time(read.csv(fi64, colClasses=rep("integer64", 3)))
+#! unlink(fi64)
+#! rm(i64, dfi64); gc()
+#! 
+#! I64 <- as.int64(i32); 
+#! tdfI64 <- system.time(dfI64<-data.frame(a=I64, b=I64, c=I64))
+#! tdfsI64 <- system.time(dfI64[1e6:1,])
+#! fI64 <- tempfile()
+#! tdfwI64 <- system.time(write.csv(dfI64, file=fI64, row.names=FALSE))
+#! tdfrI64 <- system.time(read.csv(fI64, colClasses=rep("int64", 3)))
+#! unlink(fI64)
+#! rm(I64, dfI64); gc()
+#! 
+#! message("-- integer64 coerces 40x/6x faster to data.frame than int64(and factor 1/9 slower than integer) --")
+#! tdfI64/tdfi64
+#! tdfi64/tdfi32
+#! message("-- integer64 subscripts from data.frame 20x/2.5x faster than int64 (and 3x/13x slower than integer) --")
+#! tdfsI64/tdfsi64
+#! tdfsi64/tdfsi32
+#! message("-- integer64 csv writes about 2x/0.5x faster than int64 (and about 1.5x/5x slower than integer) --")
+#! tdfwI64/tdfwi64
+#! tdfwi64/tdfwi32
+#! message("-- integer64 csv reads about 3x/1.5 faster than int64 (and about 2x slower than integer) --")
+#! tdfrI64/tdfri64
+#! tdfri64/tdfri32
+#! 
+#! rm(i32, d64); gc()
+#! 
+#! 
+#! message("-- investigating the impact on garbage collection: --")
+#! message("-- the fragmented structure of int64 messes up R's RAM --")
+#! message("-- and slows down R's gargbage collection just by existing --")
+#! 
+#! td32 <- double(21)
+#! td32[1] <- system.time(d64 <- double(1e7))[3]
+#! for (i in 2:11)td32[i] <- system.time(gc(), gcFirst=FALSE)[3]
+#! rm(d64)
+#! for (i in 12:21)td32[i] <- system.time(gc(), gcFirst=FALSE)[3]
+#! 
+#! t64 <- double(21)
+#! t64[1] <- system.time(i64 <- integer64(1e7))[3]
+#! for (i in 2:11)t64[i] <- system.time(gc(), gcFirst=FALSE)[3]
+#! rm(i64)
+#! for (i in 12:21)t64[i] <- system.time(gc(), gcFirst=FALSE)[3]
+#! 
+#! T64 <- double(21)
+#! T64[1] <- system.time(I64 <- int64(1e7))[3]
+#! for (i in 2:11)T64[i] <- system.time(gc(), gcFirst=FALSE)[3]
+#! rm(I64)
+#! for (i in 12:21)T64[i] <- system.time(gc(), gcFirst=FALSE)[3]
+#! 
+#! matplot(1:21, cbind(td32, t64, T64), pch=c("d","i","I"), log="y")
+#!   }
 #! }
+
+
+#! \name{identical.integer64}
+#! \alias{identical.integer64}
+#! \title{
+#!    Identity function for class 'integer64'
+#! }
+#! \description{
+#!   This will discover any deviation between objects containing integer64 vectors. 
+#! }
+#! \usage{
+#!  identical.integer64(x, y, num.eq = FALSE, single.NA = FALSE, attrib.as.set = TRUE, ignore.bytecode = TRUE)
+#! }
+#! \arguments{
+#!   \item{x}{ atomic vector of class 'integer64' }
+#!   \item{y}{ atomic vector of class 'integer64' }
+#!   \item{num.eq}{ see \code{\link{identical}} }
+#!   \item{single.NA}{ see \code{\link{identical}} }
+#!   \item{attrib.as.set}{ see \code{\link{identical}} }
+#!   \item{ignore.bytecode}{ see \code{\link{identical}} }
+#! }
+#! \details{
+#!   This is simply a wrapper to \code{\link{identical}} with default arguments \code{num.eq = FALSE, single.NA = FALSE}.
+#! }
+#! \value{
+#!   A single logical value, \code{TRUE} or \code{FALSE}, never \code{NA} and never anything other than a single value. 
+#! }
+#! \author{
+#! Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
+#! }
+#! \keyword{ classes }
+#! \keyword{ manip }
+#! \seealso{ \code{\link{==.integer64}} \code{\link{identical}} \code{\link{integer64}}  }
+#! \examples{
+#!   i64 <- as.double(NA); class(i64) <- "integer64"
+#!   identical(i64-1, i64+1)
+#!   identical.integer64(i64-1, i64+1)
+#! }
+
 
 #! \name{as.character.integer64}
 #! \alias{as.character.integer64}
@@ -351,6 +901,10 @@ n <- length(x)
 #! \arguments{
 #!   \item{x}{ an atomic vector }
 #!   \item{\dots}{ further arguments to the \code{\link{NextMethod}} }
+#! }
+#! \details{
+#!   \code{as.integer64.character} is realized using C function \code{strtoll} which does not support scientific notation. 
+#!   Instead of '1e6' use '1000000'.
 #! }
 #! \value{
 #!   The other methods return atomic vectors of the expected types
@@ -548,7 +1102,7 @@ n <- length(x)
 #! }
 #! \description{
 #!   Summary functions for integer64 vectors. 
-#!   Function 'range' without returns the smallest and largest value of the 'integer64' class.
+#!   Function 'range' without arguments returns the smallest and largest value of the 'integer64' class.
 #! }
 #! \usage{
 #! \method{all}{integer64}(\dots, na.rm = FALSE)
@@ -635,12 +1189,13 @@ n <- length(x)
 #!   The ususal functions 'c', 'cbind' and 'rbind'
 #! }
 #! \usage{
-#! \method{c}{integer64}(\dots)
+#! \method{c}{integer64}(\dots, recursive = FALSE)
 #! \method{cbind}{integer64}(\dots)
 #! \method{rbind}{integer64}(\dots)
 #! }
 #! \arguments{
 #!   \item{\dots}{ two or more arguments coerced to 'integer64' and passed to \code{\link{NextMethod}} }
+#!   \item{recursive}{ logical. If \code{recursive = TRUE}, the function recursively descends through lists (and pairlists) combining all their elements into a vector. }
 #! }
 #! \value{
 #!   \code{\link{c}} returns a integer64 vector of the total length of the input \cr
@@ -716,11 +1271,16 @@ n <- length(x)
 #!   \item{along.with}{ scalar }
 #!   \item{\dots}{ ignored }
 #! }
+#! \details{
+#!   \code{seq.integer64} does coerce its arguments 'from', 'to' and 'by' to \code{integer64}.
+#!   If not provided, the argument 'by' is automatically determined as \code{+1} or \code{-1},
+#!   but the size of 'by' is not calculated as in \code{\link{seq}} (because this might result in a non-integer value).
+#! }
 #! \value{
 #!   an integer64 vector with the generated sequence
 #! }
 #! \note{
-#!   In base R \code{\link{:}} currently is not generic and does not dispatch, therefor we make it generic.
+#!   In base R \code{\link{:}} currently is not generic and does not dispatch, see section "Limitations inherited from Base R" in \code{\link{integer64}}
 #! }
 #! \author{
 #! Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
@@ -731,7 +1291,7 @@ n <- length(x)
 #!           \code{\link{as.data.frame.integer64}} \code{\link{integer64}}  
 #! }
 #! \examples{
-#!   #as.integer64(1):12
+#!   # colon not activated: as.integer64(1):12
 #!   seq(as.integer64(1), 12, 2)
 #!   seq(as.integer64(1), by=2, length.out=6)
 #! }
@@ -746,12 +1306,11 @@ n <- length(x)
 #!   Coercing integer64 vector to data.frame.
 #! }
 #! \usage{
-#!   \method{as.data.frame}{integer64}(x, row.names = NULL, \dots)
+#!   \method{as.data.frame}{integer64}(x, \dots)
 #! }
 #! \arguments{
 #!   \item{x}{ an integer64 vector }
-#!   \item{row.names}{ NULL or character vector }
-#!   \item{\dots}{ ignored }
+#!   \item{\dots}{ passed to NextMethod \code{\link{as.data.frame}} after removing the 'integer64' class attribute }
 #! }
 #! \value{
 #!   a one-column data.frame containing an integer64 vector
@@ -817,6 +1376,21 @@ n <- length(x)
 	# ":.default" <- get(":")
 	# ":" <- function(from,to)UseMethod(":")
 # }
+
+
+identical.integer64 <- function(x, y
+, num.eq = FALSE
+, single.NA = FALSE
+, attrib.as.set = TRUE
+, ignore.bytecode = TRUE
+)
+identical(x=x, y=y
+, num.eq = num.eq
+, single.NA = single.NA
+, attrib.as.set = attrib.as.set
+, ignore.bytecode = ignore.bytecode
+)
+
 
 as.integer64 <- function (x, ...) 
 UseMethod("as.integer64")
@@ -893,6 +1467,13 @@ integer64 <- function(length=0){
 
 is.integer64 <- function(x)inherits(x, "integer64")
 
+if (!exists("is.double.default")){
+	is.double.default <- is.double
+	is.double <- function(x)UseMethod("is.double")
+}
+is.double.integer64 <- function(x)FALSE
+
+
 as.integer64.NULL <- function (x, ...){
   ret <- double()
   setattr(ret, "class", "integer64")
@@ -937,7 +1518,7 @@ as.integer.integer64 <- function(x, ...){
 
 as.logical.integer64 <- function(x, ...){
   ret <- logical(length(x))
-  .Call("as_integer_integer64", x, ret)
+  .Call("as_logical_integer64", x, ret)
   ret
 }
 
@@ -970,10 +1551,10 @@ setAs("integer64","character",function(from)as.character.integer64(from))
 }
 
 
-format.integer64 <- function(x, ...){
+format.integer64 <- function(x, justify="right", ...){
   a <- attributes(x)
   x <- as.character(x)
-  ret <- NextMethod()
+  ret <- format(x, justify=justify, ...)
   a$class <- minusclass(a$class, "integer64")
   setattributes(ret, a)
   ret
@@ -1019,13 +1600,13 @@ print.integer64 <- function(x, quote=FALSE, ...){
   ret
 }
 
-c.integer64 <- function(...){
+c.integer64 <- function(..., recursive = FALSE){
 	l <- list(...)
-	n <- sapply(l, length)
-	N <- sum(n)
 	K <- length(l)
 	for (k in 1:K){
-	  if (!is.integer64(l[[k]])){
+	  if (recursive && is.list(l[[k]])){
+	    l[[k]] <- do.call("c.integer64", c(l[[k]], list(recursive=TRUE)))
+	  }else if (!is.integer64(l[[k]])){
 	    nam <- names(l[[k]])
 	    l[[k]] <- as.integer64(l[[k]])
 		names(l[[k]]) <- nam
@@ -1067,19 +1648,14 @@ rbind.integer64 <- function(...){
   ret
 }
 
-as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
-  if (is.null(row.names)){
-    if (is.null(colnames(x))){
-		if (is.null(names(x)))
-		  row.names <- as.character(1:length(x))
-		else
-		  row.names <- names(x)
-	}else{
-	  row.names <- colnames(x)
-	}
-  }
-  ret <- list(x)
-  setattributes(ret, list(names=colnames(x), row.names=row.names, class="data.frame"))
+as.data.frame.integer64 <- function(x, ...){
+  cl <- oldClass(x)
+  on.exit(setattr(x, "class", cl))
+  setattr(x, "class", minusclass(cl, "integer64"))
+  ret <- as.data.frame(x, ...)
+  k <- length(ret)
+  for (i in 1:k)
+    setattr(ret[[i]], "class", cl) 
   ret
 }
 
@@ -1092,63 +1668,51 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
 }
 
 # FIXME no method dispatch for :
-# ":.integer64" <- function(from, to){
-  # from <- as.integer64(from)
-  # to <- as.integer64(to)
-  # ret <- double(as.integer(to-from+1L))
-  # .Call("seq_integer64", from, as.integer64(1L), ret)
-  # setattr(ret, "class", "integer64")
-  # ret
-# }
+":.integer64" <- function(from, to){
+  from <- as.integer64(from)
+  to <- as.integer64(to)
+  ret <- double(as.integer(to-from+1L))
+  .Call("seq_integer64", from, as.integer64(1L), ret)
+  setattr(ret, "class", "integer64")
+  ret
+}
 
 "seq.integer64" <- function(from=NULL, to=NULL, by=NULL, length.out=NULL, along.with=NULL, ...){
+    if (is.null(length.out))
+      length.out <- length(along.with)
+    else 
+      length.out <- as.integer(length.out)
+	
+    if (is.null(by)){
+      if (is.null(from) || is.null(to))
+	    by <- as.integer64(1L)
+	  else
+	    by <- as.integer64(sign(to-from))
+    }else{
+	  by <- as.integer64(by)
+	  if ((!is.null(from)) && (!is.null(to)) && sign(by)!=sign(to-from))
+        stop("wrong sign of 'by' argument")
+    }
+  
     if (is.null(from)){
-      if (is.null(to))
-        stop("need 'from' or 'to'")
+      if (length.out && length(to))
+	    from <- to - (length.out-1L)*by
+	  else
+	    from <- as.integer64(1)
+    }else 
+	  from <- as.integer64(from)
+	  
+	if (!length(to)){
+	  if (length.out)
+	    to <- from + (length.out-1L)*by
       else
-        to <- as.integer64(to)
-      if (is.null(by))
-        by <- as.integer64(1L)
-      else
-        by <- as.integer64(by)
-    }else{
-      from <- as.integer64(from)
-      if (is.null(to)){
-        if (is.null(by))
-          by <- as.integer64(1L)
-        else
-          by <- as.integer64(by)
-      }else{
-        to <- as.integer64(to)
-        n <- to - from
-        if (is.null(by)){
-          if (to<from)
-            by = as.integer64(-1L)
-          else
-            by = as.integer64(1L)
-        }else{
-          by <- as.integer64(by)
-          if (n){
-            if (sign(n) != sign(by))
-              stop("wrong sign of by")
-          }else
-            return(as.integer64(from))  # to == from
-        }
-      }
+		stop("not enough informatoin provided")
+	}
+	
+    if (!length.out){
+	  length.out <- (to-from) %/% by + 1L
     }
-    if (is.null(length.out)){
-      if (is.null(along.with)){
-        if (is.null(to) || is.null(from))
-          stop("not enough info to guess the length.out")
-        else{
-          length.out <- n %/% by + 1L
-        }
-      }else{
-        length.out <- length(along.with)
-      }
-    }else{
-      length.out <- as.integer64(length.out)
-    }
+
     if (length.out){
       if (length.out==1L)
         return(from)
@@ -1165,6 +1729,8 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
 
 
 "+.integer64" <- function(e1, e2){
+  if (missing(e2))
+    return(e1)
   a <- binattr(e1,e2)
   e1 <- as.integer64(e1)
   e2 <- as.integer64(e2)
@@ -1176,6 +1742,10 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
 }
 
 "-.integer64" <- function(e1, e2){
+  if (missing(e2)){
+    e2 <- e1
+	e1 <- 0L
+  }
   a <- binattr(e1,e2)
   e1 <- as.integer64(e1)
   e2 <- as.integer64(e2)
@@ -1184,32 +1754,6 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
   a$class <- plusclass(a$class, "integer64")
   setattributes(ret, a)
   ret
-}
-
-"*.integer64" <- function(e1, e2){
-  a <- binattr(e1,e2)
-  e1 <- as.integer64(e1)
-  e2 <- as.integer64(e2)
-  ret <- double(max(length(e1),length(e2)))
-  .Call("times_integer64", e1, e2, ret)
-  a$class <- plusclass(a$class, "integer64")
-  setattributes(ret, a)
-  ret
-}
-
-"^.integer64" <- function(e1, e2){
-  a <- binattr(e1,e2)
-  ret <- as.double(e1)^as.double(e2)
-  a$class <- minusclass(a$class, "integer64")
-  setattributes(ret, a)
-  ret
-}
-
-"/.integer64" <- function(e1, e2){
-  a <- binattr(e1,e2)
-  ret <- as.double(e1)/as.double(e2)
-  a$class <- minusclass(a$class, "integer64")
-  setattributes(ret, a)
 }
 
 "%/%.integer64" <- function(e1, e2){
@@ -1230,6 +1774,43 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
   ret <- double(max(length(e1), length(e2)))
   .Call("mod_integer64", e1, e2, ret)
   a$class <- plusclass(a$class, "integer64")
+  setattributes(ret, a)
+  ret
+}
+
+
+"*.integer64" <- function(e1, e2){
+  a <- binattr(e1,e2)
+  ret <- double(max(length(e1),length(e2)))
+  if (is.double(e2))
+    .Call("times_integer64_double", as.integer64(e1), e2, ret)
+  else
+    .Call("times_integer64_integer64", as.integer64(e1), as.integer64(e2), ret)
+  a$class <- plusclass(a$class, "integer64")
+  setattributes(ret, a)
+  ret
+}
+
+"^.integer64" <- function(e1, e2){
+  a <- binattr(e1,e2)
+  ret <- double(max(length(e1),length(e2)))
+  if (is.double(e2))
+    .Call("power_integer64_double", as.integer64(e1), e2, ret)
+  else
+    .Call("power_integer64_integer64", as.integer64(e1), as.integer64(e2), ret)
+  a$class <- plusclass(a$class, "integer64")
+  setattributes(ret, a)
+  ret
+}
+
+"/.integer64" <- function(e1, e2){
+  a <- binattr(e1,e2)
+  ret <- double(max(length(e1),length(e2)))
+  if (is.double(e2))
+	  .Call("divide_integer64_double", as.integer64(e1), e2, ret)
+  else
+	  .Call("divide_integer64_integer64", as.integer64(e1), as.integer64(e2), ret)
+  a$class <- minusclass(a$class, "integer64")
   setattributes(ret, a)
   ret
 }
@@ -1262,13 +1843,13 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
 
 "log.integer64" <- function(x, base=NULL){
   a <- attributes(x)
-  ret <- double(length(x))
+  ret <- double(max(length(x),length(base)))
   if (is.null(base))
 	log_integer64(x,ret)
-  else{
-	if (length(base)!=1)
-	  stop("base must be scalar, this saves 50% log calls in vector processing")
+  else if(length(base)==1){
     .Call("logbase_integer64", x, as.double(base),ret)
+  }else{
+    .Call("logvect_integer64", x, as.double(base),ret)
   }
   a$class <- minusclass(a$class, "integer64")
   setattributes(ret, a)
@@ -1296,6 +1877,8 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
 "trunc.integer64" <- function(x, ...)x
 "floor.integer64" <- "ceiling.integer64" <- function(x)x
 
+"signif.integer64" <- function(x, digits=6)x
+
 "round.integer64" <- function(x, digits=0){
   if (digits<0){
     a <- attributes(x)
@@ -1308,14 +1891,11 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
 	x
 }
 
-"signif.integer64" <- function(x, digits=6)stop("not implemented")
-
-
 "any.integer64" <- function(..., na.rm = FALSE){
   l <- list(...)
   ret <- logical(1)
   if (length(l)==1){
-		  .Call("any_integer64", e, na.rm, ret)
+		  .Call("any_integer64", l[[1]], na.rm, ret)
 		  ret
   }else{
 	  any(sapply(l, function(e){
@@ -1352,38 +1932,42 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
   ret <- double(1)
   if (length(l)==1){
 		  .Call("sum_integer64", l[[1]], na.rm, ret)
+		  setattr(ret, "class", "integer64")
 		  ret
   }else{
-	  sum(sapply(l, function(e){
+	  ret <- sapply(l, function(e){
 		if (is.integer64(e)){
 		  .Call("sum_integer64", e, na.rm, ret)
 		  ret
 		}else{
-		  sum(e, na.rm = na.rm)
+		  as.integer64(sum(e, na.rm = na.rm))
 		}
-	  }), na.rm = na.rm)
+	  })
+      setattr(ret, "class", "integer64")
+	  sum(ret, na.rm = na.rm)
   }
 }
-
 
 "prod.integer64" <- function(..., na.rm = FALSE){
   l <- list(...)
   ret <- double(1)
   if (length(l)==1){
 		  .Call("prod_integer64", l[[1]], na.rm, ret)
+		  setattr(ret, "class", "integer64")
 		  ret
   }else{
-	  prod(sapply(l, function(e){
+      ret <- sapply(l, function(e){
 		if (is.integer64(e)){
 		  .Call("prod_integer64", e, na.rm, ret)
 		  ret
 		}else{
-		  prod(e, na.rm = na.rm)
+		  as.integer64(prod(e, na.rm = na.rm))
 		}
-	  }), na.rm = na.rm)
+	  })
+	  setattr(ret, "class", "integer64")
+	  prod(ret, na.rm = na.rm)
   }
 }
-
 
 "min.integer64" <- function(..., na.rm = FALSE){
   l <- list(...)
@@ -1392,15 +1976,19 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
 		  .Call("min_integer64", l[[1]], na.rm, ret)
 	      setattr(ret, "class", "integer64")
   }else{
-	  ret <- min(sapply(l, function(e){
+	  ret <- sapply(l, function(e){
 		if (is.integer64(e)){
 		  .Call("min_integer64", e, na.rm, ret)
-	      setattr(ret, "class", "integer64")
 		  ret
 		}else{
-		  min(e, na.rm = na.rm)
+		  if (all(is.na(e)))  # this avoids returning -Inf from calling min(e) 
+		    as.integer64(NA)
+		  else
+		    as.integer64(min(e, na.rm = na.rm))
 		}
-	  }), na.rm = na.rm)
+	  })
+	  setattr(ret, "class", "integer64")
+	  ret <- min(ret, na.rm = na.rm)
   }
   if (na.rm && is.na(ret)){
 	warning("no non-NA value, returning Inf")
@@ -1409,24 +1997,26 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
     ret
 }
 
-
 "max.integer64" <- function(..., na.rm = FALSE){
   l <- list(...)
   ret <- double(1)
   if (length(l)==1){
 		  .Call("max_integer64", l[[1]], na.rm, ret)
 	      setattr(ret, "class", "integer64")
-		  ret
   }else{
-	  max(sapply(l, function(e){
+	  ret <- sapply(l, function(e){
 		if (is.integer64(e)){
 		  .Call("max_integer64", e, na.rm, ret)
-		  setattr(ret, "class", "integer64")
 		  ret
 		}else{
-		  max(e, na.rm = na.rm)
+		  if (all(is.na(e)))  # this avoids returning Inf from calling max(e) 
+		    as.integer64(NA)
+		  else
+		    as.integer64(max(e, na.rm = na.rm))
 		}
-	  }), na.rm = na.rm)
+	  })
+	  setattr(ret, "class", "integer64")
+	  ret <- max(ret, na.rm = na.rm)
   }
   if (na.rm && is.na(ret)){
 	warning("no non-NA value, returning -Inf")
@@ -1434,6 +2024,7 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
   }else 
     ret
 }
+
 
 "range.integer64" <- function(..., na.rm = FALSE){
   l <- list(...)
@@ -1446,18 +2037,21 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
 	}else{
 		.Call("range_integer64", l[[1]], na.rm, ret)
 		setattr(ret, "class", "integer64")
-		ret
 	}
   }else{
-	  range(sapply(l, function(e){
+      ret <- unlist(sapply(l, function(e){
 		if (is.integer64(e)){
 		  .Call("range_integer64", e, na.rm, ret)
-		  setattr(ret, "class", "integer64")
 		  ret
 		}else{
-		  range(e, na.rm = na.rm)
+		  if (all(is.na(e)))  # this avoids returning -Inf,Inf from calling range(e) 
+		    as.integer64(NA)
+		  else
+		    as.integer64(range(e, na.rm = na.rm))
 		}
-	  }), na.rm = na.rm)
+	  }))
+	  setattr(ret, "class", "integer64")
+	  ret <- range(ret, na.rm = na.rm)
   }
   if (na.rm && all(is.na(ret))){
 	warning("no non-NA value, returning -Inf,Inf")
@@ -1465,7 +2059,6 @@ as.data.frame.integer64 <- function(x, row.names = NULL, ...){  #optional = TRUE
   }else 
     ret
 }
-
 
 
 "diff.integer64" <- function(x, lag=1L, differences=1L, ...){
@@ -1640,9 +2233,14 @@ as.vector.integer64 <- function(x, mode="any"){
 
 # bug in R does not dispatch
 is.vector.integer64 <- function(x, mode="any"){
-  if (mode=="any")
-	.Class <- NULL
-  NextMethod()
+  cl <- minusclass(oldClass(x), "integer64")
+  a <- attributes(x)
+  a$class <- NULL
+  a$names <- NULL
+  if (is.na(match(mode, c("any","integer64"))) || length(cl) || length(a) )
+    FALSE
+  else
+    TRUE
 }
 
 

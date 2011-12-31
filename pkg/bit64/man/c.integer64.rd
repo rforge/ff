@@ -9,12 +9,13 @@
   The ususal functions 'c', 'cbind' and 'rbind'
 }
 \usage{
-\method{c}{integer64}(\dots)
+\method{c}{integer64}(\dots, recursive = FALSE)
 \method{cbind}{integer64}(\dots)
 \method{rbind}{integer64}(\dots)
 }
 \arguments{
   \item{\dots}{ two or more arguments coerced to 'integer64' and passed to \code{\link{NextMethod}} }
+  \item{recursive}{ logical. If \code{recursive = TRUE}, the function recursively descends through lists (and pairlists) combining all their elements into a vector. }
 }
 \value{
   \code{\link{c}} returns a integer64 vector of the total length of the input \cr

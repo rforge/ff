@@ -13,12 +13,14 @@
 
 #include <R.h>
 #include <Rdefines.h>
-#include <R_ext\Error.h>
+#include <R_ext/Error.h>
 #include <Rinternals.h>
 
 #define NA_INTEGER64 LLONG_MIN
 #define MIN_INTEGER64 LLONG_MIN+1
 #define MAX_INTEGER64 LLONG_MAX
+#define MIN_INTEGER32 INT_MIN+1
+#define MAX_INTEGER32 INT_MAX
 #define LEFTBIT_INTEGER64 0x8000000000000000
 #define NCHARS_BITS_INTEGER64 65
 #define NCHARS_DECS_INTEGER64 22
@@ -36,6 +38,7 @@
 # define GOODIDIFF64(x, y, z) ((long double) (x) - (long double) (y) == (z))
 #endif
 #define GOODIPROD64(x, y, z) ((long double) (x) * (long double) (y) == (z))
+#define INTEGER32_OVERFLOW_WARNING "NAs produced by integer overflow"
 #define INTEGER64_OVERFLOW_WARNING "NAs produced by integer64 overflow"
 #define INTEGER64_DIVISION_BY_ZERO_WARNING "NAs produced due to division by zero"
 #define INTEGER64_NAN_CREATED_WARNING "NaNs produced"
@@ -74,16 +77,63 @@
 			naflag = TRUE; \
 	}
 
-// FIXME once we use LONG DOUBLE we should use this as /
-#define DIVIDE64(e1,e2,ret,naflag) \
+#define PROD64REAL(e1,e2,ret,naflag,longret) \
+	if (e1 == NA_INTEGER64 || ISNAN(e2)) \
+		ret = NA_INTEGER64; \
+	else { \
+		longret = e1 * (long double) e2; \
+		if (isnan(longret) || longret>MAX_INTEGER64){ \
+		  naflag = TRUE; \
+		  ret = NA_INTEGER64; \
+		}else \
+		  ret = llroundl(longret); \
+	}
+
+#define POW64(e1,e2,ret,naflag, longret) \
 	if (e1 == NA_INTEGER64 || e2 == NA_INTEGER64) \
-		ret = NA_LDOUBLE; \
+		ret = NA_INTEGER64; \
+	else { \
+		longret = pow(e1, (long double) e2); \
+		if (isnan(longret)){ \
+		  naflag = TRUE; \
+		  ret = NA_INTEGER64; \
+		}else \
+		  ret = llroundl(longret); \
+	}
+
+#define POW64REAL(e1,e2,ret,naflag,longret) \
+	if (e1 == NA_INTEGER64 || ISNAN(e2)) \
+		ret = NA_INTEGER64; \
+	else { \
+		longret = pow(e1, (long double) e2); \
+		if (isnan(longret)){ \
+		  naflag = TRUE; \
+		  ret = NA_INTEGER64; \
+		}else \
+		  ret = llroundl(longret); \
+	}
+
+#define DIVIDE64REAL(e1,e2,ret,naflag) \
+	if (e1 == NA_INTEGER64 || ISNAN(e2)) \
+		ret = NA_REAL; \
 	else { \
 	    if (e2==0) \
-			ret = NA_LDOUBLE; \
+			ret = NA_REAL; \
 		else \
-			ret = (long double) e1 / (long double) e2; \
-		if (ret == NA_LDOUBLE) \
+			ret = (double)((long double) e1 / (long double) e2); \
+		if (ISNAN(ret)) \
+			naflag = TRUE; \
+	}
+
+#define DIVIDE64(e1,e2,ret,naflag) \
+	if (e1 == NA_INTEGER64 || e2 == NA_INTEGER64) \
+		ret = NA_REAL; \
+	else { \
+	    if (e2==0) \
+			ret = NA_REAL; \
+		else \
+			ret = (double)((long double) e1 / (long double) e2); \
+		if (ISNAN(ret)) \
 			naflag = TRUE; \
 	}
 
@@ -147,44 +197,53 @@
 	if (e1 == NA_INTEGER64) \
 		ret = NA_REAL; \
 	else { \
-		if (e1 < 0) \
+		ret = (double) logl((long double)e1); \
+		if (isnan(ret)) \
 			naflag = TRUE; \
-		ret = (double) log((long double)e1); \
 	}
 
-#define LOGBASE64(e1, logbase, ret, naflag) \
+#define LOGVECT64(e1, e2, ret, naflag) \
 	if (e1 == NA_INTEGER64) \
 		ret = NA_REAL; \
 	else { \
-		if (e1 < 0) \
+		ret = (double) logl((long double)e1)/log(e2); \
+		if (isnan(ret)) \
 			naflag = TRUE; \
-		ret = (double) log((long double)e1)/logbase; \
+	}
+
+#define LOGBASE64(e1, e2, ret, naflag) \
+	if (e1 == NA_INTEGER64) \
+		ret = NA_REAL; \
+	else { \
+		ret = (double) logl((long double)e1)/logbase; \
+		if (isnan(ret)) \
+			naflag = TRUE; \
 	}
 
 #define LOG1064(e1, ret, naflag) \
 	if (e1 == NA_INTEGER64) \
 		ret = NA_REAL; \
 	else { \
-		if (e1 < 0) \
+		ret =(double)  log10l((long double)e1); \
+		if (isnan(ret)) \
 			naflag = TRUE; \
-		ret =(double)  log10((long double)e1); \
 	}
 
 #define LOG264(e1, ret, naflag) \
 if (e1 == NA_INTEGER64) \
 	ret = NA_REAL; \
 else { \
-	if (e1 < 0) \
-		naflag = TRUE; \
-	ret = (double) log2((long double)e1); \
+	ret = (double) log2l((long double)e1); \
+		if (isnan(ret)) \
+			naflag = TRUE; \
 }
 
 
 #define SIGN64(e1,ret) \
 	if (e1 == NA_INTEGER64) \
-		ret = NA_REAL; \
+		ret = NA_INTEGER64; \
 	else { \
-		ret = (e1 < 1) ? -1 : (e1 == 0 ? 0 : 1); \
+		ret = (e1 < 0) ? -1 : ((e1 > 0) ? 1 : 0); \
 	}
 
 #define EQ64(e1,e2,ret) \
@@ -296,14 +355,28 @@ SEXP as_integer_integer64(SEXP x_, SEXP ret_){
     if (x[i]==NA_INTEGER64)
       ret[i] = NA_INTEGER;
 	else{
-	  if (x[i]<MIN_INTEGER64 || x[i]>MAX_INTEGER64){
+	  if (x[i]<MIN_INTEGER32 || x[i]>MAX_INTEGER32){
 	    ret[i] = NA_INTEGER;
 		naflag = TRUE;
 	  }else
 	    ret[i] = (int) x[i];
 	}
   }
-  if (naflag)warning(INTEGER64_OVERFLOW_WARNING);
+  if (naflag)warning(INTEGER32_OVERFLOW_WARNING);
+  return ret_;
+}
+
+SEXP as_logical_integer64(SEXP x_, SEXP ret_){
+  long long i, n = LENGTH(x_);
+  long long * x = (long long *) REAL(x_); 
+  int * ret = INTEGER(ret_);
+  for (i=0; i<n; i++){
+    if (x[i]==NA_INTEGER64)
+      ret[i] = NA_INTEGER;
+	else{
+	  ret[i] = x[i]==0 ? 0: 1;
+	}
+  }
   return ret_;
 }
 
@@ -408,36 +481,6 @@ SEXP diff_integer64(SEXP x_, SEXP lag_, SEXP n_, SEXP ret_){
   return ret_;
 }
 
-SEXP times_integer64(SEXP e1_, SEXP e2_, SEXP ret_){
-  long long i, n = LENGTH(ret_);
-  long long i1, n1 = LENGTH(e1_);
-  long long i2, n2 = LENGTH(e2_);
-  long long * e1 = (long long *) REAL(e1_);
-  long long * e2 = (long long *) REAL(e2_);
-  long long * ret = (long long *) REAL(ret_);
-  Rboolean naflag = FALSE;
-	mod_iterate(n1, n2, i1, i2) {
-		PROD64(e1[i1],e2[i2],ret[i],naflag)
-	}
-	if (naflag)warning(INTEGER64_OVERFLOW_WARNING);
-  return ret_;
-}
-// FIXME once we use LONG DOUBLE we should use this as /
- // SEXP divideinteger64 (SEXP e1_, SEXP e2_, SEXP ret_){
-   // long long i, n = LENGTH(ret_);
-   // long long i1, n1 = LENGTH(e1_);
-   // long long i2, n2 = LENGTH(e2_);
-   // long long * e1 = (long long *) REAL(e1_);
-   // long long * e2 = (long long *) REAL(e2_);
-   // long long * ret = (long long *) REAL(ret_);
-   // Rboolean naflag = FALSE;
-	 // mod_iterate(n1, n2, i1, i2) {
-		 // DIVIDE64(e1[i1],e2[i2],ret[i],naflag)
-	 // }
-	 // if (naflag)warning(INTEGER64_OVERFLOW_WARNING);
-   // return ret_;
-// }
-
 SEXP intdiv_integer64(SEXP e1_, SEXP e2_, SEXP ret_){
   long long i, n = LENGTH(ret_);
   long long i1, n1 = LENGTH(e1_);
@@ -466,6 +509,99 @@ SEXP mod_integer64(SEXP e1_, SEXP e2_, SEXP ret_){
 	}
 	if (naflag)warning(INTEGER64_DIVISION_BY_ZERO_WARNING);
   return ret_;
+}
+
+
+SEXP times_integer64_integer64(SEXP e1_, SEXP e2_, SEXP ret_){
+  long long i, n = LENGTH(ret_);
+  long long i1, n1 = LENGTH(e1_);
+  long long i2, n2 = LENGTH(e2_);
+  long long * e1 = (long long *) REAL(e1_);
+  long long * e2 = (long long *) REAL(e2_);
+  long long * ret = (long long *) REAL(ret_);
+  Rboolean naflag = FALSE;
+	mod_iterate(n1, n2, i1, i2) {
+		PROD64(e1[i1],e2[i2],ret[i],naflag)
+	}
+	if (naflag)warning(INTEGER64_OVERFLOW_WARNING);
+  return ret_;
+}
+
+SEXP times_integer64_double(SEXP e1_, SEXP e2_, SEXP ret_){
+  long long i, n = LENGTH(ret_);
+  long long i1, n1 = LENGTH(e1_);
+  long long i2, n2 = LENGTH(e2_);
+  long long * e1 = (long long *) REAL(e1_);
+  double * e2 = REAL(e2_);
+  long long * ret = (long long *) REAL(ret_);
+  long double longret;
+  Rboolean naflag = FALSE;
+	mod_iterate(n1, n2, i1, i2) {
+		PROD64REAL(e1[i1],e2[i2],ret[i],naflag,longret)
+	}
+	if (naflag)warning(INTEGER64_OVERFLOW_WARNING);
+  return ret_;
+}
+
+SEXP power_integer64_integer64(SEXP e1_, SEXP e2_, SEXP ret_){
+  long long i, n = LENGTH(ret_);
+  long long i1, n1 = LENGTH(e1_);
+  long long i2, n2 = LENGTH(e2_);
+  long long * e1 = (long long *) REAL(e1_);
+  long long * e2 = (long long *) REAL(e2_);
+  long long * ret = (long long *) REAL(ret_);
+  long double longret;
+  Rboolean naflag = FALSE;
+	mod_iterate(n1, n2, i1, i2) {
+		POW64(e1[i1],e2[i2],ret[i],naflag, longret)
+	}
+	if (naflag)warning(INTEGER64_OVERFLOW_WARNING);
+  return ret_;
+}
+
+SEXP power_integer64_double(SEXP e1_, SEXP e2_, SEXP ret_){
+  long long i, n = LENGTH(ret_);
+  long long i1, n1 = LENGTH(e1_);
+  long long i2, n2 = LENGTH(e2_);
+  long long * e1 = (long long *) REAL(e1_);
+  double * e2 = REAL(e2_);
+  long long * ret = (long long *) REAL(ret_);
+  long double longret;
+  Rboolean naflag = FALSE;
+	mod_iterate(n1, n2, i1, i2) {
+		POW64REAL(e1[i1],e2[i2],ret[i],naflag,longret)
+	}
+	if (naflag)warning(INTEGER64_OVERFLOW_WARNING);
+  return ret_;
+}
+
+SEXP divide_integer64_integer64(SEXP e1_, SEXP e2_, SEXP ret_){
+   long long i, n = LENGTH(ret_);
+   long long i1, n1 = LENGTH(e1_);
+   long long i2, n2 = LENGTH(e2_);
+   long long * e1 = (long long *) REAL(e1_);
+   long long * e2 = (long long *) REAL(e2_);
+   double * ret = REAL(ret_);
+   Rboolean naflag = FALSE;
+	 mod_iterate(n1, n2, i1, i2) {
+		 DIVIDE64(e1[i1],e2[i2],ret[i],naflag)
+	 }
+	 if (naflag)warning(INTEGER64_OVERFLOW_WARNING);
+   return ret_;
+}
+SEXP divide_integer64_double(SEXP e1_, SEXP e2_, SEXP ret_){
+   long long i, n = LENGTH(ret_);
+   long long i1, n1 = LENGTH(e1_);
+   long long i2, n2 = LENGTH(e2_);
+   long long * e1 = (long long *) REAL(e1_);
+   double * e2 = REAL(e2_);
+   double * ret = REAL(ret_);
+   Rboolean naflag = FALSE;
+	 mod_iterate(n1, n2, i1, i2) {
+		 DIVIDE64REAL(e1[i1],e2[i2],ret[i],naflag)
+	 }
+	 if (naflag)warning(INTEGER64_OVERFLOW_WARNING);
+   return ret_;
 }
 
 SEXP sign_integer64(SEXP e1_, SEXP ret_){
@@ -507,6 +643,21 @@ SEXP log_integer64(SEXP e1_, SEXP ret_){
   Rboolean naflag = FALSE;
 	for(i=0; i<n; i++) {
 		LOG64(e1[i],ret[i],naflag)
+	}
+	if (naflag)warning(INTEGER64_NAN_CREATED_WARNING);
+  return ret_;
+}
+
+SEXP logvect_integer64(SEXP e1_, SEXP e2_, SEXP ret_){
+  long long i, n = LENGTH(ret_);
+  long long i1, n1 = LENGTH(e1_);
+  long long i2, n2 = LENGTH(e2_);
+  long long * e1 = (long long *) REAL(e1_);
+  double * e2 = REAL(e2_);
+  double * ret = REAL(ret_);
+  Rboolean naflag = FALSE;
+	mod_iterate(n1, n2, i1, i2) {
+		LOGVECT64(e1[i],e2[i],ret[i],naflag)
 	}
 	if (naflag)warning(INTEGER64_NAN_CREATED_WARNING);
   return ret_;
