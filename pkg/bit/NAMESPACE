@@ -123,7 +123,6 @@ export(
 ,"virtual<-"
 ,"virtual.default"
 ,"virtual<-.default"
-,"xor"
 ,"xor.bit"
 ,"xor.bitwhich"
 ,"xor.default"
@@ -236,7 +235,7 @@ S3method("virtual", default)
 S3method("virtual<-", default)
 S3method("xor", bit)
 S3method("xor", bitwhich)
-S3method("xor", default)
+#S3method("xor", default)
 
 # -- rle.R - rle utilities for bit and ff --
 

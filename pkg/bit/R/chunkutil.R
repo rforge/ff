@@ -431,4 +431,3 @@ vecseq <- function(x, y=NULL, concat=TRUE, eval=TRUE){
             as.list(parse(text=paste(x,y,sep=":")))
         }
 }
-

@@ -311,6 +311,18 @@ if (FALSE){
 #!        c.integer64(list(x,x))
 #!      }
 #!
+#!     \item \bold{generic binary operators} fail to dispatch *any* user-defined S3 method 
+#!     if the two arguments have two different S3 classes. For example we have two classes 
+#!     \code{\link{bit}} and \code{\link{bitwhich}} sparsely representing boolean vectors 
+#!     and we have methods \code{\link{&.bit}} and \code{\link{&.bitwhich}}. For an expression
+#!     involving both as in \code{ bit & bitwhich}, none of the two methods is dispatched. 
+#!     Instead a standard method is dispatched, which neither handles \code{\link{bit}} 
+#!     nor \code{\link{bitwhich}}. Although it lacks symmetry, the better choice would be to 
+#!     dispatch simply the method of the class of the first argument in case of class conflict. 
+#!     This choice would allow authors of extension packages providing coherent behaviour 
+#!     at least within their contributed classes. But as long as none of the package authors 
+#!     methods is dispatched, he cannot handle the conflicting classes at all.
+#!
 #!     \item \bold{\code{\link{unlist}}} is not generic and if it were, we would face similar problems as with \code{c()}
 #!
 #!     \item \bold{\code{\link{vector}}} with argument \code{mode='integer64'} cannot work without adjustment of Base R
@@ -623,6 +635,9 @@ if (FALSE){
 #! str(integer64(3))
 #! str(int64(3))
 #! 
+#! message("-- The following performance numbers are measured under RWin64  --")
+#! message("-- under RWin32 the advantage of integer64 over int64 is smaller --")
+#!
 #! message("-- integer64 needs 7x/5x less RAM than int64 under 64/32 bit OS (and twice the RAM of integer as it should be) --")
 #! as.vector(object.size(int64(1e6))/object.size(integer64(1e6)))
 #! as.vector(object.size(integer64(1e6))/object.size(integer(1e6)))

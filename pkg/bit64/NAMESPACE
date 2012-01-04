@@ -10,6 +10,7 @@ useDynLib(bit64)
 
 importFrom(utils, packageDescription)
 importFrom(methods, is)
+importFrom(methods, as)
 
 export(
 
@@ -120,9 +121,24 @@ export(
 
 # -- match64.R - matching --
 
-#, match64
-#, print.match.hash
-#, hash64
+, hashfun
+, hashfun.integer64
+, hashmap
+, hashmap.integer64
+, hashpos
+, hashpos.integer64
+, hashrev
+, hashrev.integer64
+, hash_in
+, hash_in.integer64
+, hashdup
+, hashdup.integer64
+, hashuni
+, hashuni.integer64
+, hashtab
+, hashtab.integer64
+, hashmatch
+, hashmatch.integer64
 
 # -- zzz.R --
 
@@ -224,4 +240,12 @@ S3method("cumprod", integer64)
 
 # -- match64.R - matching --
 
-#S3method("print", match.hash)
+S3method("hashfun", integer64)
+S3method("hashmap", integer64)
+S3method("hashpos", integer64)
+S3method("hash_in", integer64)
+S3method("hashdup", integer64)
+S3method("hashuni", integer64)
+S3method("hashtab", integer64)
+S3method("hashrev", integer64)
+S3method("hashmatch", integer64)

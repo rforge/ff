@@ -14,7 +14,8 @@ using only S3 instead of S4 classes, most operations are one to three orders
 of magnitude faster: Example speedups are 4x for serialization, 250x for 
 adding, 900x for coercion and 2000x for object creation. Also 'integer64' 
 avoids an ongoing (potentially infinite) penalty for garbage collection
-observed during existence of 'int64' objects (see code in example section). 
+observed during existence of 'int64' objects. Cited measurements were done 
+under RWin64, under RWin32 the performance advantage is smaller.
 
 Last but not least, this package has no commercial copyright attached, 
 it is not sponsored by any commercial company or otherwise influenced 
