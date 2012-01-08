@@ -34,7 +34,7 @@ if (FALSE){
 #!    A S3 class for vectors of 64bit integers
 #! }
 #! \description{
-#! Package 'bit64' provides serializable S3 atomic 64bit (signed) integers 
+#! Package 'bit64' provides fast serializable S3 atomic 64bit (signed) integers 
 #! that can be used in vectors, matrices, arrays and data.frames. Methods are 
 #! available for coercion from and to logicals, integers, doubles, characters  
 #! as well as many elementwise and summary functions. 
@@ -284,13 +284,13 @@ if (FALSE){
 #!
 #!   }
 #! }
-#! \section{Limitations inherited from Base R, core team, consider changing this}{
+#! \section{Limitations inherited from Base R, Core team, can you change this?}{
 #!   \itemize{
 #!     \item \bold{\code{\link{identical}}} with default parameters does not distinguish all bit-patterns of doubles. 
 #!     For testing purposes we provide a wrapper \code{\link{identical.integer64}} that will distinguish all bit-patterns.
 #!     It would be desireable to have a single call of \code{\link{identical}} handle both, \code{\link{double}} and \code{integer64}.
 #! 
-#!     \item the \bold{colon} operator \code{\link{:}} officially does not dispatches S3 methods, therefor we have not patched it.
+#!     \item the \bold{colon} operator \code{\link{:}} officially does not dispatches S3 methods, therefore we have not patched it.
 #!    However, the following code seems to work: \preformatted{
 #!      ":.default" <- get(":")
 #!      ":" <- function(from,to)UseMethod(":")
@@ -342,13 +342,15 @@ if (FALSE){
 #!
 #!   }
 #! }
-#! \section{Limitations to be blamed on the current implementation}{
+#! \section{Limitations planned to be removed with the next release}{
 #!   \itemize{
 #!     \item \bold{\code{\link{sort}}} is not yet implemented 
 #!     \item \bold{\code{\link{order}}} is not yet implemented 
 #!     \item \bold{\code{\link{match}}} is not yet implemented 
 #!     \item \bold{\code{\link{duplicated}}} is not yet implemented 
 #!     \item \bold{\code{\link{unique}}} is not yet implemented 
+#!     \item \bold{\code{\link{table}}} is not yet implemented 
+#!     \item \bold{\code{\link{as.factor}}} is not yet implemented 
 #!   }
 #! }
 #! \value{
@@ -997,7 +999,7 @@ if (FALSE){
 #!   Unary operators and functions for integer64 vectors.
 #! }
 #! \usage{
-#! \method{format}{integer64}(x, \dots)
+#! \method{format}{integer64}(x, justify="right", \dots)
 #! \method{is.na}{integer64}(x)
 #! \method{!}{integer64}(x)
 #! \method{sign}{integer64}(x)
@@ -1015,7 +1017,9 @@ if (FALSE){
 #! \arguments{
 #!   \item{x}{ an atomic vector of class 'integer64'}
 #!   \item{base}{ an atomic scalar (we save 50\% log-calls by not allowing a vector base) }
-#!   \item{digits}{ integer indicating the number of decimal places (round) or significant digits (signif) to be used. #!                  Negative values are allowed (see \code{\link{round}}) }
+#!   \item{digits}{ integer indicating the number of decimal places (round) or significant digits (signif) to be used. 
+#!                  Negative values are allowed (see \code{\link{round}}) }
+#!   \item{digits}{ should it be right-justified (the default), left-justified, centred or left alone. }
 #!   \item{\dots}{ further arguments to the \code{\link{NextMethod}} }
 #! }
 #! \value{

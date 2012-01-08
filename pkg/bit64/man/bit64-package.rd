@@ -16,7 +16,7 @@
    A S3 class for vectors of 64bit integers
 }
 \description{
-Package 'bit64' provides serializable S3 atomic 64bit (signed) integers 
+Package 'bit64' provides fast serializable S3 atomic 64bit (signed) integers 
 that can be used in vectors, matrices, arrays and data.frames. Methods are 
 available for coercion from and to logicals, integers, doubles, characters  
 as well as many elementwise and summary functions. 
@@ -266,13 +266,13 @@ C-code protects against misuse outside the GPLed R context.
 
   }
 }
-\section{Limitations inherited from Base R, core team, consider changing this}{
+\section{Limitations inherited from Base R, Core team, can you change this?}{
   \itemize{
     \item \bold{\code{\link{identical}}} with default parameters does not distinguish all bit-patterns of doubles. 
     For testing purposes we provide a wrapper \code{\link{identical.integer64}} that will distinguish all bit-patterns.
     It would be desireable to have a single call of \code{\link{identical}} handle both, \code{\link{double}} and \code{integer64}.
 
-    \item the \bold{colon} operator \code{\link{:}} officially does not dispatches S3 methods, therefor we have not patched it.
+    \item the \bold{colon} operator \code{\link{:}} officially does not dispatches S3 methods, therefore we have not patched it.
    However, the following code seems to work: \preformatted{
      ":.default" <- get(":")
      ":" <- function(from,to)UseMethod(":")
@@ -293,6 +293,18 @@ C-code protects against misuse outside the GPLed R context.
        c.integer64(list(x,x))
      }
 
+    \item \bold{generic binary operators} fail to dispatch *any* user-defined S3 method 
+    if the two arguments have two different S3 classes. For example we have two classes 
+    \code{\link{bit}} and \code{\link{bitwhich}} sparsely representing boolean vectors 
+    and we have methods \code{\link{&.bit}} and \code{\link{&.bitwhich}}. For an expression
+    involving both as in \code{ bit & bitwhich}, none of the two methods is dispatched. 
+    Instead a standard method is dispatched, which neither handles \code{\link{bit}} 
+    nor \code{\link{bitwhich}}. Although it lacks symmetry, the better choice would be to 
+    dispatch simply the method of the class of the first argument in case of class conflict. 
+    This choice would allow authors of extension packages providing coherent behaviour 
+    at least within their contributed classes. But as long as none of the package authors 
+    methods is dispatched, he cannot handle the conflicting classes at all.
+
     \item \bold{\code{\link{unlist}}} is not generic and if it were, we would face similar problems as with \code{c()}
 
     \item \bold{\code{\link{vector}}} with argument \code{mode='integer64'} cannot work without adjustment of Base R
@@ -312,13 +324,15 @@ C-code protects against misuse outside the GPLed R context.
 
   }
 }
-\section{Limitations to be blamed on the current implementation}{
+\section{Limitations planned to be removed with the next release}{
   \itemize{
     \item \bold{\code{\link{sort}}} is not yet implemented 
     \item \bold{\code{\link{order}}} is not yet implemented 
     \item \bold{\code{\link{match}}} is not yet implemented 
     \item \bold{\code{\link{duplicated}}} is not yet implemented 
     \item \bold{\code{\link{unique}}} is not yet implemented 
+    \item \bold{\code{\link{table}}} is not yet implemented 
+    \item \bold{\code{\link{as.factor}}} is not yet implemented 
   }
 }
 \value{
@@ -604,6 +618,9 @@ is.atomic(integer64())
 is.atomic(int64())
 str(integer64(3))
 str(int64(3))
+
+message("-- The following performance numbers are measured under RWin64  --")
+message("-- under RWin32 the advantage of integer64 over int64 is smaller --")
 
 message("-- integer64 needs 7x/5x less RAM than int64 under 64/32 bit OS (and twice the RAM of integer as it should be) --")
 as.vector(object.size(int64(1e6))/object.size(integer64(1e6)))
