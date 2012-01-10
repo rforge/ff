@@ -73,7 +73,7 @@ bbatch <- function(N,B){
   RB <- N %% B
   NB <- N %/% B
   cc <- pmin((B - RB) %/% NB, (B - RB) %/% (NB + 1L))
-  cc[RB==0] <- 0
+  cc[RB==0 | NB == 0] <- 0
   i <- cc > 0
   RB[i] <- RB[i] + cc[i] * NB[i]
   B[i] <- B[i] - cc[i]

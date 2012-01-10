@@ -58,6 +58,7 @@ Description: The ff package provides data structures that are stored on
 	Further high-performance enhancements can be made available upon request. 
 License: file LICENSE
 LazyLoad: yes
+ByteCompile: yes
 URL: http://ff.r-forge.r-project.org/
 Encoding: latin1
 Packaged: 2010-09-18 10:19:36 UTC; root

@@ -28,6 +28,7 @@ Description: bitmapped vectors of booleans (no NAs),
   classes can be used for subsetting 'ff' objects (ff-2.1-0 and higher).
 License: GPL-2
 LazyLoad: yes
+ByteCompile: yes
 URL: http://ff.r-forge.r-project.org/
 Encoding: latin1
 Packaged: 2011-01-18 17:22:41 UTC; Jens Oehlschlaegel
