@@ -8,14 +8,6 @@
 # Last changed:  2011-12-11
 #*/
 
-if (FALSE){
-
-
-
-}
-
-
-
 #! \name{bit64-package}
 #! \alias{bit64-package}
 #! \alias{bit64}
@@ -258,8 +250,6 @@ if (FALSE){
 #!                                \tab \code{\link{write.table}} \tab inherited from Base R \cr
 #!                                \tab \code{\link{serialize}} \tab inherited from Base R \cr
 #!                                \tab \code{\link{unserialize}} \tab inherited from Base R \cr
-#!                                \tab \code{\link{saveRDS}} \tab inherited from Base R \cr
-#!                                \tab \code{\link{readRDS}} \tab inherited from Base R \cr
 #!                                \tab \code{\link{save}} \tab inherited from Base R \cr
 #!                                \tab \code{\link{load}} \tab inherited from Base R \cr
 #!                                \tab \code{\link{dput}} \tab inherited from Base R \cr
@@ -297,7 +287,7 @@ if (FALSE){
 #!      ":.integer64" <- function(from, to)seq.integer64(from=from, to=to)
 #!    }
 #!    Try for example: \preformatted{
-#!      from <- range.integer64()[1]
+#!      from <- lim.integer64()[1]
 #!      to <- from+99
 #!      from:to
 #!    }
@@ -415,9 +405,6 @@ if (FALSE){
 #! dput(d, fi64)
 #! e <- dget(fi64)
 #! identical.integer64(d$x,e$x)
-#! saveRDS(d, fi64)
-#! e <- readRDS(fi64)
-#! identical.integer64(d,e)
 #! e <- d[,]
 #! save(e, file=fi64)
 #! rm(e)
@@ -444,8 +431,8 @@ if (FALSE){
 #! stopifnot(identical.integer64(i64+1-1,i64))
 #! 
 #! message("Testing minus and plus edge cases and 'rev'\n")
-#! stopifnot(identical.integer64(range.integer64()+1-1, c(range.integer64()[1], NA)))
-#! stopifnot(identical.integer64(rev(range.integer64())-1+1, c(range.integer64()[2], NA)))
+#! stopifnot(identical.integer64(lim.integer64()+1-1, c(lim.integer64()[1], NA)))
+#! stopifnot(identical.integer64(rev(lim.integer64())-1+1, c(lim.integer64()[2], NA)))
 #! 
 #! message("Testing 'range.integer64', multiplication and integer division")
 #! i64 <- integer64(63)
@@ -459,7 +446,7 @@ if (FALSE){
 #! for (i in 63:2)
 #! 	i64[i-1] <- i64[i]/2
 #! stopifnot(identical.integer64(i64 * rev(i64), rep(i64[63], 63)))
-#! stopifnot(identical.integer64(c( -i64[63] - (i64[63]-1), i64[63]+(i64[63]-1) ), range.integer64()))
+#! stopifnot(identical.integer64(c( -i64[63] - (i64[63]-1), i64[63]+(i64[63]-1) ), lim.integer64()))
 #! 
 #! stopifnot(identical.integer64(i64[-1]\%/\%2*as.integer64(2), i64[-1]))
 #! stopifnot(identical.integer64(i64[-1]\%/\%2L*as.integer64(2), i64[-1]))
@@ -515,7 +502,7 @@ if (FALSE){
 #! stopifnot(identical( as.integer64(as.integer(as.integer64(-9:9))), as.integer64(-9:9)))
 #! stopifnot(identical( as.integer64(as.double(as.integer64(-9:9))), as.integer64(-9:9)))
 #! stopifnot(identical( as.integer64(as.character(as.integer64(-9:9))), as.integer64(-9:9)))
-#! stopifnot(identical( as.integer64(as.character(range.integer64())), range.integer64()))
+#! stopifnot(identical( as.integer64(as.character(lim.integer64())), lim.integer64()))
 #!
 #! message("-- testing logical operators --")
 #! stopifnot(identical.integer64(!c(NA, -1:1), !c(as.integer64(NA), -1:1)))
@@ -888,8 +875,8 @@ if (FALSE){
 #! \keyword{ manip }
 #! \seealso{ \code{\link{as.integer64.character}} \code{\link{integer64}}  }
 #! \examples{
-#!   as.character(range.integer64())
-#!   as.bitstring(range.integer64())
+#!   as.character(lim.integer64())
+#!   as.bitstring(lim.integer64())
 #! }
 
 #! \name{as.integer64.character}
@@ -933,7 +920,7 @@ if (FALSE){
 #! \keyword{ manip }
 #! \seealso{ \code{\link{as.character.integer64}} \code{\link{integer64}}  }
 #! \examples{
-#!   as.integer64(as.character(range.integer64()))
+#!   as.integer64(as.character(lim.integer64()))
 #! }
 
 
@@ -1019,7 +1006,7 @@ if (FALSE){
 #!   \item{base}{ an atomic scalar (we save 50\% log-calls by not allowing a vector base) }
 #!   \item{digits}{ integer indicating the number of decimal places (round) or significant digits (signif) to be used. 
 #!                  Negative values are allowed (see \code{\link{round}}) }
-#!   \item{digits}{ should it be right-justified (the default), left-justified, centred or left alone. }
+#!   \item{justify}{ should it be right-justified (the default), left-justified, centred or left alone. }
 #!   \item{\dots}{ further arguments to the \code{\link{NextMethod}} }
 #! }
 #! \value{
@@ -1114,6 +1101,7 @@ if (FALSE){
 #! \alias{min.integer64}
 #! \alias{max.integer64}
 #! \alias{range.integer64}
+#! \alias{lim.integer64}
 #! \alias{sum.integer64}
 #! \alias{prod.integer64}
 #! \title{
@@ -1129,12 +1117,26 @@ if (FALSE){
 #! \method{min}{integer64}(\dots, na.rm = FALSE)
 #! \method{max}{integer64}(\dots, na.rm = FALSE)
 #! \method{range}{integer64}(\dots, na.rm = FALSE)
+#! lim.integer64()
 #! \method{sum}{integer64}(\dots, na.rm = FALSE)
 #! \method{prod}{integer64}(\dots, na.rm = FALSE)
 #! }
 #! \arguments{
 #!   \item{\dots}{ atomic vectors of class 'integer64'}
 #!   \item{na.rm}{ logical scalar indicating whether to ignore NAs }
+#! }
+#! \details{
+#!   The numerical summary methods always return \code{integer64}. 
+#!   Therefor the methods for \code{min},\code{max} and \code{range} do not return \code{+Inf,-Inf}
+#!   on empty arguments, but \code{+9223372036854775807, -9223372036854775807} (in this sequence).
+#!   The same is true if only  \code{NA}s are submitted with argument \code{na.rm=TRUE}. 
+#!  \cr
+#!   \code{lim.integer64} returns these limits in proper order \code{-9223372036854775807, +9223372036854775807} and without a \code{\link{warning}}.
+#! }
+#! \value{
+#!   \code{\link{all}} and \code{\link{any}} return a logical scalar\cr
+#!   \code{\link{range}} returns a integer64 vector with two elements\cr
+#!   \code{\link{min}}, \code{\link{max}}, \code{\link{sum}} and \code{\link{prod}} return a integer64 scalar
 #! }
 #! \value{
 #!   \code{\link{all}} and \code{\link{any}} return a logical scalar\cr
@@ -1148,7 +1150,7 @@ if (FALSE){
 #! \keyword{ manip }
 #! \seealso{ \code{\link{cumsum.integer64}} \code{\link{integer64}}  }
 #! \examples{
-#!   range.integer64()
+#!   lim.integer64()
 #!   range(as.integer64(1:12))
 #! }
 
@@ -1864,11 +1866,11 @@ as.data.frame.integer64 <- function(x, ...){
   a <- attributes(x)
   ret <- double(max(length(x),length(base)))
   if (is.null(base))
-	log_integer64(x,ret)
+	.Call("log_integer64", x, ret)
   else if(length(base)==1){
-    .Call("logbase_integer64", x, as.double(base),ret)
+    .Call("logbase_integer64", x, as.double(base), ret)
   }else{
-    .Call("logvect_integer64", x, as.double(base),ret)
+    .Call("logvect_integer64", x, as.double(base), ret)
   }
   a$class <- minusclass(a$class, "integer64")
   setattributes(ret, a)
@@ -1991,94 +1993,94 @@ as.data.frame.integer64 <- function(x, ...){
 "min.integer64" <- function(..., na.rm = FALSE){
   l <- list(...)
   ret <- double(1)
+  noval <- TRUE
   if (length(l)==1){
-		  .Call("min_integer64", l[[1]], na.rm, ret)
-	      setattr(ret, "class", "integer64")
+	if (length(l[[1]]))
+	  noval <- FALSE
+    .Call("min_integer64", l[[1]], na.rm, ret)
+    setattr(ret, "class", "integer64")
   }else{
 	  ret <- sapply(l, function(e){
+	    if (length(e))
+	      noval <<- FALSE
 		if (is.integer64(e)){
 		  .Call("min_integer64", e, na.rm, ret)
 		  ret
 		}else{
-		  if (all(is.na(e)))  # this avoids returning -Inf from calling min(e) 
-		    as.integer64(NA)
-		  else
-		    as.integer64(min(e, na.rm = na.rm))
+		  as.integer64(min(e, na.rm = na.rm))
 		}
 	  })
 	  setattr(ret, "class", "integer64")
 	  ret <- min(ret, na.rm = na.rm)
   }
-  if (na.rm && is.na(ret)){
-	warning("no non-NA value, returning Inf")
-	Inf
-  }else 
-    ret
+  if (noval)
+	warning("no non-NA value, returning +9223372036854775807")
+  ret
 }
 
 "max.integer64" <- function(..., na.rm = FALSE){
   l <- list(...)
   ret <- double(1)
+  noval <- TRUE
   if (length(l)==1){
-		  .Call("max_integer64", l[[1]], na.rm, ret)
-	      setattr(ret, "class", "integer64")
+	if (length(l[[1]]))
+	  noval <- FALSE
+	.Call("max_integer64", l[[1]], na.rm, ret)
+	setattr(ret, "class", "integer64")
   }else{
-	  ret <- sapply(l, function(e){
+	ret <- sapply(l, function(e){
+	    if (length(e))
+	      noval <<- FALSE
 		if (is.integer64(e)){
 		  .Call("max_integer64", e, na.rm, ret)
 		  ret
 		}else{
-		  if (all(is.na(e)))  # this avoids returning Inf from calling max(e) 
-		    as.integer64(NA)
-		  else
-		    as.integer64(max(e, na.rm = na.rm))
+		  as.integer64(max(e, na.rm = na.rm))
 		}
-	  })
-	  setattr(ret, "class", "integer64")
-	  ret <- max(ret, na.rm = na.rm)
+	})
+	setattr(ret, "class", "integer64")
+	ret <- max(ret, na.rm = na.rm)
   }
-  if (na.rm && is.na(ret)){
-	warning("no non-NA value, returning -Inf")
-	Inf
-  }else 
-    ret
+  if (noval)
+	warning("no non-NA value, returning -9223372036854775807")
+  ret
 }
 
 
 "range.integer64" <- function(..., na.rm = FALSE){
-  l <- list(...)
   ret <- double(2)
-  if (length(l)<2){
-    if (length(l)<1){
-		.Call("lim_integer64", ret)
-		setattr(ret, "class", "integer64")
-		return(ret)
-	}else{
-		.Call("range_integer64", l[[1]], na.rm, ret)
-		setattr(ret, "class", "integer64")
-	}
+  l <- list(...)
+  noval <- TRUE
+  if (length(l)==1){
+	if (length(l[[1]]))
+	  noval <- FALSE
+	.Call("range_integer64", l[[1]], na.rm, ret)
+	setattr(ret, "class", "integer64")
   }else{
       ret <- unlist(sapply(l, function(e){
+	    if (length(e))
+	      noval <<- FALSE
 		if (is.integer64(e)){
 		  .Call("range_integer64", e, na.rm, ret)
 		  ret
 		}else{
-		  if (all(is.na(e)))  # this avoids returning -Inf,Inf from calling range(e) 
-		    as.integer64(NA)
-		  else
-		    as.integer64(range(e, na.rm = na.rm))
+		  as.integer64(range(e, na.rm = na.rm))
 		}
 	  }))
 	  setattr(ret, "class", "integer64")
 	  ret <- range(ret, na.rm = na.rm)
   }
-  if (na.rm && all(is.na(ret))){
-	warning("no non-NA value, returning -Inf,Inf")
-	c(-Inf,Inf)
-  }else 
-    ret
+  if (noval)
+	warning("no non-NA value, returning c(+9223372036854775807, -9223372036854775807)")
+  ret
 }
 
+lim.integer64 <- function(){
+    ret <- double(2)
+	.Call("lim_integer64", ret)
+	setattr(ret, "class", "integer64")
+	return(ret)
+}
 
 "diff.integer64" <- function(x, lag=1L, differences=1L, ...){
   lag <- as.integer(lag)
@@ -2260,314 +2262,4 @@ is.vector.integer64 <- function(x, mode="any"){
     FALSE
   else
     TRUE
-}
-
-
-
-if (FALSE){
-	library(bit)
-	library(inline)
-	source("c:/Users/Jens/Desktop/ff/integer64.R")
-	library(int64)
-
-	x <- data.frame(a=1:10, b=as.integer64(1:10), c=as.int64(1:10))
-	write.csv(x, file = "foo.csv")
-	y <- read.csv("foo.csv", row.names = 1, colClasses=c(b="integer64", c="int64"))
-	
-	is.atomic(int64(10))
-	is.atomic(integer64(10))
-
-	
-as.bitstring(range.integer64())
-as.bitstring(as.integer64(0:9))
-
-
-	
-	
-x <- as.integer(1:1e7)
-y <- as.integer(4:1e7)
-system.time(z <- c(x, y))
-x <- as.integer64(1:1e7)
-y <- as.integer64(4:1e7)
-system.time(z <- c(x, y))
-
-x <- as.integer64(1:3)
-y <- as.integer64(4:6)
-as.integer(c(x, y))
-
-	
-
-	y <- c(NA,-1,0,1,2,3,4,10, 100, 2^55, 2^55+1)
-	x <- as.integer64(y)
-	x[10]<- as.integer64(2^52)*(2^3)
-	x[11]<- as.integer64(2^52)*(2^3)+1
-	is.atomic(x)
-	log(y)
-	log(x)
-	log(y,10)
-	log(x,10)
-	log10(y)
-	log10(x)
-	log(y,2)
-	log(x,2)
-	log2(y)
-	log2(x)
-	sqrt(y)
-	sqrt(x)
-	
-	n <- 1e7
-	x <- round(runif(n, 1, n))
-	y <- as.integer(x)
-	z <- as.integer64(x)
-	system.time(lx <- log(x, 3))
-	system.time(ly <- log(y, 3))
-	system.time(lz <- log(z, 3))
-	all.equal(lx, ly)
-	all.equal(lx, lz)
-	
-	system.time(x <- rep(1:3, 1e7))
-	system.time(y <- rep.integer64(1:3, 1e7))
-	identical(x, as.integer(y))
-	system.time(x <- rep(1:1e4, 1:1e4))
-	system.time(y <- rep.integer64(1:1e4, 1:1e4))
-	identical(x, as.integer(y))
-	
-	# [ #inherited from double
-	# [<- #next method
-	# names #inherited from double
-	# names<- #inherited from double
-	# summary
-		# min
-		# max
-		# range
-		# prod
-		# sum
-		# any #
-		# all #
-	# arith
-		# +
-		# -
-		# *
-		# /
-		# ^ #
-		# %/%
-		# %%
-	# is.na
-	# comp
-		# ==
-		# !=
-		# <
-		# >
-		# >=
-		# <=
-	# Math
-		# abs
-		# sign
-		# trunc #
-		# floor #
-		# cummax
-		# cummin
-		# cumprod
-		# cumsum
-	# Math2
-	# as.character
-	# print 
-	# numeric_limits
-	# as.data.frame
-	# as.int64.character
-	# binary
-	# unique #inherited from double
-	# sort 
-	# c 
-	# as.int64.character
-	# as.int64.integer
-	# as.int64.logical
-	# as.int64.numeric
-	#rep
-	#seq
-	#:
-
-
-
-x <- 2 ^ 60
-y <- as.integer(x)
-z <- as.integer64(x)
-as.character(x)
-as.character(y)
-as.character(z)
-
-as.character(range.integer64())
-
-x <- 1:1e6
-y <- as.integer64(x)
-system.time(as.character(x))
-system.time(as.character(y))
-
-
-as.character(as.integer64(as.character(range.integer64())))
-as.integer(as.integer64(as.character(-100:100)))
-as.character(as.integer64(as.character(as.integer64(c(.Machine$integer.max, .Machine$integer.max))+0:1)))
-as.integer(as.integer64(c("  123", "1NA")))
-
-	.Machine$integer.max + .Machine$integer.max
-	x <- .Machine$integer.max
-
-	for (e in 32:54){
-	  if (2^e == 2^e + 1) print(e)
-	}
-	for (e in 32:54){
-	  if (-(2^e) == -(2^e) - 1) print(e)
-	}
-
-
-	x <- as.integer64(2^30)
-	y <- x*x*3
-	as.integer(y%%3)
-	as.integer((y+1)%%3)
-	as.integer((y+2)%%3)
-	as.integer((y+3)%%3)
-
-	library(int64)
-
-	n <- 2^4
-	str(integer( n ))  # is of course a vector
-	str(integer64( n ))  # is a vector = OK
-	str(int64( n ))  # is a list, not a vector = expensive
-
-	as.integer(integer64( n )) # OK
-	as.integer(int64( n )) # not mature, as.integer method fails
-
-	n <- 2^28
-	t32 <- system.time(x32 <- integer( n ))
-	t64 <- system.time(x64 <- integer64( n )) # OK
-	n <- 2^22
-	T64 <- system.time(X64 <- int64( n )) # much too slow
-	t32
-	t64
-	T64
-	t64/t32 # x 2 == OK
-	T64/t32*2^6 # x 4000 == much too slow
-
-	# bring down to 2^20
-	n <- 2^20
-	t32 <- system.time(x32 <- integer( n ))
-	t64 <- system.time(x64 <- integer64( n )) # OK
-	T64 <- system.time(X64 <- int64( n )) # much too slow
-
-
-	object.size(x64)/object.size(x32) # x 2 = OK
-	object.size(X64)/object.size(x32) # x 14 = too big
-	length(serialize(x64, connection=NULL)) / length(serialize(x32, connection=NULL)) # x 2 = OK
-	length(serialize(X64, connection=NULL)) / length(serialize(x32, connection=NULL)) # x 4 = too big
-
-	t32 <- system.time(serialize(x32, connection=NULL))
-	t64 <- system.time(serialize(x64, connection=NULL))
-	T64 <- system.time(serialize(X64, connection=NULL))
-	t64/t32 # x 1.6 == OK
-	T64/t32 # x 5.7 == too slow
-
-
-	x <- runif(n, 0, n)
-	tdbl <- system.time(xdbl <- x[])
-	t32 <- system.time(x32 <- as.integer(x))
-	t64 <- system.time(x64 <- as.integer64(x)) # OK
-	T64 <- system.time(X64 <- as.int64(x)) # too slow
-	tdbl/t32 # x 0
-	t64/t32  # x 1
-	T64/t32  # x 1000 = much too slow
-	identical(as.integer64(x32), x64) # OK
-	identical(as.int64(x32), X64) # OK
-
-	tdbl <- system.time(xdbl + xdbl)
-	t32 <- system.time(x32 + x32)
-	t64 <- system.time(x64 + x64) # OK
-	T64 <- system.time(X64 + X64) # too slow
-	tdbl/t32 # x 0.5
-	t64/t32  # x 1
-	T64/t32  # x 500 = much too slow
-	identical(as.integer64(x32), x64) # OK
-	identical(as.int64(x32), X64) # OK
-
-	tdbl <- system.time(xdbl - xdbl)
-	t32 <- system.time(x32 - x32)
-	t64 <- system.time(x64 - x64) # OK
-	T64 <- system.time(X64 - X64) # too slow
-	tdbl/t32 # x 0.5
-	t64/t32  # x 1
-	T64/t32  # x 500 = much too slow
-	identical(as.integer64(x32), x64) # OK
-	identical(as.int64(x32), X64) # OK
-
-	tdbl <- system.time(xdbl * xdbl)
-	t32 <- system.time(x32 * x32)
-	t64 <- system.time(x64 * x64) # OK
-	T64 <- system.time(X64 * X64) # too slow
-	tdbl/t32 # x 0.5
-	t64/t32  # x 1
-	T64/t32  # x 500 = much too slow
-	identical(as.integer64(x32), x64) # OK
-	identical(as.int64(x32), X64) # OK
-
-	tdbl <- system.time(xdbl / xdbl)
-	t32 <- system.time(x32 / x32)
-	t64 <- system.time(x64 / x64) # OK
-	T64 <- system.time(X64 / X64) # too slow
-	tdbl/t32 # x 0.5
-	t64/t32  # x 1
-	T64/t32  # x 500 = much too slow
-	identical(as.integer64(x32), x64) # OK
-	identical(as.int64(x32), X64) # OK
-
-	tdbl <- system.time(xdbl %/% xdbl)
-	t32 <- system.time(x32 %/% x32)
-	t64 <- system.time(x64 %/% x64) # OK
-	T64 <- system.time(X64 %/% X64) # too slow
-	tdbl/t32 # x 0.5
-	t64/t32  # x 1
-	T64/t32  # x 500 = much too slow
-	identical(as.integer64(x32), x64) # OK
-	identical(as.int64(x32), X64) # OK
-
-	tdbl <- system.time(xdbl %% xdbl)
-	t32 <- system.time(x32 %% x32)
-	t64 <- system.time(x64 %% x64) # OK
-	T64 <- system.time(X64 %% X64) # too slow
-	tdbl/t32 # x 0.5
-	t64/t32  # x 1
-	T64/t32  # x 500 = much too slow
-	identical(as.integer64(x32), x64) # OK
-	identical(as.int64(x32), X64) # OK
-
-
-
-	tdbl <- system.time(sdbl <- sort(xdbl))
-	t32 <- system.time(s32 <- sort(x32))
-	T64 <- system.time(S64 <- sort(X64)) # too slow
-	tdbl/t32 # x 1.2
-	#t64/t32  #
-	T64/t32  # x 10 = too slow
-
-
-
-	identical(as.int64(s32), S64) # OK
-
-	system.time(s32 <- sort(r32,  method = "quick"))
-	system.time(s64 <- sort(r64,  method = "quick")) # too slow
-	identical(as.int64(s32), s64) # OK
-
-
-
-
-
-	n <- 1e6
-	i64 <- integer64(n)
-	I64 <- int64(n)
-
-	length(serialize(int64(n), connection=NULL))
-	object.size(i64)
-	object.size(I64)
-
-
-library(ff)
-library(inline)
 }

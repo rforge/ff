@@ -39,5 +39,5 @@ Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 \keyword{ manip }
 \seealso{ \code{\link{as.character.integer64}} \code{\link{integer64}}  }
 \examples{
-  as.integer64(as.character(range.integer64()))
+  as.integer64(as.character(lim.integer64()))
 }

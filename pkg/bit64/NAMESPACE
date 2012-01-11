@@ -38,6 +38,7 @@ export(
 ,"as.integer64.double"
 ,"as.integer64.integer"
 ,"as.integer64.logical"
+#,"NA_integer64_"
 
 ,"as.character.integer64"
 ,"as.double.integer64"
@@ -108,6 +109,7 @@ export(
 ,"min.integer64"
 ,"max.integer64"
 ,"range.integer64"
+,"lim.integer64" # not a method
 ,"sum.integer64"
 ,"prod.integer64"
 
@@ -119,45 +121,6 @@ export(
 
 
 
-# -- match64.R - matching --
-
-#, "setcache"
-#, getcache
-#, uncache
-#, hashfun
-#, hashfun.integer64
-#, hashmap
-#, hashmap.integer64
-#, hashpos
-#, hashpos.hashmap_integer64
-#, hashrev
-#, hashrev.hashmap_integer64
-#, hashfin
-#, hashfin.hashmap_integer64
-#, hashrin
-#, hashrin.hashmap_integer64
-#, hashdup
-#, hashdup.hashmap_integer64
-#, hashuni
-#, hashuni.hashmap_integer64
-#, hashupo
-#, hashupo.hashmap_integer64
-#, hashtab
-#, hashtab.hashmap_integer64
-#, match.integer64
-#, "%in%.integer64"
-#, unique.integer64
-#, duplicated.integer64
-#, table.integer64
-
-# -- sort64.R - sorting --
-
-#, mergesort
-#, mergesort.integer64
-#, mergeorder
-#, mergeorder.integer64
-#, mergesortorder
-#, mergesortorder.integer64
 
 # -- zzz.R --
 
@@ -257,26 +220,3 @@ S3method("cummax", integer64)
 S3method("cumsum", integer64)
 S3method("cumprod", integer64)
 
-# -- match64.R - matching --
-
-#S3method("hashfun", integer64)
-#S3method("hashmap", integer64)
-#S3method("hashpos", hashmap_integer64)
-#S3method("hashrev", hashmap_integer64)
-#S3method("hashfin", hashmap_integer64)
-#S3method("hashrin", hashmap_integer64)
-#S3method("hashdup", hashmap_integer64)
-#S3method("hashuni", hashmap_integer64)
-#S3method("hashupo", hashmap_integer64)
-#S3method("hashtab", hashmap_integer64)
-#S3method("match", integer64)
-#S3method("%in%", integer64)
-#S3method("unique", integer64)
-#S3method("duplicated", integer64)
-#S3method("table", integer64)
-
-# -- sort64.R - sorting --
-
-#S3method("mergesort", integer64)
-#S3method("mergeorder", integer64)
-#S3method("mergesortorder", integer64)

@@ -449,7 +449,6 @@ SEXP any_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
   long long * e1 = (long long *) REAL(e1_);
   Rboolean * ret = (Rboolean *) LOGICAL(ret_);
   Rboolean hasna=FALSE;
-  if (n>0){
 	if (asLogical(na_rm_)){
 		for(i=0; i<n; i++){
 			if (e1[i]!=NA_INTEGER64 && e1[i]){
@@ -469,7 +468,6 @@ SEXP any_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
 		}
 		ret[0] = hasna ? NA_LOGICAL : FALSE;
 	}
-  }
   return ret_;
 }
 
@@ -478,7 +476,6 @@ SEXP all_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
   long long * e1 = (long long *) REAL(e1_);
   Rboolean * ret = (Rboolean *) LOGICAL(ret_);
   Rboolean hasna=FALSE;
-  if (n>0){
 	if (asLogical(na_rm_)){
 		for(i=0; i<n; i++){
 			if (e1[i]!=NA_INTEGER64 && !e1[i]){
@@ -498,7 +495,6 @@ SEXP all_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
 		}
 		ret[0] = hasna ? NA_LOGICAL : TRUE;
 	}
-  }
   return ret_;
 }
 
@@ -509,7 +505,6 @@ SEXP sum_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
   long long * ret = (long long *) REAL(ret_);
   long long cumsum, tempsum;
   cumsum = 0;
-  if (n>0){
 	if (asLogical(na_rm_)){
 		for(i=0; i<n; i++){
 			if (e1[i]!=NA_INTEGER64){
@@ -538,8 +533,7 @@ SEXP sum_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
 			}
 		}
 	}
-	ret[0] = cumsum;
-  }
+  ret[0] = cumsum;
   return ret_;
 }
 
@@ -549,7 +543,6 @@ SEXP prod_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
   long long * ret = (long long *) REAL(ret_);
   long long cumprod, tempprod;
   cumprod = 1;
-  if (n>0){
 	if (asLogical(na_rm_)){
 		for(i=0; i<n; i++){
 			if (e1[i]!=NA_INTEGER64){
@@ -578,8 +571,7 @@ SEXP prod_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
 			}
 		}
 	}
-	ret[0] = cumprod;
-  }
+  ret[0] = cumprod;
   return ret_;
 }
 
@@ -588,25 +580,15 @@ SEXP min_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
   long long i, n = LENGTH(e1_);
   long long * e1 = (long long *) REAL(e1_);
   long long * ret = (long long *) REAL(ret_);
-  if (n>0){
+  ret[0] = MAX_INTEGER64;
 	if (asLogical(na_rm_)){
-		ret[0] = NA_INTEGER64;
 		for(i=0; i<n; i++){
-			if(e1[i]!=NA_INTEGER64){
-				ret[0] = e1[i];
-				break;
-			}
-		}
-		for(i++; i<n; i++){
 			if (e1[i]!=NA_INTEGER64 && e1[i]<ret[0]){
 				ret[0] = e1[i];
 			}
 		}
 	}else{
-		ret[0] = e1[0];
-		if (e1[0]==NA_INTEGER64)
-			return ret_;
-		for(i=1; i<n; i++){
+		for(i=0; i<n; i++){
 			if (e1[i]==NA_INTEGER64){
 				ret[0] = NA_INTEGER64;
 				return ret_;
@@ -616,7 +598,6 @@ SEXP min_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
 			}
 		}
 	}
-  }
   return ret_;
 }
 
@@ -624,25 +605,15 @@ SEXP max_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
   long long i, n = LENGTH(e1_);
   long long * e1 = (long long *) REAL(e1_);
   long long * ret = (long long *) REAL(ret_);
-  if (n>0){
+  ret[0] = MIN_INTEGER64;
 	if (asLogical(na_rm_)){
-		ret[0] = NA_INTEGER64;
 		for(i=0; i<n; i++){
-			if(e1[i]!=NA_INTEGER64){
-				ret[0] = e1[i];
-				break;
-			}
-		}
-		for(i++; i<n; i++){
 			if (e1[i]!=NA_INTEGER64 && e1[i]>ret[0]){
 				ret[0] = e1[i];
 			}
 		}
 	}else{
-		ret[0] = e1[0];
-		if (e1[0]==NA_INTEGER64)
-			return ret_;
-		for(i=1; i<n; i++){
+		for(i=0; i<n; i++){
 			if (e1[i]==NA_INTEGER64){
 				ret[0] = NA_INTEGER64;
 				return ret_;
@@ -652,7 +623,6 @@ SEXP max_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
 			}
 		}
 	}
-  }
   return ret_;
 }
 
@@ -660,19 +630,10 @@ SEXP range_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
   long long i, n = LENGTH(e1_);
   long long * e1 = (long long *) REAL(e1_);
   long long * ret = (long long *) REAL(ret_);
-  if (n>0){
+  ret[0] = MAX_INTEGER64;
+  ret[1] = MIN_INTEGER64;
 	if (asLogical(na_rm_)){
 		for(i=0; i<n; i++){
-			if(e1[i]!=NA_INTEGER64){
-				ret[0] = ret[1] = e1[i];
-				break;
-			}
-		}
-		if (i==n){
-			ret[0] = ret[1] = NA_INTEGER64;
-			return ret_;
-		}
-		for(i++; i<n; i++){
 			if (e1[i]!=NA_INTEGER64){
 				if (e1[i]<ret[0])
 					ret[0] = e1[i];
@@ -681,10 +642,7 @@ SEXP range_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
 			}
 		}
 	}else{
-		ret[0] = ret[1] = e1[0];
-		if (e1[0]==NA_INTEGER64)
-			return ret_;
-		for(i=1; i<n; i++){
+		for(i=0; i<n; i++){
 			if (e1[i]==NA_INTEGER64){
 				ret[0] = ret[1] = NA_INTEGER64;
 				return ret_;
@@ -696,7 +654,6 @@ SEXP range_integer64(SEXP e1_, SEXP na_rm_, SEXP ret_){
 			}
 		}
 	}
-  }
   return ret_;
 }
 

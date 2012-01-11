@@ -14,6 +14,7 @@
   packageStartupMessage("access: length<- [ [<- [[ [[<-")
   packageStartupMessage("combine: c rep cbind rbind as.data.frame")
   packageStartupMessage("for more help type ?bit64")
+  #NA_integer64_ <- as.integer64(NA)
 }
 
 .onUnload <- function(libpath){

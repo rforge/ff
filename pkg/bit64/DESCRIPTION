@@ -1,7 +1,7 @@
 Package: bit64
 Type: Package
 Title: A S3 class for vectors of 64bit integers
-Version: 0.6-0
+Version: 0.7-0
 Date: 2011-12-12
 Author: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
@@ -25,6 +25,7 @@ Description:
  C-code protects against misuse outside the GPLed R context.
 License: GPL-2
 LazyLoad: yes
+ByteCompile: yes
 URL: http://ff.r-forge.r-project.org/
 Encoding: latin1
 Packaged: 2011-01-18 17:22:41 UTC; Jens Oehlschlaegel

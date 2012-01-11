@@ -40,7 +40,7 @@
   \item{base}{ an atomic scalar (we save 50\% log-calls by not allowing a vector base) }
   \item{digits}{ integer indicating the number of decimal places (round) or significant digits (signif) to be used. 
                  Negative values are allowed (see \code{\link{round}}) }
-  \item{digits}{ should it be right-justified (the default), left-justified, centred or left alone. }
+  \item{justify}{ should it be right-justified (the default), left-justified, centred or left alone. }
   \item{\dots}{ further arguments to the \code{\link{NextMethod}} }
 }
 \value{

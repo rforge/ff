@@ -240,8 +240,6 @@ C-code protects against misuse outside the GPLed R context.
                                \tab \code{\link{write.table}} \tab inherited from Base R \cr
                                \tab \code{\link{serialize}} \tab inherited from Base R \cr
                                \tab \code{\link{unserialize}} \tab inherited from Base R \cr
-                               \tab \code{\link{saveRDS}} \tab inherited from Base R \cr
-                               \tab \code{\link{readRDS}} \tab inherited from Base R \cr
                                \tab \code{\link{save}} \tab inherited from Base R \cr
                                \tab \code{\link{load}} \tab inherited from Base R \cr
                                \tab \code{\link{dput}} \tab inherited from Base R \cr
@@ -279,7 +277,7 @@ C-code protects against misuse outside the GPLed R context.
      ":.integer64" <- function(from, to)seq.integer64(from=from, to=to)
    }
    Try for example: \preformatted{
-     from <- range.integer64()[1]
+     from <- lim.integer64()[1]
      to <- from+99
      from:to
    }
@@ -397,9 +395,6 @@ message("Serializing and unserializing integer64")
 dput(d, fi64)
 e <- dget(fi64)
 identical.integer64(d$x,e$x)
-saveRDS(d, fi64)
-e <- readRDS(fi64)
-identical.integer64(d,e)
 e <- d[,]
 save(e, file=fi64)
 rm(e)
@@ -426,8 +421,8 @@ stopifnot(identical.integer64(i64-1+1,i64))
 stopifnot(identical.integer64(i64+1-1,i64))
 
 message("Testing minus and plus edge cases and 'rev'\n")
-stopifnot(identical.integer64(range.integer64()+1-1, c(range.integer64()[1], NA)))
-stopifnot(identical.integer64(rev(range.integer64())-1+1, c(range.integer64()[2], NA)))
+stopifnot(identical.integer64(lim.integer64()+1-1, c(lim.integer64()[1], NA)))
+stopifnot(identical.integer64(rev(lim.integer64())-1+1, c(lim.integer64()[2], NA)))
 
 message("Testing 'range.integer64', multiplication and integer division")
 i64 <- integer64(63)
@@ -441,7 +436,7 @@ stopifnot(identical.integer64(i64 * rev(i64), rep(i64[63], 63)))
 for (i in 63:2)
 	i64[i-1] <- i64[i]/2
 stopifnot(identical.integer64(i64 * rev(i64), rep(i64[63], 63)))
-stopifnot(identical.integer64(c( -i64[63] - (i64[63]-1), i64[63]+(i64[63]-1) ), range.integer64()))
+stopifnot(identical.integer64(c( -i64[63] - (i64[63]-1), i64[63]+(i64[63]-1) ), lim.integer64()))
 
 stopifnot(identical.integer64(i64[-1]\%/\%2*as.integer64(2), i64[-1]))
 stopifnot(identical.integer64(i64[-1]\%/\%2L*as.integer64(2), i64[-1]))
@@ -497,7 +492,7 @@ stopifnot(identical( as.integer(as.integer64(c(NA, FALSE, TRUE))), as.integer(c(
 stopifnot(identical( as.integer64(as.integer(as.integer64(-9:9))), as.integer64(-9:9)))
 stopifnot(identical( as.integer64(as.double(as.integer64(-9:9))), as.integer64(-9:9)))
 stopifnot(identical( as.integer64(as.character(as.integer64(-9:9))), as.integer64(-9:9)))
-stopifnot(identical( as.integer64(as.character(range.integer64())), range.integer64()))
+stopifnot(identical( as.integer64(as.character(lim.integer64())), lim.integer64()))
 
 message("-- testing logical operators --")
 stopifnot(identical.integer64(!c(NA, -1:1), !c(as.integer64(NA), -1:1)))
