@@ -10,8 +10,8 @@
 \usage{
 rlepack(x, pack = TRUE)
 rleunpack(x)
-rev.rlepack(x)
-unique.rlepack(x, incomparables = FALSE, \dots)
+\method{rev}{rlepack}(x)
+\method{unique}{rlepack}(x, incomparables = FALSE, \dots)
 }
 \arguments{
   \item{x}{ an integer vector }
