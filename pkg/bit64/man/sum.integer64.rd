@@ -41,11 +41,6 @@ lim.integer64()
   \code{\link{range}} returns a integer64 vector with two elements\cr
   \code{\link{min}}, \code{\link{max}}, \code{\link{sum}} and \code{\link{prod}} return a integer64 scalar
 }
-\value{
-  \code{\link{all}} and \code{\link{any}} return a logical scalar\cr
-  \code{\link{range}} returns a integer64 vector with two elements\cr
-  \code{\link{min}}, \code{\link{max}}, \code{\link{sum}} and \code{\link{prod}} return a integer64 scalar
-}
 \author{
 Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 }
