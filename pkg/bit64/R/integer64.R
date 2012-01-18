@@ -1484,7 +1484,7 @@ integer64 <- function(length=0){
 is.integer64 <- function(x)inherits(x, "integer64")
 
 if (!exists("is.double.default")){
-	is.double.default <- is.double
+	is.double.default <- function(x) base::is.double(x)
 	is.double <- function(x)UseMethod("is.double")
 }
 is.double.integer64 <- function(x)FALSE
