@@ -20,6 +20,10 @@
   \item{value}{ an atomic vector with values to be assigned }
   \item{\dots}{ further arguments to the \code{\link{NextMethod}} }
 }
+\note{
+  You should not subscript non-existing elements and not use \code{NA}s as subscripts.
+  The current implementation returns \code{9218868437227407266} instead of \code{NA}.
+}
 \value{
   A vector or scalar of class 'integer64'
 }

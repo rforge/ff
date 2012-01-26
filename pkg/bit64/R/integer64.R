@@ -14,9 +14,6 @@
 #! \alias{integer64}
 #! \alias{is.integer64}
 #! \alias{is.integer.integer64}
-#! \alias{is.double}
-#! \alias{is.double.default}
-#! \alias{is.double.integer64}
 #! \alias{is.vector.integer64}
 #! \alias{as.vector.integer64}
 #! \alias{length<-.integer64}
@@ -48,9 +45,6 @@
 #! \usage{
 #!  integer64(length)
 #!  \method{is}{integer64}(x)
-#!  is.double(x)
-#!  \method{is.double}{default}(x)
-#!  \method{is.double}{integer64}(x)
 #!  \method{length}{integer64}(x) <- value
 #!  \method{print}{integer64}(x, quote=FALSE, \dots)
 #! }
@@ -122,8 +116,12 @@
 #! \section{Creating and testing S3 class 'integer64'}{
 #!   Our creator function \code{integer64} takes an argument \code{length}, creates an atomic double vector of this length,
 #!   attaches an S3 class attribute 'integer64' to it, and that's it. We simply rely on S3 method dispatch and interpret those 
-#!   64bit elements as 'long long int'. As a second line of defense against misinterpretation we make \code{\link{is.double}}
-#!   return \code{FALSE} by making it S3 generic and adding a method \code{\link{as.double.integer64}}. 
+#!   64bit elements as 'long long int'. 
+#!   \cr
+#!  \code{\link{is.double}} currently returns TRUE for \code{integer64} and might return FALSE in a later release.
+#!  Consider \code{is.double} to have undefined behaviour and do query \code{is.integer64} \emph{before} querying \code{is.double}.
+#! %As a second line of defense against misinterpretation we make \code{\link{is.double}}
+#! %return \code{FALSE} by making it S3 generic and adding a method \code{\link{as.double.integer64}}. 
 #!   The methods \code{\link{is.integer64}} and \code{\link{is.vector}} both return \code{TRUE} for \code{integer64}. 
 #!  Note that we did not patch \code{\link{storage.mode}} and \code{\link{typeof}}, which both continue returning 'double' 
 #!  Like for 32 bit \code{\link{integer}}, \code{\link{mode}} returns 'numeric' and \code{\link{as.double}}) tries coercing to \code{\link{double}}).
@@ -142,7 +140,7 @@
 #!    \code{\link{seq.integer64}} \tab \code{\link{seq}} \tab  \cr
 #!    \code{\link{is.integer64}} \tab \code{\link{is}} \tab  \cr
 #!                                      \tab \code{\link{is.integer}} \tab inherited from Base R \cr
-#!    \code{\link{is.double.integer64}} \tab \code{\link{is.double}} \tab  \cr
+#!    %\code{\link{is.double.integer64}} \tab \code{\link{is.double}} \tab  \cr
 #!    \code{\link{is.vector.integer64}} \tab \code{\link{is.vector}} \tab  \cr
 #!    \code{\link{identical.integer64}} \tab \code{\link{identical}} \tab  \cr
 #!    \code{\link{length<-.integer64}} \tab \code{\link{length<-}} \tab  \cr
@@ -292,6 +290,16 @@
 #!      from:to
 #!    }
 #! 
+#!     \item \bold{\code{\link{is.double}}} does not dispatches S3 methods, therefore we have not patched it.
+#!    However, the following code seems to work if you want \code{is.double} to return \code{FALSE} on \code{integer64}: \preformatted{
+#!      if (!exists("is.double.default")){
+#!        is.double.default <- function(x) base::is.double(x)
+#!        is.double <- function(x)UseMethod("is.double")
+#!      }
+#!      is.double.integer64 <- function(x)FALSE
+#! 
+#!    }
+#!
 #!     \item \bold{\code{\link{c}}} only dispatches \code{\link{c.integer64}} if the first argument is \code{integer64}
 #!     and it does not recursively dispatch the proper method when called with argument \code{recursive=TRUE}
 #!     Therefore \preformatted{
@@ -343,6 +351,13 @@
 #!     \item \bold{\code{\link{as.factor}}} is not yet implemented 
 #!   }
 #! }
+#! \section{further limitations}{
+#!   \itemize{
+#!     \item \bold{subscripting} non-existing elements and subscripting with \code{NA}s is currently not supported. 
+#!     Such subscripting currently returns \code{9218868437227407266} instead of \code{NA} (the \code{NA} value of the underlying double code).
+#!     Following the full R behaviour here would either destroy performance or require extensive C-coding. 
+#!   }
+#! }
 #! \value{
 #!   \code{integer64} returns a vector of 'integer64', 
 #!    i.e. a vector of \code{\link{double}} decorated with class 'integer64'.
@@ -363,7 +378,7 @@
 #! is.integer64(x)      # TRUE
 #! is.numeric(x)        # TRUE
 #! is.integer(x)        # FALSE - debatable
-#! is.double(x)         # FALSE
+#! is.double(x)         # FALSE - might change
 #! x[] <- 1:2           # assigned value is recycled as usual
 #! x[1:6]               # subscripting as usual
 #! length(x) <- 13      # changing length as usual
@@ -946,6 +961,10 @@
 #!   \item{value}{ an atomic vector with values to be assigned }
 #!   \item{\dots}{ further arguments to the \code{\link{NextMethod}} }
 #! }
+#! \note{
+#!   You should not subscript non-existing elements and not use \code{NA}s as subscripts.
+#!   The current implementation returns \code{9218868437227407266} instead of \code{NA}.
+#! }
 #! \value{
 #!   A vector or scalar of class 'integer64'
 #! }
@@ -1483,13 +1502,6 @@ integer64 <- function(length=0){
 
 is.integer64 <- function(x)inherits(x, "integer64")
 
-if (!exists("is.double.default")){
-	is.double.default <- function(x) base::is.double(x)
-	is.double <- function(x)UseMethod("is.double")
-}
-is.double.integer64 <- function(x)FALSE
-
-
 as.integer64.NULL <- function (x, ...){
   ret <- double()
   setattr(ret, "class", "integer64")
@@ -1798,7 +1810,7 @@ as.data.frame.integer64 <- function(x, ...){
 "*.integer64" <- function(e1, e2){
   a <- binattr(e1,e2)
   ret <- double(max(length(e1),length(e2)))
-  if (is.double(e2))
+  if (!is.integer64(e2) && is.double(e2))
     .Call("times_integer64_double", as.integer64(e1), e2, ret)
   else
     .Call("times_integer64_integer64", as.integer64(e1), as.integer64(e2), ret)
@@ -1810,7 +1822,7 @@ as.data.frame.integer64 <- function(x, ...){
 "^.integer64" <- function(e1, e2){
   a <- binattr(e1,e2)
   ret <- double(max(length(e1),length(e2)))
-  if (is.double(e2))
+  if (!is.integer64(e2) && is.double(e2))
     .Call("power_integer64_double", as.integer64(e1), e2, ret)
   else
     .Call("power_integer64_integer64", as.integer64(e1), as.integer64(e2), ret)
@@ -1822,7 +1834,7 @@ as.data.frame.integer64 <- function(x, ...){
 "/.integer64" <- function(e1, e2){
   a <- binattr(e1,e2)
   ret <- double(max(length(e1),length(e2)))
-  if (is.double(e2))
+  if (!is.integer64(e2) && is.double(e2))
 	  .Call("divide_integer64_double", as.integer64(e1), e2, ret)
   else
 	  .Call("divide_integer64_integer64", as.integer64(e1), as.integer64(e2), ret)

@@ -25,9 +25,9 @@ export(
  ,"integer64"
  ,"identical.integer64"
 
-, "is.double"
-, "is.double.default"
-, "is.double.integer64"
+#, "is.double"
+#, "is.double.default"
+#, "is.double.integer64"
  
 ,"is.integer64"
 ,"as.integer64"
@@ -119,9 +119,6 @@ export(
 ,"cumsum.integer64"
 ,"cumprod.integer64"
 
-
-
-
 # -- zzz.R --
 
 #,.Last.lib
@@ -129,8 +126,8 @@ export(
 
 # -- integer64.R - basic vector handling --
 
-S3method("is.double", default)
-S3method("is.double", integer64)
+#S3method("is.double", default)
+#S3method("is.double", integer64)
 S3method("identical", integer64)
 
 S3method("is", integer64)
@@ -219,4 +216,3 @@ S3method("cummin", integer64)
 S3method("cummax", integer64)
 S3method("cumsum", integer64)
 S3method("cumprod", integer64)
-
