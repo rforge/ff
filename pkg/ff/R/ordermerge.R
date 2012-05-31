@@ -690,6 +690,7 @@ ffsort <- function(
     recbytes <- .rambytes[v]
 
     if (k && (k < .vvalues["short"])){
+	  method <- 3L  # keysort
       keybytes <- (k+2L) * .rambytes["integer"]
       maxbytes <- max(BATCHBYTES, 3L*keybytes)
       maxordersize <- (maxbytes - 2L*keybytes) %/% recbytes
@@ -985,6 +986,7 @@ fforder <- function(
 
   if (is.null(index)){
     index <- clone(l[[1]], vmode="integer", initdata=NULL)
+	levels(index) <- NULL
     use.index <- FALSE
   }else{
     stopifnot(vmode(index)=="integer")
