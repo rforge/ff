@@ -1,3 +1,13 @@
+		CHANGES IN ff VERSION 2.2.8
+
+		
+BUG FIXES
+
+    o	ffsort no longer stops when sorting an fffactor with keysort
+    o	fforder no longer creates NA when ordering an fffactor (reported by Jan Wijffels)
+	
+
+
 		CHANGES IN ff VERSION 2.2.7
 
 		

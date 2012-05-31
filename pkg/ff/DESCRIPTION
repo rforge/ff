@@ -1,5 +1,5 @@
 Package: ff
-Version: 2.2-7
+Version: 2.2-8
 Date: 2012-03-29
 Title: memory-efficient storage of large data on disk and fast access functions
 Author: Daniel Adler <dadler@uni-goettingen.de>, 
