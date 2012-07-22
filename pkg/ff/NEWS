@@ -3,6 +3,9 @@
 		
 BUG FIXES
 
+    o	read.table.ffdf no longer overwrites the comment.char explicitely given
+		and finally sets comment.char="" if it was not given (now as documented, 
+		reported by Julin Maloof)
     o	ffsort no longer stops when sorting an fffactor with keysort
     o	fforder no longer creates NA when ordering an fffactor (reported by Jan Wijffels)
 	
