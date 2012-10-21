@@ -1,3 +1,18 @@
+		CHANGES IN ff VERSION 2.2.9
+
+		
+USER VISIBLE CHANGES
+
+    o	Functions 'ramsort', 'ramorder', 'is.sorted' and 'na.count' are now generic 
+		in package 'bit'.
+
+	
+BUG FIXES
+
+    o	in ffdf argument 'ff_join' now also allows naming columns by name as documented (reported by Suharto Anggono)
+
+
+	
 		CHANGES IN ff VERSION 2.2.8
 
 		

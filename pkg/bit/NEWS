@@ -1,3 +1,17 @@
+    CHANGES IN bit VERSION 1.1.9
+
+
+NEW FEATURES
+
+    o new function 'repeat.time' for adaptive timing
+
+	
+CODE ORGANIZATION
+
+    o generics for sorting and ordering have been moved from 'ff' to 'bit'
+	
+	
+	
     CHANGES IN bit VERSION 1.1.7
 
 

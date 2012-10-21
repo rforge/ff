@@ -47,7 +47,7 @@ all three classes 'bit', 'bitwhich' and 'ri' can be used for subsetting 'ff' obj
    Package: \tab bit\cr
    Type: \tab Package\cr
    Version: \tab 1.1.0\cr
-   Date: \tab 2009-07-07\cr
+   Date: \tab 2012-06-05\cr
    License: \tab GPL-2\cr
    LazyLoad: \tab yes\cr
    Encoding: \tab latin1\cr

@@ -27,6 +27,35 @@ export(
 ,"physical"
 ,"virtual"
 
+,"ramsort"
+,"shellsort"
+,"quicksort"
+,"mergesort"
+,"radixsort"
+,"keysort"
+,"ramorder"
+,"shellorder"
+,"quickorder"
+,"mergeorder"
+,"radixorder"
+,"keyorder"
+,"ramsortorder"
+,"shellsortorder"
+,"quicksortorder"
+,"mergesortorder"
+,"radixsortorder"
+,"keysortorder"
+
+,"is.sorted"
+,"na.count"
+,"nvalid"
+,"nunique"
+,"nties"
+,"is.sorted<-"
+,"na.count<-"
+,"nunique<-"
+,"nties<-"
+
 # -- bit.R - 1-bit boolean vectors for R --
 
 ,"!.bit"
@@ -147,6 +176,9 @@ export(
 ,"repfromto<-"
 ,"vecseq"
 
+# -- timing utilities for bit and ff --
+
+,"repeat.time"
 
 # -- zzz.R --
 
