@@ -13,7 +13,7 @@ Description:
  and factors as well as many elementwise and summary functions. Many fast 
  algorithmic operations such as 'match' and 'order' support interactive data
  exploration and manipulation and optionally leverage caching.
-License: GPL-2 | file LICENSE
+License: GPL-2
 LazyLoad: yes
 ByteCompile: yes
 URL: http://ff.r-forge.r-project.org/
