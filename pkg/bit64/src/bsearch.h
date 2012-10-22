@@ -9,10 +9,6 @@
 
 #include "sort64.h"
 
-typedef int IndexT;
-typedef long long ValueT;
-
-
 #define INTEGER64_BSEARCH_ASC_DOWN(data, l, r, value) \
 { \
 IndexT m; \
