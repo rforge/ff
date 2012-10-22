@@ -5,7 +5,7 @@
 # Licence: GPL2
 # Provided 'as is', use at your own risk
 # Created: 2011-12-11
-# Last changed:  2011-12-11
+# Last changed:  2012-10-22
 #*/
 
 /* for speed (should not really matter in this case as most time is spent in the hashing) */
@@ -15,7 +15,9 @@
 
 #include "timing.h"
 
+// This multiplicator was used in Simon Urbanek's package fastmatch for 32-bit integers
 //#define HASH64(X, SHIFT) (314159265358979323ULL * ((unsigned long long)(X)) >> (SHIFT))
+// This multiplicator seems to work fine with 64bit integers
 #define HASH64(X, SHIFT) (0x9e3779b97f4a7c13ULL * ((unsigned long long)(X)) >> (SHIFT))
 
 SEXP hashfun_integer64(SEXP x_, SEXP bits_, SEXP ret_){
@@ -29,6 +31,7 @@ SEXP hashfun_integer64(SEXP x_, SEXP bits_, SEXP ret_){
   return ret_;
 }
 
+// this function is loosely following Simon Urbanek's package 'fastmatch'
 SEXP hashmap_integer64(SEXP x_, SEXP bits_, SEXP hashpos_, SEXP nunique_){
   int i, nx = LENGTH(x_);
   int h, nh = LENGTH(hashpos_);
@@ -47,8 +50,8 @@ SEXP hashmap_integer64(SEXP x_, SEXP bits_, SEXP hashpos_, SEXP nunique_){
 			h = 0;
 	  }
 	  if (!hashpos[h]){
-		hashpos[h] = i;
-		nunique++;
+      hashpos[h] = i;
+      nunique++;
 	  }
   }
   INTEGER(nunique_)[0] = nunique;
