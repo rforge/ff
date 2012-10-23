@@ -81,8 +81,8 @@ optimizer64(nsmall = 2^16, nbig = 2^25, timefun = repeat.time
 }
 \examples{
 	message("this small example using system.time does not give serious timings\nthis we do this only to run regression tests")
-	benchmark64(nsmall=2^10, nbig=2^16, timefun=system.time)
-	optimizer64(nsmall=2^10, nbig=2^16, timefun=system.time, plot=FALSE)
+	benchmark64(nsmall=2^7, nbig=2^13, timefun=function(expr)system.time(expr, gcFirst=FALSE))
+	optimizer64(nsmall=2^7, nbig=2^13, timefun=function(expr)system.time(expr, gcFirst=FALSE), plot=FALSE)
 \dontrun{
 	message("for real measurement of sufficiently large datasets run this on your machine")
 	benchmark64()
