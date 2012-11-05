@@ -25,7 +25,7 @@
 
 \begin{document}
 
-\title{Some remarks on chunked lopping in packages bit, ff, and R.ff}
+\title{Some remarks on chunked looping in packages bit, ff, and R.ff}
 \author{
   Jens Oehlschl\"agel
 }
