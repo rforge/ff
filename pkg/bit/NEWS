@@ -1,4 +1,14 @@
-    CHANGES IN bit VERSION 1.1.9
+    CHANGES IN bit VERSION 1.1-10
+
+
+TUNING
+
+    o function 'vecseq' now calls C-code when calling with the default 
+	  parameters 'concat=TRUE, eval=TRUE' (wish of Matthew Dowle)
+
+	
+	
+    CHANGES IN bit VERSION 1.1-9
 
 
 NEW FEATURES
@@ -12,7 +22,7 @@ CODE ORGANIZATION
 	
 	
 	
-    CHANGES IN bit VERSION 1.1.7
+    CHANGES IN bit VERSION 1.1-7
 
 
 USER VISIBLE CHANGES
@@ -27,7 +37,7 @@ BUG FIXES
 
 
 
-    CHANGES IN bit VERSION 1.1.5
+    CHANGES IN bit VERSION 1.1-5
 
 
 NEW FEATURES
@@ -54,7 +64,7 @@ BUG FIXES
 
 
 
-    CHANGES IN bit VERSION 1.1.2
+    CHANGES IN bit VERSION 1.1-2
 
 
 USER VISIBLE CHANGES
@@ -64,7 +74,7 @@ USER VISIBLE CHANGES
 
 
 
-    CHANGES IN bit VERSION 1.1.1
+    CHANGES IN bit VERSION 1.1-1
 
 
 USER VISIBLE CHANGES
@@ -85,7 +95,7 @@ BUG FIXES
 
 
 
-    CHANGES IN bit VERSION 1.1.0
+    CHANGES IN bit VERSION 1.1-0
 
 
 NEW FEATURES
