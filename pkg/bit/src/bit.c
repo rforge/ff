@@ -369,7 +369,7 @@ int bit_all(int *b, int from, int to){
   register int j1=to/BITS;
   if (j<j1){
     word = b[j];
-    for(; k<BITS; k--){
+    for(; k<BITS; k++){
       if (!(word & mask1[k]))
         return 0;
     }

@@ -6,6 +6,10 @@ TUNING
     o function 'vecseq' now calls C-code when calling with the default 
 	  parameters 'concat=TRUE, eval=TRUE' (wish of Matthew Dowle)
 
+BUG FIXES
+
+    o all.bit no longer ignores TRUE values in the second and following words
+
 	
 	
     CHANGES IN bit VERSION 1.1-9
