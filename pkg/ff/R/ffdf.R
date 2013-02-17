@@ -2102,9 +2102,11 @@ is.open.ffdf <- function(x, ...){
   else FALSE
 }
 
-open.ffdf <- function (con, readonly = FALSE, pagesize = NULL, caching = NULL, ...){
+open.ffdf <- function (con, readonly = FALSE, pagesize = NULL, caching = NULL
+, assert = FALSE
+, ...){
   p <- .subset2(con, "physical")
-  o <- sapply(p, open, readonly=readonly, pagesize=pagesize, caching=caching)
+  o <- sapply(p, open, readonly=readonly, pagesize=pagesize, caching=caching, assert=assert)
   rnam <- .subset2(con, "row.names")
   if (is.ff(rnam))
     o <- c(row.names=open(rnam, readonly=readonly, pagesize=pagesize, caching=caching), o)
