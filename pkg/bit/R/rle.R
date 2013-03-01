@@ -181,3 +181,15 @@ unique.rlepack <- function(x
   x
 }
 
+# beware: only for sorted input identical with unique()
+# beware: returns TRUE/FALSE, not position of first duplicate
+anyDuplicated.rlepack <- function(x
+, incomparables = FALSE # dummy to keep R CMD check quiet
+, ... # dummy to keep R CMD check quiet
+){
+  if (inherits(x$dat,"rle")){
+    any(x$dat$values == 0L)
+  }else{
+    anyDuplicated(x$dat)>0
+  }
+}

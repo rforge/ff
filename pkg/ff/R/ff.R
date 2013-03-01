@@ -3318,7 +3318,7 @@ open.ff <- function(con
     }
     return(TRUE)
   }else{
-		stop("failed opening ff ", filename(x), "because ", geterrstr.ff(x))
+		stop("failed opening ff ", filename(con), "because ", geterrstr.ff(con))
     return(FALSE)
   }
 }
