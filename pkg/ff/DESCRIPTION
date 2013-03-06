@@ -56,7 +56,7 @@ Description: The ff package provides data structures that are stored on
 	to work interactively with selections of large datasets and quickly 
 	modify selection criteria. 
 	Further high-performance enhancements can be made available upon request. 
-License: file LICENSE
+License: GPL-2
 LazyLoad: yes
 ByteCompile: yes
 Encoding: latin1
