@@ -1198,13 +1198,13 @@ ffindexorder <- function(
   n <- length(index)
 
 
+	open(index, assert=TRUE)
   if (is.null(FF_RETURN)){
     FF_RETURN <- clone(index, vmode="integer", initdata=NULL)
   }else{
     stopifnot(is.null(vw(FF_RETURN)))
     stopifnot(vmode(FF_RETURN)=="integer")
     stopifnot(length(FF_RETURN)==n)
-		open(index, assert=TRUE)
 		open(FF_RETURN, assert=TRUE)
   }
 
@@ -1326,7 +1326,6 @@ ffindexget <- function(
     FF_RETURN <- clone(x, length=n, initdata=NULL)
   }else{
     stopifnot(vmode(FF_RETURN)==v)
-		open(x, assert=TRUE)
 		open(FF_RETURN, assert=TRUE)
     if (length(FF_RETURN)!=n)
       length(FF_RETURN) <- n
@@ -1374,6 +1373,7 @@ ffindexget <- function(
 				open(indexorder, assert=TRUE)
     }
 
+		open(x, assert=TRUE)
 		open(index, assert=TRUE)
     .Call("ffindexget"
     , ffmode_       = .ffmode[v]
