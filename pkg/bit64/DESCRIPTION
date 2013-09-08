@@ -1,7 +1,7 @@
 Package: bit64
 Type: Package
 Title: A S3 class for vectors of 64bit integers
-Version: 0.9-2
+Version: 0.9-3
 Date: 2012-11-01
 Author: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>

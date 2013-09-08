@@ -214,7 +214,8 @@ Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
     system.time(for(i in 1:100){
        l[] <- TRUE
     })/100
-    # replace bit by TRUE (NOTE that we recycle the assignment value on R side == memory allocation and assignment first)
+    # replace bit by TRUE (NOTE that we recycle the assignment  
+		 # value on R side == memory allocation and assignment first)
     system.time(for(i in 1:100){
        b[] <- TRUE
     })/100

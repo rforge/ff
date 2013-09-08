@@ -406,8 +406,10 @@
 #! seq(as.integer64(1), 10)     # seq.integer64 is dispatched on first given argument
 #! seq(to=as.integer64(10), 1)  # seq.integer64 is dispatched on first given argument
 #! seq.integer64(along.with=x)  # or call seq.integer64 directly
-#! x <- c(x,runif(length(x), max=100)) # c.integer64 is dispatched only if *first* argument is integer64 ...
-#! x                                   # ... and coerces everything to integer64 - including double
+#! # c.integer64 is dispatched only if *first* argument is integer64 ...
+#! x <- c(x,runif(length(x), max=100)) 
+#! # ... and coerces everything to integer64 - including double
+#! x                                   
 #! names(x) <- letters  # use names as usual
 #! x
 #! 
@@ -422,7 +424,8 @@
 #! y["a",] <- 1:2       # assigning as usual
 #! y
 #! y[1:2,-4]            # subscripting as usual
-#! cbind(E=1:3, F=runif(3, 0, 100), G=c("-1","0","1"), y)  # cbind.integer64 dispatched on any argument and coerces everything to integer64
+#! # cbind.integer64 dispatched on any argument and coerces everything to integer64
+#! cbind(E=1:3, F=runif(3, 0, 100), G=c("-1","0","1"), y)
 #! 
 #! message("Using integer64 in data.frame")
 #! str(as.data.frame(x))
@@ -667,11 +670,13 @@
 #! message("-- The following performance numbers are measured under RWin64  --")
 #! message("-- under RWin32 the advantage of integer64 over int64 is smaller --")
 #!
-#! message("-- integer64 needs 7x/5x less RAM than int64 under 64/32 bit OS (and twice the RAM of integer as it should be) --")
+#! message("-- integer64 needs 7x/5x less RAM than int64 under 64/32 bit OS 
+#! (and twice the RAM of integer as it should be) --")
 #! as.vector(object.size(int64(1e6))/object.size(integer64(1e6)))
 #! as.vector(object.size(integer64(1e6))/object.size(integer(1e6)))
 #! 
-#! message("-- integer64 creates 2000x/1300x faster than int64 under 64/32 bit OS (and 3x the time of integer) --")
+#! message("-- integer64 creates 2000x/1300x faster than int64 under 64/32 bit OS
+#! (and 3x the time of integer) --")
 #! t32 <- system.time(integer(1e8))
 #! t64 <- system.time(integer64(1e8))
 #! T64 <- system.time(int64(1e7))*10  # using 1e8 as above stalls our R on an i7 8 GB RAM Thinkpad
@@ -681,8 +686,10 @@
 #! i32 <- sample(1e6)
 #! d64 <- as.double(i32)
 #! 
-#! message("-- the following timings are rather conservative since timings of integer64 include garbage collection -- due to looped calls")
-#! message("-- integer64 coerces 900x/100x faster than int64 under 64/32 bit OS (and 2x the time of coercing to integer) --")
+#! message("-- the following timings are rather conservative since timings
+#!  of integer64 include garbage collection -- due to looped calls")
+#! message("-- integer64 coerces 900x/100x faster than int64 
+#!  under 64/32 bit OS (and 2x the time of coercing to integer) --")
 #! t32 <- system.time(for(i in 1:1000)as.integer(d64))
 #! t64 <- system.time(for(i in 1:1000)as.integer64(d64))
 #! T64 <- system.time(as.int64(d64))*1000
@@ -694,7 +701,8 @@
 #! T64/t64
 #! t64/td64
 #! 
-#! message("-- integer64 serializes 4x/0.8x faster than int64 under 64/32 bit OS (and less than 2x/6x the time of integer or double) --")
+#! message("-- integer64 serializes 4x/0.8x faster than int64 
+#!  under 64/32 bit OS (and less than 2x/6x the time of integer or double) --")
 #! t32 <- system.time(for(i in 1:10)serialize(i32, NULL))
 #! td64 <- system.time(for(i in 1:10)serialize(d64, NULL))
 #! i64 <- as.integer64(i32); 
@@ -708,7 +716,8 @@
 #! t64/td64
 #! 
 #! 
-#! message("-- integer64 adds 250x/60x faster than int64 under 64/32 bit OS (and less than 6x the time of integer or double) --")
+#! message("-- integer64 adds 250x/60x faster than int64
+#!  under 64/32 bit OS (and less than 6x the time of integer or double) --")
 #! td64 <- system.time(for(i in 1:100)d64+d64)
 #! t32 <- system.time(for(i in 1:100)i32+i32)
 #! i64 <- as.integer64(i32); 
@@ -721,7 +730,8 @@
 #! t64/t32
 #! t64/td64
 #! 
-#! message("-- integer64 sums 3x/0.2x faster than int64 (and at about 5x/60X the time of integer and double) --")
+#! message("-- integer64 sums 3x/0.2x faster than int64 
+#! (and at about 5x/60X the time of integer and double) --")
 #! td64 <- system.time(for(i in 1:100)sum(d64))
 #! t32 <- system.time(for(i in 1:100)sum(i32))
 #! i64 <- as.integer64(i32); 
@@ -734,7 +744,8 @@
 #! t64/t32
 #! t64/td64
 #! 
-#! message("-- integer64 diffs 5x/0.85x faster than integer and double (int64 version 1.0 does not support diff) --")
+#! message("-- integer64 diffs 5x/0.85x faster than integer and double
+#! (int64 version 1.0 does not support diff) --")
 #! td64 <- system.time(for(i in 1:10)diff(d64, lag=2L, differences=2L))
 #! t32 <- system.time(for(i in 1:10)diff(i32, lag=2L, differences=2L))
 #! i64 <- as.integer64(i32); 
@@ -744,7 +755,8 @@
 #! t64/td64
 #! 
 #! 
-#! message("-- integer64 subscripts 1000x/340x faster than int64 (and at the same speed / 10x slower as integer) --")
+#! message("-- integer64 subscripts 1000x/340x faster than int64
+#! (and at the same speed / 10x slower as integer) --")
 #! ts32 <- system.time(for(i in 1:1000)sample(1e6, 1e3))
 #! t32<- system.time(for(i in 1:1000)i32[sample(1e6, 1e3)])
 #! i64 <- as.integer64(i32); 
@@ -756,7 +768,8 @@
 #! (T64-ts32)/(t64-ts32)
 #! (t64-ts32)/(t32-ts32)
 #! 
-#! message("-- integer64 assigns 200x/90x faster than int64 (and 50x/160x slower than integer) --")
+#! message("-- integer64 assigns 200x/90x faster than int64
+#! (and 50x/160x slower than integer) --")
 #! ts32 <- system.time(for(i in 1:100)sample(1e6, 1e3))
 #! t32 <- system.time(for(i in 1:100)i32[sample(1e6, 1e3)] <- 1:1e3)
 #! i64 <- as.integer64(i32); 
@@ -795,16 +808,20 @@
 #! unlink(fI64)
 #! rm(I64, dfI64); gc()
 #! 
-#! message("-- integer64 coerces 40x/6x faster to data.frame than int64(and factor 1/9 slower than integer) --")
+#! message("-- integer64 coerces 40x/6x faster to data.frame than int64
+#! (and factor 1/9 slower than integer) --")
 #! tdfI64/tdfi64
 #! tdfi64/tdfi32
-#! message("-- integer64 subscripts from data.frame 20x/2.5x faster than int64 (and 3x/13x slower than integer) --")
+#! message("-- integer64 subscripts from data.frame 20x/2.5x faster than int64
+#!  (and 3x/13x slower than integer) --")
 #! tdfsI64/tdfsi64
 #! tdfsi64/tdfsi32
-#! message("-- integer64 csv writes about 2x/0.5x faster than int64 (and about 1.5x/5x slower than integer) --")
+#! message("-- integer64 csv writes about 2x/0.5x faster than int64
+#! (and about 1.5x/5x slower than integer) --")
 #! tdfwI64/tdfwi64
 #! tdfwi64/tdfwi32
-#! message("-- integer64 csv reads about 3x/1.5 faster than int64 (and about 2x slower than integer) --")
+#! message("-- integer64 csv reads about 3x/1.5 faster than int64
+#! (and about 2x slower than integer) --")
 #! tdfrI64/tdfri64
 #! tdfri64/tdfri32
 #! 
@@ -846,7 +863,8 @@
 #!   This will discover any deviation between objects containing integer64 vectors. 
 #! }
 #! \usage{
-#!  identical.integer64(x, y, num.eq = FALSE, single.NA = FALSE, attrib.as.set = TRUE, ignore.bytecode = TRUE)
+#!  identical.integer64(x, y, num.eq = FALSE, single.NA = FALSE
+#! , attrib.as.set = TRUE, ignore.bytecode = TRUE)
 #! }
 #! \arguments{
 #!   \item{x}{ atomic vector of class 'integer64' }
@@ -1662,51 +1680,110 @@ print.integer64 <- function(x, quote=FALSE, ...){
   ret
 }
 
-c.integer64 <- function(..., recursive = FALSE){
+c.integer64 <-
+function (..., recursive = FALSE) 
+{
 	l <- list(...)
 	K <- length(l)
+	a <- vector("list", K)
+	is64 <- isRL <- logical(K)
 	for (k in 1:K){
-	  if (recursive && is.list(l[[k]])){
-	    l[[k]] <- do.call("c.integer64", c(l[[k]], list(recursive=TRUE)))
-	  }else if (!is.integer64(l[[k]])){
-	    nam <- names(l[[k]])
-	    l[[k]] <- as.integer64(l[[k]])
-		names(l[[k]]) <- nam
-	  }
-	  setattr(l[[k]], "class", NULL)
+		if (recursive && is.list(l[[k]])){
+			isRL[k] <- TRUE
+			l[[k]] <- do.call("c.integer64", c(l[[k]], list(recursive = TRUE)))
+		}else if (is.integer64(l[[k]])) {
+			is64[k] <- TRUE  # we store the is64 state first, because it can change temporarily duringthe next loop, which kills us if we have c(x,x,x) from R-3.0.2
+		}
+	}
+	for (k in 1:K){
+		if (!isRL[k]){
+			if (is64[k]){
+				# store old classes and make sure we hande correctly the case where multiple arguments refer to the same object as in c(x,x,x)
+				if(!is.null(attr(l[[k]], "class"))){
+					a[[k]] <- attr(l[[k]], "class")
+					setattr(l[[k]], "class", NULL)
+				}
+			}else{
+				nam <- names(l[[k]])
+				l[[k]] <- as.integer64(l[[k]])
+				names(l[[k]]) <- nam
+				setattr(l[[k]], "class", NULL)
+			}
+		}
 	}
 	ret <- do.call("c", l)
 	setattr(ret, "class", "integer64")
+	# re-install old classes without undoing it in case we have c(x,x,x)
+	for (k in 1:K){
+		if (!is.null(a[[k]]))
+			setattr(l[[k]], "class", a[[k]])
+	}
 	ret
 }
 
 cbind.integer64 <- function(...){
   l <- list(...)
-  for (k in 1:length(l)){
-    if (!is.integer64(l[[k]])){
-	  nam <- names(l[[k]])
-      l[[k]] <- as.integer64(l[[k]])
-	  names(l[[k]]) <- nam
+	K <- length(l)
+	a <- character(K)
+	is64 <- isRL <- logical(K)
+  for (k in 1:K){
+    if (is.integer64(l[[k]]))
+			is64[k] <- TRUE
 	}
-    setattr(l[[k]], "class", NULL)
+  for (k in 1:K){
+		if (is64[k]){
+			# store old classes and make sure we hande correctly the case where multiple arguments refer to the same object as in c(x,x,x)
+			if(!is.null(attr(l[[k]], "class"))){
+				a[k] <- attr(l[[k]], "class")
+				setattr(l[[k]], "class", NULL)
+			}
+		}else{
+			nam <- names(l[[k]])
+			l[[k]] <- as.integer64(l[[k]])
+			names(l[[k]]) <- nam
+			setattr(l[[k]], "class", NULL)
+		}
   }
   ret <- do.call("cbind", l)
   setattr(ret, "class", "integer64")
+	# re-install old classes without undoing it in case we have c(x,x,x)
+	for (k in 1:K){
+		if (!is.null(a[[k]]))
+			setattr(l[[k]], "class", a[[k]])
+	}
   ret
 }
 
 rbind.integer64 <- function(...){
   l <- list(...)
-  for (k in 1:length(l)){
-    if (!is.integer64(l[[k]])){
-	  nam <- names(l[[k]])
-      l[[k]] <- as.integer64(l[[k]])
-	  names(l[[k]]) <- nam
+	K <- length(l)
+	a <- character(K)
+	is64 <- isRL <- logical(K)
+  for (k in 1:K){
+    if (is.integer64(l[[k]]))
+			is64[k] <- TRUE
 	}
-    setattr(l[[k]], "class", NULL)
+  for (k in 1:K){
+		if (is64[k]){
+			# store old classes and make sure we hande correctly the case where multiple arguments refer to the same object as in c(x,x,x)
+			if(!is.null(attr(l[[k]], "class"))){
+				a[k] <- attr(l[[k]], "class")
+				setattr(l[[k]], "class", NULL)
+			}
+		}else{
+			nam <- names(l[[k]])
+			l[[k]] <- as.integer64(l[[k]])
+			names(l[[k]]) <- nam
+			setattr(l[[k]], "class", NULL)
+		}
   }
   ret <- do.call("rbind", l)
   setattr(ret, "class", "integer64")
+	# re-install old classes without undoing it in case we have c(x,x,x)
+	for (k in 1:K){
+		if (!is.null(a[[k]]))
+			setattr(l[[k]], "class", a[[k]])
+	}
   ret
 }
 
@@ -1717,7 +1794,7 @@ as.data.frame.integer64 <- function(x, ...){
   ret <- as.data.frame(x, ...)
   k <- length(ret)
   for (i in 1:k)
-    setattr(ret[[i]], "class", cl) 
+   setattr(ret[[i]], "class", cl) 
   ret
 }
 

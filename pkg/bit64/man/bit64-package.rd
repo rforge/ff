@@ -396,8 +396,10 @@ rep(x, 2)            # replicate as usual
 seq(as.integer64(1), 10)     # seq.integer64 is dispatched on first given argument
 seq(to=as.integer64(10), 1)  # seq.integer64 is dispatched on first given argument
 seq.integer64(along.with=x)  # or call seq.integer64 directly
-x <- c(x,runif(length(x), max=100)) # c.integer64 is dispatched only if *first* argument is integer64 ...
-x                                   # ... and coerces everything to integer64 - including double
+# c.integer64 is dispatched only if *first* argument is integer64 ...
+x <- c(x,runif(length(x), max=100)) 
+# ... and coerces everything to integer64 - including double
+x                                   
 names(x) <- letters  # use names as usual
 x
 
@@ -412,7 +414,8 @@ dimnames(y) <- list(letters[1:3], LETTERS[1:4])
 y["a",] <- 1:2       # assigning as usual
 y
 y[1:2,-4]            # subscripting as usual
-cbind(E=1:3, F=runif(3, 0, 100), G=c("-1","0","1"), y)  # cbind.integer64 dispatched on any argument and coerces everything to integer64
+# cbind.integer64 dispatched on any argument and coerces everything to integer64
+cbind(E=1:3, F=runif(3, 0, 100), G=c("-1","0","1"), y)
 
 message("Using integer64 in data.frame")
 str(as.data.frame(x))
@@ -657,11 +660,13 @@ str(int64(3))
 message("-- The following performance numbers are measured under RWin64  --")
 message("-- under RWin32 the advantage of integer64 over int64 is smaller --")
 
-message("-- integer64 needs 7x/5x less RAM than int64 under 64/32 bit OS (and twice the RAM of integer as it should be) --")
+message("-- integer64 needs 7x/5x less RAM than int64 under 64/32 bit OS 
+(and twice the RAM of integer as it should be) --")
 as.vector(object.size(int64(1e6))/object.size(integer64(1e6)))
 as.vector(object.size(integer64(1e6))/object.size(integer(1e6)))
 
-message("-- integer64 creates 2000x/1300x faster than int64 under 64/32 bit OS (and 3x the time of integer) --")
+message("-- integer64 creates 2000x/1300x faster than int64 under 64/32 bit OS
+(and 3x the time of integer) --")
 t32 <- system.time(integer(1e8))
 t64 <- system.time(integer64(1e8))
 T64 <- system.time(int64(1e7))*10  # using 1e8 as above stalls our R on an i7 8 GB RAM Thinkpad
@@ -671,8 +676,10 @@ t64/t32
 i32 <- sample(1e6)
 d64 <- as.double(i32)
 
-message("-- the following timings are rather conservative since timings of integer64 include garbage collection -- due to looped calls")
-message("-- integer64 coerces 900x/100x faster than int64 under 64/32 bit OS (and 2x the time of coercing to integer) --")
+message("-- the following timings are rather conservative since timings
+ of integer64 include garbage collection -- due to looped calls")
+message("-- integer64 coerces 900x/100x faster than int64 
+ under 64/32 bit OS (and 2x the time of coercing to integer) --")
 t32 <- system.time(for(i in 1:1000)as.integer(d64))
 t64 <- system.time(for(i in 1:1000)as.integer64(d64))
 T64 <- system.time(as.int64(d64))*1000
@@ -684,7 +691,8 @@ T64 <- system.time(for(i in 1:10)as.int64(i32))*100
 T64/t64
 t64/td64
 
-message("-- integer64 serializes 4x/0.8x faster than int64 under 64/32 bit OS (and less than 2x/6x the time of integer or double) --")
+message("-- integer64 serializes 4x/0.8x faster than int64 
+ under 64/32 bit OS (and less than 2x/6x the time of integer or double) --")
 t32 <- system.time(for(i in 1:10)serialize(i32, NULL))
 td64 <- system.time(for(i in 1:10)serialize(d64, NULL))
 i64 <- as.integer64(i32); 
@@ -698,7 +706,8 @@ t64/t32
 t64/td64
 
 
-message("-- integer64 adds 250x/60x faster than int64 under 64/32 bit OS (and less than 6x the time of integer or double) --")
+message("-- integer64 adds 250x/60x faster than int64
+ under 64/32 bit OS (and less than 6x the time of integer or double) --")
 td64 <- system.time(for(i in 1:100)d64+d64)
 t32 <- system.time(for(i in 1:100)i32+i32)
 i64 <- as.integer64(i32); 
@@ -711,7 +720,8 @@ T64/t64
 t64/t32
 t64/td64
 
-message("-- integer64 sums 3x/0.2x faster than int64 (and at about 5x/60X the time of integer and double) --")
+message("-- integer64 sums 3x/0.2x faster than int64 
+(and at about 5x/60X the time of integer and double) --")
 td64 <- system.time(for(i in 1:100)sum(d64))
 t32 <- system.time(for(i in 1:100)sum(i32))
 i64 <- as.integer64(i32); 
@@ -724,7 +734,8 @@ T64/t64
 t64/t32
 t64/td64
 
-message("-- integer64 diffs 5x/0.85x faster than integer and double (int64 version 1.0 does not support diff) --")
+message("-- integer64 diffs 5x/0.85x faster than integer and double
+(int64 version 1.0 does not support diff) --")
 td64 <- system.time(for(i in 1:10)diff(d64, lag=2L, differences=2L))
 t32 <- system.time(for(i in 1:10)diff(i32, lag=2L, differences=2L))
 i64 <- as.integer64(i32); 
@@ -734,7 +745,8 @@ t64/t32
 t64/td64
 
 
-message("-- integer64 subscripts 1000x/340x faster than int64 (and at the same speed / 10x slower as integer) --")
+message("-- integer64 subscripts 1000x/340x faster than int64
+(and at the same speed / 10x slower as integer) --")
 ts32 <- system.time(for(i in 1:1000)sample(1e6, 1e3))
 t32<- system.time(for(i in 1:1000)i32[sample(1e6, 1e3)])
 i64 <- as.integer64(i32); 
@@ -746,7 +758,8 @@ rm(I64); gc()
 (T64-ts32)/(t64-ts32)
 (t64-ts32)/(t32-ts32)
 
-message("-- integer64 assigns 200x/90x faster than int64 (and 50x/160x slower than integer) --")
+message("-- integer64 assigns 200x/90x faster than int64
+(and 50x/160x slower than integer) --")
 ts32 <- system.time(for(i in 1:100)sample(1e6, 1e3))
 t32 <- system.time(for(i in 1:100)i32[sample(1e6, 1e3)] <- 1:1e3)
 i64 <- as.integer64(i32); 
@@ -785,16 +798,20 @@ tdfrI64 <- system.time(read.csv(fI64, colClasses=rep("int64", 3)))
 unlink(fI64)
 rm(I64, dfI64); gc()
 
-message("-- integer64 coerces 40x/6x faster to data.frame than int64(and factor 1/9 slower than integer) --")
+message("-- integer64 coerces 40x/6x faster to data.frame than int64
+(and factor 1/9 slower than integer) --")
 tdfI64/tdfi64
 tdfi64/tdfi32
-message("-- integer64 subscripts from data.frame 20x/2.5x faster than int64 (and 3x/13x slower than integer) --")
+message("-- integer64 subscripts from data.frame 20x/2.5x faster than int64
+ (and 3x/13x slower than integer) --")
 tdfsI64/tdfsi64
 tdfsi64/tdfsi32
-message("-- integer64 csv writes about 2x/0.5x faster than int64 (and about 1.5x/5x slower than integer) --")
+message("-- integer64 csv writes about 2x/0.5x faster than int64
+(and about 1.5x/5x slower than integer) --")
 tdfwI64/tdfwi64
 tdfwi64/tdfwi32
-message("-- integer64 csv reads about 3x/1.5 faster than int64 (and about 2x slower than integer) --")
+message("-- integer64 csv reads about 3x/1.5 faster than int64
+(and about 2x slower than integer) --")
 tdfrI64/tdfri64
 tdfri64/tdfri32
 

@@ -225,7 +225,8 @@
 #!     system.time(for(i in 1:100){
 #!        l[] <- TRUE
 #!     })/100
-#!     # replace bit by TRUE (NOTE that we recycle the assignment value on R side == memory allocation and assignment first)
+#!     # replace bit by TRUE (NOTE that we recycle the assignment  
+#!		 # value on R side == memory allocation and assignment first)
 #!     system.time(for(i in 1:100){
 #!        b[] <- TRUE
 #!     })/100
@@ -1624,7 +1625,8 @@ xor.bitwhich(e1, e2)
 #!         s <- s + sum(x[(n-R+1L):n])
 #!     })
 #!
-#!     message("Batched sum saving repeated memory allocation for the return vector (44.4 sec on Centrino duo)")
+#!     message("Batched sum saving repeated memory allocation for the return vector
+#!     (44.4 sec on Centrino duo)")
 #!     system.time({
 #!       s <- 0L
 #!       l <- logical(N)

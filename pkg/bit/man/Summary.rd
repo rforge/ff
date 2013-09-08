@@ -98,7 +98,8 @@
         s <- s + sum(x[(n-R+1L):n])
     })
 
-    message("Batched sum saving repeated memory allocation for the return vector (44.4 sec on Centrino duo)")
+    message("Batched sum saving repeated memory allocation for the return vector
+    (44.4 sec on Centrino duo)")
     system.time({
       s <- 0L
       l <- logical(N)
