@@ -305,15 +305,16 @@ is not worth it with 32x at duplicated RAM consumption).
     For testing purposes we provide a wrapper \code{\link{identical.integer64}} that will distinguish all bit-patterns.
     It would be desireable to have a single call of \code{\link{identical}} handle both, \code{\link{double}} and \code{integer64}.
 
-    \item the \bold{colon} operator \code{\link{:}} officially does not dispatches S3 methods, therefore we have not patched it. However, with \code{\link{bit64S3}} you can turn \code{:} generic
-     and then try for example: \preformatted{
+    \item the \bold{colon} operator \code{\link{:}} officially does not dispatches S3 methods, however, we have made it generic
+     \preformatted{
      from <- lim.integer64()[1]
      to <- from+99
      from:to
    }
+   As a limitation remains: it will only dispatch at its first argument \code{from} but not at its second \code{to}.
 
-    \item \bold{\code{\link{is.double}}} does not dispatches S3 methods, therefore we have not patched it. However, with \code{\link{bit64S3}} you can turn \code{is.double} generic 
-		and then it will return \code{FALSE} on \code{integer64}.
+    \item \bold{\code{\link{is.double}}} does not dispatches S3 methods, However, we have made it generic 
+		and it will return \code{FALSE} on \code{integer64}.
 
     \item \bold{\code{\link{c}}} only dispatches \code{\link{c.integer64}} if the first argument is \code{integer64}
     and it does not recursively dispatch the proper method when called with argument \code{recursive=TRUE}

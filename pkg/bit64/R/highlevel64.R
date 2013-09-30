@@ -1400,8 +1400,8 @@ optimizer64 <- function(nsmall=2^16, nbig=2^25, timefun=repeat.time
 #! 
 #! }
 #! \usage{
-#! match.integer64(x, table, nomatch = NA_integer_, nunique = NULL, method = NULL, ...)
-#! "\%in\%.integer64"(x, table, nunique = NULL, method = NULL, ...)
+#! \method{match}{integer64}(x, table, nomatch = NA_integer_, nunique = NULL, method = NULL, ...)
+#! \method{\%in\%}{integer64}(x, table, ...)
 #! }
 #! \arguments{
 #!   \item{x}{
@@ -1608,8 +1608,10 @@ match.integer64 <- function(x, table, nomatch = NA_integer_, nunique=NULL, metho
 }
 
 
-"%in%.integer64" <- function(x, table, nunique=NULL, method=NULL, ...){
+"%in%.integer64" <- function(x, table, ...){
   stopifnot(is.integer64(x) &&  is.integer64(table))  # xx TODO
+	nunique <- NULL
+	method <- NULL
   c <- cache(table)
   if (is.null(method)){
     if (is.null(c)){
@@ -2240,6 +2242,21 @@ unipos.integer64 <- function(x
 #! table(x)
 #! table(x, exclude=NULL)
 #! table(x, z, exclude=NULL)
+#!
+#! \dontshow{
+#!  stopifnot(identical(table.integer64(as.integer64(c(1,1,2))), table(c(1,1,2))))
+#!  stopifnot(identical(table.integer64(as.integer64(c(1,1,2)),as.integer64(c(3,4,4))), table(c(1,1,2),c(3,4,4))))
+#!  message("the following works with three warnings due to coercion")
+#!  stopifnot(identical(table.integer64(c(1,1,2)), table(c(1,1,2))))
+#!  stopifnot(identical(table.integer64(as.integer64(c(1,1,2)),c(3,4,4)), table(c(1,1,2),c(3,4,4))))
+#!  stopifnot(identical(table.integer64(c(1,1,2),as.integer64(c(3,4,4))), table(c(1,1,2),c(3,4,4))))
+#!  message("the following works because of as.factor.integer64")
+#!  stopifnot(identical(table(as.integer64(c(1,1,2))), table(c(1,1,2))))  
+#!  stopifnot(identical(table(as.integer64(c(1,1,2)),as.integer64(c(3,4,4))), table(c(1,1,2),c(3,4,4))))
+#!  stopifnot(identical(table(as.integer64(c(1,1,2)),c(3,4,4)), table(c(1,1,2),c(3,4,4))))
+#!  stopifnot(identical(table(c(1,1,2),as.integer64(c(3,4,4))), table(c(1,1,2),c(3,4,4))))
+#! }
+#!
 #! }
 #! \keyword{category}
 
@@ -2293,8 +2310,10 @@ table.integer64 <- function(
 		
 	if (N==1L){
 		x <- A(1L)
-		if (!is.integer64(x))
-			stop("input vector must be integer64")
+			if (!is.integer64(x)){
+				warning("coercing first argument to integer64")
+				x <- as.integer64(x)
+			}
 	}else{
 		a <- A(1L)
 		n <- length(a)
@@ -2304,10 +2323,12 @@ table.integer64 <- function(
 		names(dims) <- dnn
 		for (i in 1:N){
 			a <- A(i)
-			if (!is.integer64(a))
-				stop("all input vectors must be integer64")
 			if (length(a) != n) 
 				stop("all input vectors must have the same length")
+			if (!is.integer64(a)){
+				warning("coercing argument ", i, " to integer64")
+				a <- as.integer64(a)
+			}
 			c <- cache(a)
 			if (is.null(c$order)){
 				s <- a[]
@@ -2432,7 +2453,7 @@ table.integer64 <- function(
 			setattr(cnt, "dimnames", dn)
 			setattr(cnt, "class", "table")
 		}else{
-			a <- array(as.integer(NA), dim=nu, dimnames=lapply(dims, as.character))
+			a <- array(0L, dim=nu, dimnames=lapply(dims, as.character))
 			a[as.integer(val)+1L] <- as.integer(cnt)
 			cnt <- a
 			setattr(cnt, "class", "table")
@@ -2714,7 +2735,7 @@ tiepos.integer64 <- function(x
 #!   values) are averaged and missing values propagated.
 #! }
 #! \usage{
-#! 	rank.integer64(x, method = NULL, \dots)
+#! 	\method{rank}{integer64}(x, method = NULL, \dots)
 #! }
 #! \arguments{
 #!   \item{x}{a integer64 vector}

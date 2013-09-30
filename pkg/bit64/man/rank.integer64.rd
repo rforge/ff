@@ -6,7 +6,7 @@
   values) are averaged and missing values propagated.
 }
 \usage{
-	rank.integer64(x, method = NULL, \dots)
+	\method{rank}{integer64}(x, method = NULL, \dots)
 }
 \arguments{
   \item{x}{a integer64 vector}

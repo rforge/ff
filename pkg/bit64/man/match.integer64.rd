@@ -11,8 +11,8 @@
 
 }
 \usage{
-match.integer64(x, table, nomatch = NA_integer_, nunique = NULL, method = NULL, ...)
-"\%in\%.integer64"(x, table, nunique = NULL, method = NULL, ...)
+\method{match}{integer64}(x, table, nomatch = NA_integer_, nunique = NULL, method = NULL, ...)
+\method{\%in\%}{integer64}(x, table, ...)
 }
 \arguments{
   \item{x}{
