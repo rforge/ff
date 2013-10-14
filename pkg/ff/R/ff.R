@@ -204,23 +204,28 @@ geterrstr.ff <- function(x)
 #! \seealso{  \code{\link{fftempfile}}, \code{\link{finalizer}}, \code{\link{ff}}, \code{\link{as.ff}}, \code{\link{as.ram}}, \code{\link{update.ff}} }
 #! \examples{
 #!   \dontrun{
-#!   message("Neither giving pattern nor filename gives a random filename with extension ffextension in fftempdir")
+#!   message("Neither giving pattern nor filename gives a random filename 
+#! with extension ffextension in fftempdir")
 #!   x <- ff(1:12)
 #!   finalizer(x)
 #!   filename(x)
-#!   message("Giving a pattern with just a prefix moves to a random filename beginning with the prefix in fftempdir")
+#!   message("Giving a pattern with just a prefix moves to a random filename 
+#! beginning with the prefix in fftempdir")
 #!   pattern(x) <- "myprefix_"
 #!   filename(x)
-#!   message("Giving a pattern with a path and prefix moves to a random filename beginning with prefix in path (use . for getwd) ")
+#!   message("Giving a pattern with a path and prefix moves to a random filename 
+#! beginning with prefix in path (use . for getwd) ")
 #!   pattern(x) <- "./myprefix"
 #!   filename(x)
-#!   message("Giving a filename moves to exactly this filename and extension in the R-expected place) ")
+#!   message("Giving a filename moves to exactly this filename and extension 
+#! in the R-expected place) ")
 #!   if (!file.exists("./myfilename.myextension")){
 #!     filename(x) <- "./myfilename.myextension"
 #!     filename(x)
 #!   }
 #!
-#!   message("NOTE that the finalizer has changed from 'delete' to 'close': now WE are responsible for deleting the file - NOT the finalizer")
+#!   message("NOTE that the finalizer has changed from 'delete' to 'close': 
+#! now WE are responsible for deleting the file - NOT the finalizer")
 #!   finalizer(x)
 #!   delete(x)
 #!   rm(x)
@@ -286,7 +291,7 @@ filename.default <- function(x
     on.exit(open(x), add=TRUE)
   }
 
-  if(file.rename(oldnam, value)){
+  if(file.rename(oldnam, value) || (file.copy(oldnam, value) && file.remove(oldnam)) ){
     physical(x)$filename <- value
   }else
     stop("ff file rename from '", oldnam, "' to '", value, "' failed")
@@ -636,7 +641,7 @@ fixdiag.dist <- function(x
 #! \seealso{ \code{\link{is.ordered.ff}} for testing factor levels, \code{\link[base]{is.unsorted}} for testing the data, \code{\link[bit]{intisasc}} for a quick version thereof, \code{\link{na.count}} for yet another \code{\link[=physical.ff]{physical}} attribute }
 #! \examples{
 #!   x <- 1:12
-#!   is.sorted(x) <- !( is.na(is.unsorted(x)) || is.unsorted(x))  # actually calling is.unsorted twice is stupid
+#!   is.sorted(x) <- !( is.na(is.unsorted(x)) || is.unsorted(x))
 #!   is.sorted(x)
 #!   x[1] <- 100L
 #!   message("don't forget to maintain once it's no longer TRUE")
@@ -721,14 +726,16 @@ is.sorted.default <- function(x, ...)
 #!   na.count(x)
 #!   message("remove the 'na.count' physical attribute (and stop automatic maintenance)")
 #!   na.count(x) <- NULL
-#!   message("activate the 'na.count' physical attribute and have ff automatically calculate the current na.count")
+#!   message("activate the 'na.count' physical attribute and have ff automatically 
+#! calculate the current na.count")
 #!   na.count(x) <- TRUE
 #!   na.count(x)
 #!   message("--- ram examples ---")
 #!   x <- 1:12
 #!   na.count(x)
 #!   x[1] <- NA
-#!   message("activate the 'na.count' physical attribute and have R automatically calculate the current na.count")
+#!   message("activate the 'na.count' physical attribute and have R automatically 
+#! calculate the current na.count")
 #!   na.count(x) <- TRUE
 #!   na.count(x)
 #!   message("remove the 'na.count' physical attribute (and stop automatic maintenance)")
@@ -1387,7 +1394,7 @@ dimnames.ff_array <- function(x){
 #!    dimorder(x, \dots) <- value
 #!   \method{dimorder}{default}(x, \dots)
 #!   \method{dimorder}{ff_array}(x, \dots)
-#!   \method{dimorder}{ffdf}(x, \dots)           # reports 2:1 if any of the embedded ff objects have nonStandard dimorder
+#!   \method{dimorder}{ffdf}(x, \dots)
 #!   \method{dimorder}{ff_array}(x, \dots) <- value
 #!   \method{dimorder}{ffdf}(x, \dots) <- value  # just here to catch forbidden assignments
 #! }
@@ -2080,26 +2087,37 @@ str.ff <- function(object, nest.lev=0, ...){
 #! \section{Licence}{Package under GPL-2, included C++ code released by Daniel Adler under the less restrictive ISCL}
 #! \seealso{ \code{\link{vector}}, \code{\link{matrix}}, \code{\link{array}}, \code{\link{as.ff}}, \code{\link{as.ram}} }
 #! \examples{
-#!   message("make sure you understand the following ff options before you start using the ff package!!")
+#!   message("make sure you understand the following ff options 
+#!     before you start using the ff package!!")
 #!   oldoptions <- options(fffinalizer="deleteIfOpen", fffinonexit="TRUE", fftempdir=tempdir())
-#!   ff(1:12)                        # an integer vector
-#!   ff(0, 12)                       # a double vector of length 12
-#!   ff(vmode="logical", length=12)  # a logical vector of length 12 (due to NA using 2 bit per cell on disk, vmode="boolean" uses 1 bit)
-#!   ff(1:12, dim=c(3,4))            # an integer matrix 3x4 (standard colwise physical layout)
-#!   ff(1:12, dim=c(3,4), dimorder=c(2,1)) # an integer matrix 3x4 (rowwise physical layout, but filled in standard colwise order)
-#!   ff(1:12, dim=c(3,4), bydim=c(2,1)) # an integer matrix 3x4 (standard colwise physical layout, but filled in rowwise order aka matrix(, byrow=TRUE))
+#!   message("an integer vector")
+#!   ff(1:12)                  
+#!   message("a double vector of length 12")
+#!   ff(0, 12)
+#!   message("a 2-bit logical vector of length 12 (vmode='boolean' has 1 bit)")
+#!   ff(vmode="logical", length=12)
+#!   message("an integer matrix 3x4 (standard colwise physical layout)")
+#!   ff(1:12, dim=c(3,4))
+#!   message("an integer matrix 3x4 (rowwise physical layout, but filled in standard colwise order)")
+#!   ff(1:12, dim=c(3,4), dimorder=c(2,1))
+#!   message("an integer matrix 3x4 (standard colwise physical layout, but filled in rowwise order
+#! aka matrix(, byrow=TRUE))")
+#!   ff(1:12, dim=c(3,4), bydim=c(2,1))
 #!   gc()
 #!   options(oldoptions)
 #!
 #!   if (ffxtensions()){
-#!      a <- ff(vmode="boolean", dim=rep(2, 26)) # a 26-dimensional boolean array using 1-bit representation (file size 8 MB compared to 256 MB int in ram)
+#!      message("a 26-dimensional boolean array using 1-bit representation
+#!       (file size 8 MB compared to 256 MB int in ram)")
+#!      a <- ff(vmode="boolean", dim=rep(2, 26))
 #!      dimnames(a) <- dummy.dimnames(a)
 #!      rm(a); gc()
 #!   }
 #!
 #!   \dontrun{
 #!
-#!      message("This 2GB biglm example can take long, you might want to change the size in order to define a size appropriate for your computer")
+#!      message("This 2GB biglm example can take long, you might want to change
+#!        the size in order to define a size appropriate for your computer")
 #!      require(biglm)
 #!
 #!      b <- 1000
@@ -2522,7 +2540,9 @@ ff <- function(
 #!   \command{update} copies updates one ff object with the content of another object.
 #! }
 #! \usage{
-#! \method{update}{ff}(object, from, delete = FALSE, bydim = NULL, fromdim = NULL, BATCHSIZE = .Machine$integer.max, BATCHBYTES = getOption("ffbatchbytes"), VERBOSE = FALSE, \dots)
+#! \method{update}{ff}(object, from, delete = FALSE, bydim = NULL, fromdim = NULL
+#! , BATCHSIZE = .Machine$integer.max, BATCHBYTES = getOption("ffbatchbytes")
+#! , VERBOSE = FALSE, \dots)
 #! \method{update}{ffdf}(object, from, \dots)
 #! }
 #! \arguments{
@@ -2555,7 +2575,8 @@ ff <- function(
 #! \examples{
 #!   x <- ff(1:100)
 #!   y <- ff(-(1:100))
-#!   message("You should make it a habit to re-assign the return value of update although this is not needed currently.")
+#!   message("You should make it a habit to re-assign the return value 
+#! of update although this is not needed currently.")
 #!   x <- update(x, from=y)
 #!   x
 #!   y
@@ -3435,7 +3456,8 @@ close.ff <- function(con
 #! }
 #! \seealso{ \code{\link{ff}}, \code{\link{close.ff}}, \code{\link{open.ff}}, \code{\link[base]{reg.finalizer}} }
 #! \examples{
-#!   message('create the ff file outside getOption("fftempir"), it will have default finalizer "close", so you need to delete it explicitely')
+#!   message('create the ff file outside getOption("fftempir"), 
+#!     it will have default finalizer "close", so you need to delete it explicitely')
 #!   x <- ff(1:12, pattern="./ffexample")
 #!   delete(x)
 #!   rm(x)
