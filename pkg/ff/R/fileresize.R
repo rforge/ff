@@ -74,6 +74,6 @@ file.move <- function(from, to){
   }else{
 		options(oldopt)
 		on.exit()
-		file.copy(from, ton) && file.remove(from)
+		file.copy(from, to) && file.remove(from)
 	}
 }
