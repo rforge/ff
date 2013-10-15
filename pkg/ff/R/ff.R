@@ -197,11 +197,8 @@ geterrstr.ff <- function(x)
 #!   \code{filename<-} exhibits R's standard behaviour of considering "filename" and "./filename" both to be located in \code{\link{getwd}}.
 #!   By constrast \code{pattern<-} will create "filename" without path in \code{getOption("fftempdir")} and only "./filename" in \code{\link{getwd}}.
 #! }
-#! \note{
-#!    \code{\link{file.rename}} will not move files across borders of file systems, currently it is the responsibility of the user to make sure that the renaming is possible.
-#! }
 #! \author{ Jens Oehlschlägel }
-#! \seealso{  \code{\link{fftempfile}}, \code{\link{finalizer}}, \code{\link{ff}}, \code{\link{as.ff}}, \code{\link{as.ram}}, \code{\link{update.ff}} }
+#! \seealso{  \code{\link{fftempfile}}, \code{\link{finalizer}}, \code{\link{ff}}, \code{\link{as.ff}}, \code{\link{as.ram}}, \code{\link{update.ff}},  \code{\link{file.move}}}
 #! \examples{
 #!   \dontrun{
 #!   message("Neither giving pattern nor filename gives a random filename 
@@ -291,11 +288,10 @@ filename.default <- function(x
     on.exit(open(x), add=TRUE)
   }
 
-  if(file.rename(oldnam, value) || (file.copy(oldnam, value) && file.remove(oldnam)) ){
+  if(file.move(oldnam, value))
     physical(x)$filename <- value
-  }else
-    stop("ff file rename from '", oldnam, "' to '", value, "' failed")
-
+  else
+    stop("changing ff filename from '", oldnam, "' to '", value, "' failed")
   x
 }
 
@@ -2666,18 +2662,18 @@ update.ff <- function(
         tmpfilename <- fftempfile("update")
         objfilename <- filename(object)
         fromfilename <- filename(from)
-        if(!file.rename(objfilename, tmpfilename))
+        if(!file.move(objfilename, tmpfilename))
           stop("renaming object file '", objfilename, "' to temp file '", tmpfilename, "' failed in update(...,delete=NA)")
-        if(!file.rename(fromfilename, objfilename))
+        if(!file.move(fromfilename, objfilename))
           stop("renaming from file '", fromfilename, "' to object file '", objfilename, "' failed in update(...,delete=NA)")
-        if(!file.rename(tmpfilename, fromfilename))
+        if(!file.move(tmpfilename, fromfilename))
           stop("renaming temp file '", tmpfilename, "' to from file '", fromfilename, "' failed in update(...,delete=NA)")
       }else{
         # do plug in and delete
         oldnam <- filename(object)
         if(!file.remove(oldnam))
           stop("removing from file '", filename(from), "' failed in update(..., delete=TRUE)")
-        if(!file.rename(filename(from), oldnam))
+        if(!file.move(filename(from), oldnam))
           stop("renaming from file '", filename(from), "' to '", oldnam, "' failed in update(...,delete=TRUE)")
       }
 
