@@ -24,8 +24,8 @@
 }
 \usage{
 	from:to
- \method{:}{default}(from, to)
- \method{:}{integer64}(from, to)
+ #--as-cran complains about \method{:}{default}(from, to)
+ #--as-cran complains about \method{:}{integer64}(from, to)
 	is.double(x)
  \method{is.double}{default}(x)
  \method{is.double}{integer64}(x)
