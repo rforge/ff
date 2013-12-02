@@ -1,0 +1,99 @@
+
+I was notfied that my package ref fails R CMD CHECK under 1.9.0 Alpha.
+I downloaded the windows version of 1.9.0 Alpha (dated 2004-03-17) and package ref passes R CMD CHECK without any complaints. 
+
+The daily checks suggest the problem arises in example(optimal.index)
+
+Error in identical(l[i], l[optimal.index(i, n = length(l), strict = FALSE)]) : 
+	only 0's may mix with negative subscripts
+
+where negative subscripts are mixed with NAs (which was legal in versions prior 1.9.0).
+Is it an intended change not to allow this any longer? (I did not find any hint in NEWS)
+
+Best regards
+
+
+Jens Oehlschlägel
+
+
+
+
+library(ref)
+
+# examples from optimal.index
+
+l <- letters
+names(l) <- letters
+stopifnot({i <- 1:3 ; identical(l[i], l[optimal.index(i, n=length(l))])})
+stopifnot({i <- -(4:26) ; identical(l[i], l[optimal.index(i, n=length(l))])})
+stopifnot({i <- c(rep(TRUE, 3), rep(FALSE, 23)) ; identical(l[i], l[optimal.index(i, n=length(l))])})
+stopifnot({i <- c("a", "b", "c"); identical(l[i], l[optimal.index(i, i.names=names(l))])})
+old.options <- options(show.error.messages=FALSE); stopifnot(inherits(try(optimal.index(c(1:3, 3), n=length(l))), "try-error")); options(old.options)
+stopifnot({i <- c(1:3, 3, NA);identical(l[i], l[optimal.index(i, n=length(l), strict=FALSE)])})
+
+# that one triggeres an error ???
+stopifnot({i <- c(-(4:26), -26, NA);identical(l[i], l[optimal.index(i, n=length(l), strict=FALSE)])})
+
+stopifnot({i <- c(rep(TRUE, 3), rep(FALSE, 23), TRUE, FALSE, NA);identical(l[i], l[optimal.index(i, n=length(l), strict=FALSE)])})
+stopifnot({i <- c("a", "b", "c", "a", NA);identical(l[i], l[optimal.index(i, i.names=names(l), strict=FALSE)])})
+rm(l)
+
+
+
+
+
+
+
+
+> version
+         _              
+platform i386-pc-mingw32
+arch     i386           
+os       mingw32        
+system   i386, mingw32  
+status   alpha          
+major    1              
+minor    9.0            
+year     2004           
+month    03             
+day      17             
+language R  
+
+
+Kurt.Hornik@wu-wien.ac.at schrieb am 22.03.04 10:27:18:
+> 
+> Dear maintainers of CRAN packages,
+> 
+> This concerns the packages
+> 
+>   gregmisc hdf5 ref
+> 
+> These packages fail R CMD check for a current version of r-devel, which
+> went into ferature freeze on 2004-03-21 and will be released as R 1.9.0
+> on 2004-04-04.
+> 
+> As you know, packages which fail R CMD check at the time of a new
+> release will be moved from CRAN's main area into the Devel area.  Hence,
+> it is very important that we receive updates of such packages as soon as
+> possible.
+> 
+> Please have a look at the daily check logs at
+> 
+>   http://cran.r-project.org/src/contrib/checkSummary.html
+> 
+> to see what the problem is, and look at the NEWS file in the r-devel
+> sources as well as
+> 
+>   http://developer.r-project.org/190update.txt
+> 
+> for information on changes in the current development version of R.
+> 
+> Please note also that binary versions of r-devel for Windows and Mac OS
+> X are available via CRAN.
+> 
+> Keep the fixes coming in!
+> 
+> Best
+> -k
+> 
+

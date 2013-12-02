@@ -610,16 +610,16 @@ length.bit <- function(x)
     vattr <- attr(x, "virtual")
     cl <- oldClass(x)
     #x <- unclass(x)
-    setattr(x, "class", NULL)
+    attr(x, "class") <- NULL
     length(x) <- n
     #vattr$Length <- value
-    setattr(vattr, "Length", value)
+    attr(vattr, "Length") <- value
     #physical(x) <- pattr
     #virtual(x) <- vattr
     #class(x) <- cl
-    setattr(x, "physical", pattr)
-    setattr(x, "virtual", vattr)
-    setattr(x, "class", cl)
+    attr(x, "physical") <- pattr
+    attr(x, "virtual") <- vattr
+    attr(x, "class") <- cl
     x
   }else
     x

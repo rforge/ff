@@ -1,0 +1,7 @@
+0.94
+21.08.2007 adapted to R-2.5.1: dim(refdata) and dimnames(refdata) no longer allow parameter ref=TRUE, use dim(derefdata(refdata)), dimnames(derefdata(refdata)) instead
+
+0.92
+23.03.2004 adapted regression test of optimal.index not to use the case of combined subscripting like c(-1, NA) which is caught as an error since R 1.9.0
+23.03.2004 new function need.index
+23.03.2004 new function posi.index

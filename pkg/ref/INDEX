@@ -1,0 +1,8 @@
+as.ref                  coercing to reference
+deref                   dereferencing references
+HanoiTower              application example for references
+is.ref                  checking (for) references
+optimal.index           creating standardized, memory optimized index
+                        for subsetting
+ref                     creating references
+refdata                 subsettable reference to matrix or data.frame

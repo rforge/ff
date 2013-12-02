@@ -1,0 +1,19 @@
+Package "ref" implements references and referenceable data.frames for the S-language.
+
+Functions ref(), deref() and friends conveniently allow to pass parameters "by reference" instead of  "by value". This can be useful in memory critical applications but requires a more careful programming style to track the implications of functions changing their parameters. However, package ref is written in pure S and attaching this package does not change any standard S behaviour. 
+
+Class refdata is a transparent wrapper to matrices and data.frames which allows for memory efficient nested subsetting. I.e. you can create a subset of a subset ... of a data.frame without duplicating the data in memory, instead only indexing information is duplicated. Indexing information is represented as positive or negative integers, whatever is shorter, thus the length of the index is granted to be <=nrows/2 resp. <=ncol/2. Memory savings in case of a square data.frame is roughly n^2-n elements per level of nested subsetting.
+
+This code is offered "as is" under the GPL, usage is completely at your own risk. 
+(Some efforts has been put in the included regression tests to make shure the code does what it is intended to do).
+
+Feedback about problems or successful example uses is welcome.
+
+Best regards
+
+
+Jens Oehlschlägel
+
+
+
+P.S. please use the email address given in the package DESCRIPTION and please don't cc to lists for spam prevention
