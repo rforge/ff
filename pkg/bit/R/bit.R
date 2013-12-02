@@ -330,12 +330,9 @@ bit <- function(length){
   # tuning
   p <- list()
   v <- list()
-  #attributes(p) <- list(vmode="boolean", class="physical")
-  #attributes(v) <- list(Length=length, class="virtual")
-  #attributes(x) <- list(physical=p, virtual=v, class="bit")
-  setattributes(p, list(vmode="boolean", class="physical"))
-  setattributes(v, list(Length=length, class="virtual"))
-  setattributes(x, list(physical=p, virtual=v, class="bit"))
+  attributes(p) <- list(vmode="boolean", class="physical")
+  attributes(v) <- list(Length=length, class="virtual")
+  attributes(x) <- list(physical=p, virtual=v, class="bit")
   x
 }
 
@@ -406,12 +403,11 @@ bitwhich <- function(maxindex, poslength=NULL, x=NULL){
   }else{
     poslength <- as.integer(poslength)
   }
-  #attr(x, "maxindex") <- as.integer(maxindex)
-  #attr(x, "poslength") <- poslength
-  # NOTE: here we want one (1) copy of x to not modify argument x
-  class(x) <- "bitwhich"
-  setattr(x, "maxindex", as.integer(maxindex))
-  setattr(x, "poslength", poslength)
+  attr(x, "maxindex") <- as.integer(maxindex)
+  attr(x, "poslength") <- poslength
+  # NOTE: here we want one (1) copy of x to not modify argument x 
+	# therefore we did not replace the oldClass assignment with a call to setttattr
+  oldClass(x) <- "bitwhich"
   x
 }
 
@@ -634,8 +630,7 @@ length.bitwhich <- function(x)
     value <- as.integer(value)
     if (is.integer(x)){
       cl <- oldClass(x)
-      #oldClass(x) <- NULL
-      setattr(x, "class", NULL)
+      oldClass(x) <- NULL
       if (x[1]>0){
         x <- x[x <= value]
         l <- length(x)
@@ -645,8 +640,7 @@ length.bitwhich <- function(x)
           x <- TRUE
         else if (l>(value%/%2L))
           x <- -as.integer(seq_len(value))[-x]
-        #attr(x, "poslength") <- l
-        setattr(x, "poslength", l)
+        attr(x, "poslength") <- l
       }else{
         x <- x[x >= -value]
         l <- length(x)
@@ -656,17 +650,13 @@ length.bitwhich <- function(x)
           x <- FALSE
         else if (!((value-l)>(value%/%2L)))
           x <- -as.integer(seq_len(value))[-x]
-        #attr(x, "poslength") <- value - l
-        setattr(x, "poslength", value - l)
+        attr(x, "poslength") <- value - l
       }
-      #oldClass(x) <- cl
-      setattr(x, "class", cl)
+      oldClass(x) <- cl
     }else if(x){
-      #attr(x, "poslength") <- value
-      setattr(x, "poslength", value)
+      attr(x, "poslength") <- value
     }
-    #attr(x, "maxindex") <- value
-    setattr(x, "maxindex", value)
+    attr(x, "maxindex") <- value
   }
   x
 }
@@ -800,7 +790,7 @@ as.bit.bitwhich <- function(x, ...){
     if (p==n)
       b[] <- TRUE
   }else{
-    class(x) <- NULL
+    oldClass(x) <- NULL
     x <- as.integer(x)
     if (x[1]<0){
       b[-x] <- TRUE  # remember that negative indices are not allowed (and the assignment value is recycled to the length of the index)
@@ -979,15 +969,13 @@ as.double.ri <- function(x, ...){
 
 as.which.default <- function(x, ...){
   ret <- which(x)
-  #class(ret) <- "which"
-  setattr(ret, "class", "which")
+  oldClass(ret) <- "which"
   ret
 }
 
 as.which.ri <- function(x, ...){
   ret <- x[1]:x[2]
-  #class(ret) <- "which"
-  setattr(ret, "class", "which")
+  oldClass(ret) <- "which"
   ret
 }
 
@@ -1007,8 +995,7 @@ as.which.bit <- function(x, range=NULL, ...){
     x <- as.integer(seq.int(from=range[1], to=range[2], by=1))
   }else
     x <- .Call("R_bit_which", x, s, range, negative=FALSE, PACKAGE="bit")
-  #class(x) <- "which"
-  setattr(x, "class", "which")
+  oldClass(x) <- "which"
   x
 }
 
@@ -1025,8 +1012,7 @@ as.which.bitwhich <- function(x, ...){
       attributes(x) <- NULL
     }
   }
-  #class(x) <- "which"
-  setattr(x, "class", "which")
+  oldClass(x) <- "which"
   x
 }
 
@@ -1929,7 +1915,7 @@ if (FALSE){
     if (is.na(i) || i<1L || i>length(x))
       stop("subscript must be positive integer (or double) within length")
     ret <- logical(1L)
-    setattr(ret, "vmode", "boolean")
+    attr(ret, "vmode") <- "boolean"
     .Call("R_bit_extract", x, i, ret, PACKAGE="bit")
   }else
     stop("subscript must be positive integer (or double) within length")
@@ -2013,7 +1999,7 @@ if (FALSE){
   }else
       stop("subscript must be integer (or double) or bitwhich")
 
-  setattr(ret, "vmode", "boolean")
+  attr(ret, "vmode") <- "boolean"
   ret
 }
 
@@ -2126,8 +2112,7 @@ ri <- function(from, to=NULL, maxindex=NA){
     stop("lower bound must be smaller or equal than upper bound")
   if (!is.na(x[[3]]) && x[[2]]>x[[3]])
     stop("lower and upper bound must be smaller or equal to maxindex")
-  #class(x) <- "ri"
-  setattr(x, "class", "ri")
+  oldClass(x) <- "ri"
   x
 }
 
@@ -2244,10 +2229,7 @@ physical.default <- function(x){
   p
 }
 "physical<-.default" <- function(x, value){
-  #attributes(attr(x, "physical")) <- c(value, list(class="physical"))
-  p <- list()
-  setattributes(p, c(value, list(class="physical")))
-  setattr(x, "physical", p)
+  attributes(attr(x, "physical")) <- c(value, list(class="physical"))
   x
 }
 
@@ -2257,10 +2239,7 @@ virtual.default <- function(x){
   v[is.na(match(names(v), "class"))]
 }
 "virtual<-.default" <- function(x, value){
-  #attributes(attr(x, "virtual")) <- c(value, list(class="virtual"))
-  v <- list()
-  setattributes(v, c(value, list(class="virtual")))
-  setattr(x, "virtual", v)
+  attributes(attr(x, "virtual")) <- c(value, list(class="virtual"))
   x
 }
 
