@@ -578,32 +578,32 @@ sort.integer64 <- function(x
 	}else 
 		s <- c$sort  # here we save copying at all
   }else if (!is.null(c$order)){
-	if (do.na.last || decreasing){
-		s <- double(length(x))
-		.Call("r_ram_integer64_sortsrt"
-		, x = x[c$order]
-		, na_count   = as.integer(na.count <- c$na.count)
-		, na_last    = as.logical(do.na.last)
-		, decreasing = as.logical(decreasing)
-		, s		 	 = s
-		, PACKAGE = "bit64"
-		)
-		setattr(s, "class", "integer64")
-	}else 
-		s <- x[c$order]
+		if (do.na.last || decreasing){
+			s <- double(length(x))
+			.Call("r_ram_integer64_sortsrt"
+			, x = x[c$order]
+			, na_count   = as.integer(na.count <- c$na.count)
+			, na_last    = as.logical(do.na.last)
+			, decreasing = as.logical(decreasing)
+			, s		 	 = s
+			, PACKAGE = "bit64"
+			)
+			setattr(s, "class", "integer64")
+		}else 
+			s <- x[c$order]
   }else{
     if (identical(c$na.count, 0L))
 	  has.na <- FALSE
-	s <- x[]
-	na.count <- ramsort(
-	  s
-	, has.na=has.na
-	, na.last=do.na.last
-	, decreasing=decreasing
-	, stable=stable
-	, optimize = optimize
-	, VERBOSE = FALSE
-	)
+		s <- x[]
+		na.count <- ramsort(
+			s
+		, has.na=has.na
+		, na.last=do.na.last
+		, decreasing=decreasing
+		, stable=stable
+		, optimize = optimize
+		, VERBOSE = FALSE
+		)
   }
   if (is.na(na.last) && na.count)
 	length(s) <- length(s) - na.count

@@ -2447,17 +2447,16 @@ table.integer64 <- function(
   switch(return
   ,  "table" = {
   		if (N==1){
-			setattr(cnt, "dim", length(cnt))
+			attr(cnt, "dim") <-length(cnt)
 			dn <- list(as.character(val))
 			names(dn) <- dnn[1]
-			setattr(cnt, "dimnames", dn)
-			setattr(cnt, "class", "table")
+			attr(cnt, "dimnames") <- dn
 		}else{
 			a <- array(0L, dim=nu, dimnames=lapply(dims, as.character))
 			a[as.integer(val)+1L] <- as.integer(cnt)
 			cnt <- a
-			setattr(cnt, "class", "table")
 		}
+		oldClass(cnt) <- "table"
 	}
   ,  "data.frame" = {
 		if (N==1){
@@ -2504,8 +2503,8 @@ as.factor.integer64 <- function(x){
 	}
 	dimtab <- sortuni(s, nu)
 	dimpos <- sortorderkey(s,o,na.skip.num=na.count) - 1L
-	setattr(dimpos, "levels", dimtab)
-	setattr(dimpos, "class", "factor")
+	attr(dimpos, "levels") <- dimtab
+	oldClass(dimpos) <- "factor"
 	dimpos
 }
 
@@ -2530,8 +2529,8 @@ as.ordered.integer64 <- function(x){
 	}
 	dimtab <- sortuni(s, nu)
 	dimpos <- sortorderkey(s,o,na.skip.num=na.count) - 1L
-	setattr(dimpos, "levels", dimtab)
-	setattr(dimpos, "class", c("ordered", "factor"))
+	attr(dimpos, "levels") <- dimtab
+	oldClass(dimpos) <- c("ordered", "factor")
 	dimpos
 }
 
@@ -3022,7 +3021,7 @@ median.integer64 <- function(x, na.rm=FALSE){
 mean.integer64 <- function(x, na.rm=FALSE, ...){
 	ret <- double(1)
 	.Call("mean_integer64", x, as.logical(na.rm), ret)
-	setattr(ret, "class", "integer64")
+	oldClass(ret) <- "integer64"
 	ret
 }
 
