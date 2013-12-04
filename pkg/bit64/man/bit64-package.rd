@@ -89,14 +89,14 @@ is not worth it with 32x at duplicated RAM consumption).
   \code{\link{length<-}}, \code{\link{names}}, \code{\link{names<-}}, \code{\link{dim}}, \code{\link{dim<-}}, \code{\link{dimnames}}, \code{\link{dimnames}}.
   \cr
   Our R level functions strictly follow the functional programming paragdim: 
-  no modification of arguments or other sideffects. However, internally we deviate from the strict paradigm
+  no modification of arguments or other sideffects. Before version 0.93  we internally deviated from the strict paradigm
   in order to boost performance. Our C functions do not create new return values, 
   instead we pass-in the memory to be returned as an argument. This gives us the freedom to apply the C-function 
   to new or old vectors, which helps to avoid unnecessary memory allocation, unnecessary copying and unnessary garbage collection.
-  \emph{Within} our R functions we also deviate from conventional R programming by not using \code{\link{attr<-}} and \code{\link{attributes<-}} 
-  because they always do new memory allocation and copying. If we want to set attributes of return values that we have freshly created,
-  we instead use functions \code{\link[bit]{setattr}} and \code{\link[bit]{setattributes}} from package \code{\link[bit]{bit}}. 
-  If you want to see both tricks at work, see method \code{integer64}. 
+  Prior to 0.93 \emph{within} our R functions we also deviated from conventional R programming by not using \code{\link{attr<-}} and \code{\link{attributes<-}} 
+  because they always did new memory allocation and copying in older R versions. If we wanted to set attributes of return values that we have freshly created,
+  we instead used functions \code{\link[bit]{setattr}} and \code{\link[bit]{setattributes}} from package \code{\link[bit]{bit}}. 
+  From version 0.93 \code{\link[bit]{setattr}} is only used for manipulating \code{\link{cache}} objects, in \code{\link{ramsort.integer64}} and \code{\link{sort.integer64}} and in \code{\link{as.data.frame.integer64}}.
 }
 \section{Arithmetic precision and coercion}{
   The fact that we introduce 64 bit long long integers -- without introducing 128-bit long doubles -- creates some subtle challenges:
