@@ -17,6 +17,13 @@ export(
   "setattr"
 , "setattributes"
 , "unattr"
+#, "named"
+
+# -- clone.R - deep copying --
+
+, "clone.default"
+, "clone.list"
+, "still.identical"
 
 # -- generics.R - new generics for bit and ff --
 
@@ -26,6 +33,7 @@ export(
 ,"xor"
 ,"physical"
 ,"virtual"
+,"clone"
 
 ,"ramsort"
 ,"shellsort"
@@ -275,3 +283,7 @@ S3method("xor", bitwhich)
 
 S3method(chunk, default)
 
+# -- clone.R - deep copying --
+
+S3method(clone, default)
+S3method(clone, list)

@@ -5,6 +5,8 @@
 
 # source("D:/mwp/eanalysis/bit/R/generics.R")
 
+clone  <- function(x, ...)UseMethod("clone")
+
 as.bit <- function(x, ...)
   UseMethod("as.bit", x)
 
