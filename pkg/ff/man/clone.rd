@@ -1,6 +1,7 @@
 \name{clone}
 \alias{clone}
 \alias{clone.ff}
+\alias{clone.list}
 \alias{clone.default}
 \title{ Cloning ff and ram objects }
 \description{
@@ -36,6 +37,7 @@ clone(x, \dots)
 , BATCHBYTES = getOption("ffbatchbytes")
 , VERBOSE = FALSE
 , \dots)
+\method{clone}{list}(x, \dots)
 \method{clone}{default}(x, \dots)
 }
 \arguments{

@@ -1306,7 +1306,8 @@ void ram_integer_shellsort_asc(IndexT *data, IndexT l, IndexT r)
     IndexT i, j, h, lh, t, n=r-l+1;
 
     for (t = 0; incs[t] > n; t++);
-    for (h = incs[t]; t < SHELLARRAYSIZE; h = incs[++t]){
+    for (; t < SHELLARRAYSIZE; ++t){
+      h = incs[t];
       lh = l+h;
       for (i = lh; i <= r; i++) {
           v = data[i];
@@ -1326,7 +1327,8 @@ void ram_integer_shellsort_desc(IndexT *data, IndexT l, IndexT r)
     IndexT i, j, h, lh, t, n=r-l+1;
 
     for (t = 0; incs[t] > n; t++);
-    for (h = incs[t]; t < SHELLARRAYSIZE; h = incs[++t]){
+    for (; t < SHELLARRAYSIZE; ++t){
+      h = incs[t];
       lh = l+h;
       for (i = lh; i <= r; i++) {
           v = data[i];
@@ -1347,7 +1349,8 @@ void ram_integer_shellorder_asc(IndexT *data, IndexT *index, IndexT l, IndexT r)
     IndexT i, j, h, lh, t, n=r-l+1;
 
     for (t = 0; incs[t] > n; t++);
-    for (h = incs[t]; t < SHELLARRAYSIZE; h = incs[++t]){
+    for (; t < SHELLARRAYSIZE; ++t){
+      h = incs[t];
       lh = l+h;
       for (i = lh; i <= r; i++) {
           v = index[i];
@@ -1368,7 +1371,8 @@ void ram_integer_shellorder_desc(IndexT *data, IndexT *index, IndexT l, IndexT r
     IndexT i, j, h, lh, t, n=r-l+1;
 
     for (t = 0; incs[t] > n; t++);
-    for (h = incs[t]; t < SHELLARRAYSIZE; h = incs[++t]){
+    for (; t < SHELLARRAYSIZE; ++t){
+      h = incs[t];
       lh = l+h;
       for (i = lh; i <= r; i++) {
           v = index[i];
@@ -1579,7 +1583,8 @@ void ram_double_shellsort_asc(ValueT *data, IndexT l, IndexT r)
     IndexT i, j, h, lh, t, n=r-l+1;
 
     for (t = 0; incs[t] > n; t++);
-    for (h = incs[t]; t < SHELLARRAYSIZE; h = incs[++t]){
+    for (; t < SHELLARRAYSIZE; ++t){
+      h = incs[t];
       lh = l+h;
       for (i = lh; i <= r; i++) {
           v = data[i];
@@ -1599,7 +1604,8 @@ void ram_double_shellsort_desc(ValueT *data, IndexT l, IndexT r)
     IndexT i, j, h, lh, t, n=r-l+1;
 
     for (t = 0; incs[t] > n; t++);
-    for (h = incs[t]; t < SHELLARRAYSIZE; h = incs[++t]){
+    for (; t < SHELLARRAYSIZE; ++t){
+      h = incs[t];
       lh = l+h;
       for (i = lh; i <= r; i++) {
           v = data[i];
@@ -1620,7 +1626,8 @@ void ram_double_shellorder_asc(ValueT *data, IndexT *index, IndexT l, IndexT r)
     IndexT i, j, h, lh, t, n=r-l+1;
 
     for (t = 0; incs[t] > n; t++);
-    for (h = incs[t]; t < SHELLARRAYSIZE; h = incs[++t]){
+    for (; t < SHELLARRAYSIZE; ++t){
+      h = incs[t];
       lh = l+h;
       for (i = lh; i <= r; i++) {
           v = index[i];
@@ -1641,7 +1648,8 @@ void ram_double_shellorder_desc(ValueT *data, IndexT *index, IndexT l, IndexT r)
     IndexT i, j, h, lh, t, n=r-l+1;
 
     for (t = 0; incs[t] > n; t++);
-    for (h = incs[t]; t < SHELLARRAYSIZE; h = incs[++t]){
+    for (; t < SHELLARRAYSIZE; ++t){
+      h = incs[t];
       lh = l+h;
       for (i = lh; i <= r; i++) {
           v = index[i];

@@ -5,7 +5,7 @@
 
 # currently |.bit and |.bitwhich are bypassed if we ask for bit | bitwhich
 # xx explore/write Ops.bit Ops.bitwhich
-
+# xx bit_extract should be comlemented with 
 
 # source("C:/mwp/eanalysis/bit/R/bit.R")
 
@@ -1968,20 +1968,21 @@ if (FALSE){
         stop("illegal range index 'ri'")
       ret <- logical(i[2]-i[1]+1L)
       .Call("R_bit_get", x, ret, range=i, PACKAGE="bit")
-    }else{
-      i <- as.integer(i)
+    }else if (inherits(i, "bitwhich")){
+			i <- as.which(i)
       n <- length(i)
-      N <- length(x)
-      if (n==0){
-        ret <- logical()
-      }else{
-        if (i[1]<0){
-          i <- (as.integer(seq_len(N)))[i]
-          ret <- logical(N-n)
-        }else{
-          ret <- logical(length(i))
-        }
+			ret <- logical(n)
+			if (n)
         .Call("R_bit_extract", x, i, ret, PACKAGE="bit")
+		}else{
+      i <- as.integer(i)
+      if (length(i)){
+        if (i[1]<0)
+          i <- (as.integer(seq_along(x)))[i]
+				ret <- logical(length(i))
+        .Call("R_bit_extract", x, i, ret, PACKAGE="bit")
+      }else{
+        ret <- logical()
       }
     }
   }else if(is.logical(i)){
@@ -2027,19 +2028,21 @@ if (FALSE){
       }
       .Call("R_bit_set", x, value2, range=i, PACKAGE="bit")
     }else{
-      i <- as.integer(i)
-      n <- length(i)
-      N <- length(x)
-      if (n==0)
-        return(x)
-      if (i[1]<0){
-        i <- (as.integer(seq_len(N)))[i]
-        n <- N - n
-      }
+			if (inherits(i, "bitwhich")){
+				i <- as.which(i)
+				n <- length(i)
+			}else{
+				i <- as.integer(i)
+				n <- length(i)
+				if (n && i[1]<0){
+					i <- (as.integer(seq_along(x)))[i]
+					n <- length(i)
+				}
+			} 
       if (length(value)==n){
         value2 <- as.logical(value)
       }else{
-        value2 <- logical(length(i))
+        value2 <- logical(n)
         value2[] <- value
       }
       .Call("R_bit_replace", x, i, value2, PACKAGE="bit")

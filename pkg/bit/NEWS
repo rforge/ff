@@ -5,6 +5,11 @@ NEW FEATURES
     o function still.identical() has been moved to here from package bit64
     o generic 'clone' and methods clone.default and clone.list have been moved to here from package ff
 
+BUG FIXES
+
+    o bit[bitwhich] is now subscripting properly (VALGRIND)
+	o UBSAN should no longer complain about left shift
+
 	
 	
     CHANGES IN bit VERSION 1.1-10

@@ -26,11 +26,11 @@ void bit_init(int   bits){
   LASTBIT = bits - 1;
   mask0 = calloc(BITS, sizeof(int));
   mask1 = calloc(BITS, sizeof(int));
-  int b = 1;
+  unsigned int b = 1;
   int i;
   for (i=0; i<BITS; i++){
-    mask1[i] = b;
-    mask0[i] = ~b;
+    mask1[i] = (int) b;
+    mask0[i] = (int) ~b;
     //Rprintf("i=%d mask0[i]=%d mask1[i]=%d\n", i, mask0[i], mask1[i]);
     b = b << 1;
   }

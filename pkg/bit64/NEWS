@@ -1,5 +1,14 @@
     CHANGES IN bit64 VERSION 0.9-3
 
+BUG FIXES
+
+    o The packages now uses clone(x) instead of x[]
+	o UBSAN should no longer complain about left shift
+
+	
+
+    CHANGES IN bit64 VERSION 0.9-3
+
 USER VISIBLE CHANGES
 
     o The following functions are converted to S3 generics and mask package:base
