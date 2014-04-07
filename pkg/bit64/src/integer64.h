@@ -226,7 +226,7 @@
 	if (e1 == NA_INTEGER64) \
 		ret = NA_REAL; \
 	else { \
-		ret = (double) logl((long double)e1)/logbase; \
+		ret = (double) logl((long double)e1)/e2; \
 		if (isnan(ret)) \
 			naflag = TRUE; \
 	}
