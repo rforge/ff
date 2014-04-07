@@ -74,7 +74,6 @@ clone(x, \dots)
 \details{
   \command{clone} is generic. \command{clone.ff} is the workhorse behind \code{\link{as.ram}} and \code{\link{as.ff}}.
   For creating the desired object it calls \code{\link{ff}} which calls \code{\link{update}} for initialization.
-  \command{clone.default} is currently a simply wrapper to \command{clone.ff}, which will add some ff attributes also when cloning ram objects.
 }
 \value{
   an ff or ram object

@@ -14,10 +14,13 @@ export(
 
 # == this is a complete list of R functions and metadata of this package sorted by filenames, non-exported functions are commented away ==
 
-
+# wish of CRAN maintainers: export another time here (now maintained and exported in bit)
+  "clone"
+, "clone.default"
+, "clone.list"
 
 # -- generics.R - all new generics --
- as.hi
+, as.hi
 #,physical
 #,"physical<-"
 #,virtual
@@ -779,3 +782,7 @@ S3method(str, ffdf)
 #S3method("radixsort", default)
 #S3method("ramorder", default)
 #S3method("ramsort", default)
+
+# wish of CRAN maintainers: export another time here (now maintained and exported in bit)
+S3method(clone, default)
+S3method(clone, list)
