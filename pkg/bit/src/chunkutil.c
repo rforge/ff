@@ -15,7 +15,7 @@ SEXP R_bit_vecseq(SEXP x_, SEXP y_)
 {
     int *x,*y,*ret;
     register int val, lim;
-    R_len_t K,k,n,i,j;
+    R_len_t K,k,n,i;
     SEXP ret_;
     // if (!isInteger(x_))
       // error("x must be an integer vector");

@@ -8,7 +8,8 @@ NEW FEATURES
 BUG FIXES
 
     o bit[bitwhich] is now subscripting properly (VALGRIND)
-	o UBSAN should no longer complain about left shift
+	o UBSAN should no longer complain about left shift of int
+      (although that never was a problem)
 
 	
 	
