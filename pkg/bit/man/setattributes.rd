@@ -91,11 +91,11 @@ Jens Oehlschlägel
   library(bit)
 
   simplefactor <- function(n){
-    factor(rep(1:2, length=n))
+    factor(rep(1:2, length.out=n))
   }
 
   mysimplefactor <- function(n){
-    ret <- rep(1:2, length=n)
+    ret <- rep(1:2, length.out=n)
     setattr(ret, "levels", as.character(1:2))
     setattr(ret, "class", "factor")
     ret

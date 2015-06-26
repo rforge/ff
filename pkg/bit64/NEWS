@@ -1,11 +1,21 @@
     CHANGES IN bit64 VERSION 0.9-5
 
+USER VISIBLE CHANGES
+
+    o The following functions are converted to S3 generics and mask package:base
+      :, is.double, match, %in%, rank, order
+    o NA_integer64_ is now available and exported
+
+	
 BUG FIXES
 
+    o ramsort.integer64 no longer complains about misssing return 
+      value when stable || optimize == "time" (reported by Dan Southern)
     o removed a harmless warning on request of CRAN maintainers
       gcc had complained about using %lli format which is not 
       supported under the windows MCPP compiler, under which
       %lli and thus as.character.integer64 will fail.
+    o now uses R's RNG instead of the system RNG
 
     
 

@@ -104,7 +104,7 @@
       s <- 0L
       l <- logical(N)
       for (b in 1:B){
-        .Call("R_bit_extract", x, ((b-1L)*N+1L):(b*N), l, PACKAGE = "bit")
+        .Call("R_bit_extract", x, length(x), ((b-1L)*N+1L):(b*N), l, PACKAGE = "bit")
         s <- s + sum(l)
       }
       if (R)

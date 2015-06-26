@@ -183,7 +183,7 @@ SEXP as_character_integer64(SEXP x_, SEXP ret_){
     if (x[i]==NA_INTEGER64){
 	  SET_STRING_ELT(ret_, i, NA_STRING);
 	}else{
-	  snprintf(buff, NCHARS_DECS_INTEGER64, COERCE_INTEGER64, x[i]);
+	  snprintf(buff, NCHARS_DECS_INTEGER64, COERCE_INTEGER64, x[i]); 
 	  SET_STRING_ELT(ret_, i, mkChar(buff)); 
 	}
   }

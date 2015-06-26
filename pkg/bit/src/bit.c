@@ -6,10 +6,14 @@
 */
 
 #include <R.h>
+#include <Rdefines.h>
 #include <Rinternals.h>
 
-int BITS;    // number of bits in one word
-int LASTBIT; // last bit in word (=BITS-1)
+// Configuration: set this to 32 or 64 and keep in sync with .BITS in bit.R
+#define BITS 32
+// Configuration: set this to BITS-1
+#define LASTBIT 31
+#define TRUE 1
 
 /*
  & bitwise and
@@ -18,19 +22,26 @@ int LASTBIT; // last bit in word (=BITS-1)
  ~ bitwise not
 */
 
+#if BITS==64
+typedef unsigned long long int bitint;
+#else
+typedef unsigned int bitint;
+#endif
 
-int *mask0, *mask1;
+bitint *mask0, *mask1;
 
 void bit_init(int   bits){
-  BITS = bits;
-  LASTBIT = bits - 1;
-  mask0 = calloc(BITS, sizeof(int));
-  mask1 = calloc(BITS, sizeof(int));
-  unsigned int b = 1;
+  if (bits != BITS)
+    error("R .BITS and C BITS are not in synch");
+  if (bits-1 != LASTBIT)
+    error("R .BITS and C LASTBIT are not in synch");
+  mask0 = calloc(BITS, sizeof(bitint));
+  mask1 = calloc(BITS, sizeof(bitint));
+  bitint b = 1;
   int i;
   for (i=0; i<BITS; i++){
-    mask1[i] = (int) b;
-    mask0[i] = (int) ~b;
+    mask1[i] = (bitint) b;
+    mask0[i] = (bitint) ~b;
     //Rprintf("i=%d mask0[i]=%d mask1[i]=%d\n", i, mask0[i], mask1[i]);
     b = b << 1;
   }
@@ -58,9 +69,9 @@ SEXP R_bit_done(){
   NOTE that remaining target bits AFTER the copied area are overwritten with zero
 */
 void bit_shiftcopy(
-  unsigned int *bsource /* bit source */
-, unsigned int *btarget   /* bit target */
-, int otarget    /* offset target */
+  bitint *bsource /* bit source */
+, bitint *btarget /* bit target */
+, int otarget     /* offset target */
 , int n      /* number of bits to copy */
 ){
   register int upshift = otarget % BITS;    /* this is used for leftshifting bsource to meet btarget */
@@ -111,10 +122,10 @@ void bit_shiftcopy(
 
 
 
-void bit_get(int *b, int *l, int from, int to){
+void bit_get(bitint *b, int *l, int from, int to){
   from--;
   to--;
-  register int word;
+  register bitint word;
   register int i=0;
   register int k=from%BITS;
   register int j=from/BITS;
@@ -142,10 +153,10 @@ void bit_get(int *b, int *l, int from, int to){
 }
 
 
-void bit_set(int *b, int *l, int from, int to){
+void bit_set(bitint *b, int *l, int from, int to){
   from--;
   to--;
-  register int word = 0;  /* this init only to keep compiler quiet */
+  register bitint word = 0;  /* this init only to keep compiler quiet */
   register int i=0;
   register int k=from%BITS;
   register int j=from/BITS;
@@ -154,7 +165,7 @@ void bit_set(int *b, int *l, int from, int to){
   if (j<j1){
     word = b[j];
     for(; k<BITS; k++){
-      if (l[i++])
+      if (l[i++]==TRUE)
         word |= mask1[k];
       else
         word &= mask0[k];
@@ -163,7 +174,7 @@ void bit_set(int *b, int *l, int from, int to){
     for (j++; j<j1; j++){
       word = b[j];
       for(k=0 ;k<BITS; k++){
-        if (l[i++])
+        if (l[i++]==TRUE)
           word |= mask1[k];
         else
           word &= mask0[k];
@@ -175,7 +186,7 @@ void bit_set(int *b, int *l, int from, int to){
   if (j==j1){
     word = b[j];
     for(; k<=k1 ;k++){
-      if (l[i++])
+      if (l[i++]==TRUE)
         word |= mask1[k];
       else
         word &= mask0[k];
@@ -185,11 +196,11 @@ void bit_set(int *b, int *l, int from, int to){
 }
 
 
-void bit_which_positive(int *b, int *l, int from, int to, int offset){
+void bit_which_positive(bitint *b, int *l, int from, int to, int offset){
   register int i=from + offset;
   from--;
   to--;
-  register int word;
+  register bitint word;
   register int h=0;
   register int k=from%BITS;
   register int j=from/BITS;
@@ -223,11 +234,11 @@ void bit_which_positive(int *b, int *l, int from, int to, int offset){
 }
 
 
-void bit_which_negative(int *b, int *l, int from, int to){
+void bit_which_negative(bitint *b, int *l, int from, int to){
   register int i= -to;
   from--;
   to--;
-  register int word;
+  register bitint word;
   register int h=0;
   register int k0=from%BITS;
   register int j0=from/BITS;
@@ -261,33 +272,40 @@ void bit_which_negative(int *b, int *l, int from, int to){
 }
 
 
-void bit_extract(int *b, int *i, int *l, int n){
-  register int il, ib, j, k;
-  for (il=0; il<n; il++){
-    ib = i[il] - 1;
-    j = ib/BITS;
-    k = ib%BITS;
-    l[il] = b[j] & mask1[k] ? 1 : 0;
-    //Rprintf("il=%d ib=%d j=%d k=%d b[j]=%d mask1[k]=%d l[il]=%d\n", il, ib, j, k, b[j], mask1[k], l[il]);
+int bit_extract(bitint *b, int nb, int *i, int *l, int n){
+  register int ii, il, ib, j, k;
+  for (ii=0,il=0; ii<n; ii++){
+    if (i[ii]){
+      ib = i[ii] - 1;
+      if (ib<nb){
+        j = ib/BITS;
+        k = ib%BITS;
+        l[il++] = b[j] & mask1[k] ? 1 : 0;
+      }else{
+        l[il++] = NA_INTEGER;
+      }
+    }
+  }
+  return il;
+}
+
+void bit_replace(bitint *b, int *i, int *l, int n){
+  register int ii, ib, j, k;
+  for (ii=0; ii<n; ii++){
+    if (i[ii]){
+      ib = i[ii] - 1;
+      j = ib/BITS;
+      k = ib%BITS;
+      if (l[ii]==TRUE)
+        b[j] |= mask1[k];
+      else
+        b[j] &= mask0[k];
+    }
   }
 }
 
-void bit_replace(int *b, int *i, int *l, int n){
-  register int il, ib, j, k;
-  for (il=0; il<n; il++){
-    ib = i[il] - 1;
-    j = ib/BITS;
-    k = ib%BITS;
-    //Rprintf("il=%d ib=%d j=%d k=%d b[j]=%d l[il]=%d mask1[k]=%d mask0[k]=%d\n", il, ib, j, k, b[j], l[il], mask1[k], mask0[k]);
-    if (l[il])
-      b[j] |= mask1[k];
-    else
-      b[j] &= mask0[k];
-  }
-}
 
-
-void bit_not(int *b, int n){
+void bit_not(bitint *b, int n){
   register int i;
   for (i=0; i<n; i++){
     b[i] = ~b[i];
@@ -295,28 +313,28 @@ void bit_not(int *b, int n){
 }
 
 
-void bit_and(int *b1, int *b2, int *ret, int n){
+void bit_and(bitint *b1, bitint *b2, bitint *ret, int n){
   register int i;
   for (i=0; i<n; i++){
     ret[i] = b1[i] & b2[i];
   }
 }
 
-void bit_or(int *b1, int *b2, int *ret, int n){
+void bit_or(bitint *b1, bitint *b2, bitint *ret, int n){
   register int i;
   for (i=0; i<n; i++){
     ret[i] = b1[i] | b2[i];
   }
 }
 
-void bit_xor(int *b1, int *b2, int *ret, int n){
+void bit_xor(bitint *b1, bitint *b2, bitint *ret, int n){
   register int i;
   for (i=0; i<n; i++){
     ret[i] = b1[i] ^ b2[i];
   }
 }
 
-void bit_equal(int *b1, int *b2, int *ret, int n){
+void bit_equal(bitint *b1, bitint *b2, bitint *ret, int n){
   register int i;
   for (i=0; i<n; i++){
     ret[i] = ~(b1[i] ^ b2[i]);
@@ -324,10 +342,10 @@ void bit_equal(int *b1, int *b2, int *ret, int n){
 }
 
 
-int bit_sum(int *b, int from, int to){
+int bit_sum(bitint *b, int from, int to){
   from--;
   to--;
-  register int word;
+  register bitint word;
   register int s=0;
   register int k=from%BITS;
   register int j=from/BITS;
@@ -359,10 +377,10 @@ int bit_sum(int *b, int from, int to){
 }
 
 
-int bit_all(int *b, int from, int to){
+int bit_all(bitint *b, int from, int to){
   from--;
   to--;
-  register int word;
+  register bitint word;
   register int k=from%BITS;
   register int j=from/BITS;
   register int k1=to%BITS;
@@ -391,10 +409,10 @@ int bit_all(int *b, int from, int to){
 
 
 
-int bit_any(int *b, int from, int to){
+int bit_any(bitint *b, int from, int to){
   from--;
   to--;
-  register int word;
+  register bitint word;
   register int k=from%BITS;
   register int j=from/BITS;
   register int k1=to%BITS;
@@ -423,10 +441,10 @@ int bit_any(int *b, int from, int to){
 
 
 
-int bit_min(int *b, int from, int to){
+int bit_min(bitint *b, int from, int to){
   from--;
   to--;
-  register int word;
+  register bitint word;
   register int k=from%BITS;
   register int j=from/BITS;
   register int k1=to%BITS;
@@ -466,10 +484,10 @@ int bit_min(int *b, int from, int to){
 
 
 
-int bit_max(int *b, int from, int to){
+int bit_max(bitint *b, int from, int to){
   from--;
   to--;
-  register int word;
+  register bitint word;
   register int k0=from%BITS;
   register int j0=from/BITS;
   register int k=to%BITS;
@@ -514,24 +532,23 @@ SEXP R_bit_shiftcopy(
 , SEXP otarget_    /* offset target */
 , SEXP n_      /* number of bits to copy */
 ){
-  unsigned int *bsource = (unsigned int*) INTEGER(bsource_);
-  unsigned int *btarget = (unsigned int*) INTEGER(btarget_);
+  bitint *bsource = (bitint*) INTEGER(bsource_);
+  bitint *btarget = (bitint*) INTEGER(btarget_);
   int otarget = asInteger(otarget_);
   int n = asInteger(n_);
   bit_shiftcopy(bsource, btarget, otarget, n);
   return(btarget_);
 }
 
-
 SEXP R_bit_get(SEXP b_, SEXP l_, SEXP range_){
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
   int *l = LOGICAL(l_);
   int *range = INTEGER(range_);
   bit_get(b, l, range[0], range[1]);
   return(l_);
 }
 SEXP R_bit_get_integer(SEXP b_, SEXP l_, SEXP range_){
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
   int *l = INTEGER(l_);
   int *range = INTEGER(range_);
   bit_get(b, l, range[0], range[1]);
@@ -541,14 +558,14 @@ SEXP R_bit_get_integer(SEXP b_, SEXP l_, SEXP range_){
 
 
 SEXP R_bit_set(SEXP b_, SEXP l_, SEXP range_){
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
   int *l = LOGICAL(l_);
   int *range = INTEGER(range_);
   bit_set(b, l, range[0], range[1]);
   return(b_);
 }
 SEXP R_bit_set_integer(SEXP b_, SEXP l_, SEXP range_){
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
   int *l = INTEGER(l_);
   int *range = INTEGER(range_);
   bit_set(b, l, range[0], range[1]);
@@ -556,9 +573,8 @@ SEXP R_bit_set_integer(SEXP b_, SEXP l_, SEXP range_){
 }
 
 
-
 SEXP R_bit_which(SEXP b_, SEXP s_, SEXP range_, SEXP negative_){
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
   int *range = INTEGER(range_);
   int s = asInteger(s_);
   SEXP ret_;
@@ -603,13 +619,13 @@ SEXP R_bit_which(SEXP b_, SEXP s_, SEXP range_, SEXP negative_){
 
 SEXP R_bit_as_hi(SEXP b_, SEXP range_, SEXP offset_)
 {
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
   int *range = INTEGER(range_);
   int offset = asInteger(offset_);
-  SEXP ret_, first_, dat_, last_, len_, retnames_;
+  SEXP ret_, first_, dat_, last_, len_, retnames_, rlepackclass_;
   int protectcount = 0;
 
-  register int word;
+  register bitint word;
   register int k=(range[0]-1)%BITS;
   register int j=(range[0]-1)/BITS;
   int k1=(range[1]-1)%BITS;
@@ -741,7 +757,7 @@ SEXP R_bit_as_hi(SEXP b_, SEXP range_, SEXP offset_)
       }
       if (last!=NA_INTEGER){ /* not aborted rle */
         int *values, *lengths;
-        SEXP lengths_, values_, datnames_, class_;
+        SEXP lengths_, values_, datnames_, rleclass_;
         s += ln;
         val[c] = ld;
         len[c] = ln;
@@ -762,15 +778,15 @@ SEXP R_bit_as_hi(SEXP b_, SEXP range_, SEXP offset_)
 
         PROTECT( dat_ = allocVector(VECSXP, 2) );
         PROTECT( datnames_ = allocVector(STRSXP, 2));
-        PROTECT( class_ = allocVector(STRSXP, 1));
+        PROTECT( rleclass_ = allocVector(STRSXP, 1));
 
         SET_STRING_ELT(datnames_, 0, mkChar("lengths"));
         SET_STRING_ELT(datnames_, 1, mkChar("values"));
-        SET_STRING_ELT(class_, 0, mkChar("rle"));
+        SET_STRING_ELT(rleclass_, 0, mkChar("rle"));
         SET_VECTOR_ELT(dat_, 0, lengths_);
         SET_VECTOR_ELT(dat_, 1, values_);
         setAttrib(dat_, R_NamesSymbol, datnames_);
-        classgets(dat_, class_);
+        classgets(dat_, rleclass_);
 
         protectcount += 5;
       }
@@ -812,7 +828,7 @@ SEXP R_bit_as_hi(SEXP b_, SEXP range_, SEXP offset_)
   INTEGER(last_)[0] = offset + last;
   INTEGER(len_)[0] = s;
   PROTECT( ret_ = allocVector(VECSXP, 4) );
-
+  
   PROTECT( retnames_ = allocVector(STRSXP, 4));
   SET_STRING_ELT(retnames_, 0, mkChar("first"));
   SET_STRING_ELT(retnames_, 1, mkChar("dat"));
@@ -824,7 +840,11 @@ SEXP R_bit_as_hi(SEXP b_, SEXP range_, SEXP offset_)
   SET_VECTOR_ELT(ret_, 3, len_);
   setAttrib(ret_, R_NamesSymbol, retnames_);
 
-  protectcount += 5;
+  PROTECT( rlepackclass_ = allocVector(STRSXP, 1));
+  SET_STRING_ELT(rlepackclass_, 0, mkChar("rlepack"));
+  classgets(ret_, rlepackclass_);
+  
+  protectcount += 6;
 
   UNPROTECT(protectcount);
   return ret_;
@@ -835,17 +855,21 @@ SEXP R_bit_as_hi(SEXP b_, SEXP range_, SEXP offset_)
 
 
 
-SEXP R_bit_extract(SEXP b_, SEXP i_, SEXP l_){
-  int *b = INTEGER(b_);
+SEXP R_bit_extract(SEXP b_, SEXP nb_, SEXP i_, SEXP l_){
+  bitint *b = (bitint*) INTEGER(b_);
   int *i = INTEGER(i_);
   int *l = LOGICAL(l_);
   int n = LENGTH(i_);
-  bit_extract(b, i, l, n);
+  int nb = asInteger(nb_);
+  int nl = bit_extract(b, nb, i, l, n); // nl < n if i_ contains zeros
+  if (nl<n){
+    SETLENGTH(l_, nl);
+  }
   return(l_);
 }
 
-SEXP R_bit_replace(SEXP b_, SEXP i_, SEXP l_, SEXP negative_, SEXP range_){
-  int *b = INTEGER(b_);
+SEXP R_bit_replace(SEXP b_, SEXP i_, SEXP l_){
+  bitint *b = (bitint*) INTEGER(b_);
   int *i = INTEGER(i_);
   int *l = LOGICAL(l_);
   int n = LENGTH(i_);
@@ -856,51 +880,71 @@ SEXP R_bit_replace(SEXP b_, SEXP i_, SEXP l_, SEXP negative_, SEXP range_){
 
 
 SEXP R_bit_not(SEXP b_){
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
+#if BITS==64  
+  int n = LENGTH(b_)/2;
+#else  
   int n = LENGTH(b_);
+#endif  
   bit_not(b, n);
   return(b_);
 }
 
 SEXP R_bit_and(SEXP b1_, SEXP b2_, SEXP ret_){
-  int *b1 = INTEGER(b1_);
-  int *b2 = INTEGER(b2_);
-  int *ret = INTEGER(ret_);
+  bitint *b1 = (bitint*) INTEGER(b1_);
+  bitint *b2 = (bitint*) INTEGER(b2_);
+  bitint *ret = (bitint*) INTEGER(ret_);
+#if BITS==64  
+  int n = LENGTH(b1_)/2;
+#else  
   int n = LENGTH(b1_);
+#endif  
   bit_and(b1, b2, ret, n);
   return(ret_);
 }
 
 SEXP R_bit_or(SEXP b1_, SEXP b2_, SEXP ret_){
-  int *b1 = INTEGER(b1_);
-  int *b2 = INTEGER(b2_);
-  int *ret = INTEGER(ret_);
+  bitint *b1 = (bitint*) INTEGER(b1_);
+  bitint *b2 = (bitint*) INTEGER(b2_);
+  bitint *ret = (bitint*) INTEGER(ret_);
+#if BITS==64  
+  int n = LENGTH(b1_)/2;
+#else  
   int n = LENGTH(b1_);
+#endif  
   bit_or(b1, b2, ret, n);
   return(ret_);
 }
 
 SEXP R_bit_xor(SEXP b1_, SEXP b2_, SEXP ret_){
-  int *b1 = INTEGER(b1_);
-  int *b2 = INTEGER(b2_);
-  int *ret = INTEGER(ret_);
+  bitint *b1 = (bitint*) INTEGER(b1_);
+  bitint *b2 = (bitint*) INTEGER(b2_);
+  bitint *ret = (bitint*) INTEGER(ret_);
+#if BITS==64  
+  int n = LENGTH(b1_)/2;
+#else  
   int n = LENGTH(b1_);
+#endif  
   bit_xor(b1, b2, ret, n);
   return(ret_);
 }
 
 SEXP R_bit_equal(SEXP b1_, SEXP b2_, SEXP ret_){
-  int *b1 = INTEGER(b1_);
-  int *b2 = INTEGER(b2_);
-  int *ret = INTEGER(ret_);
+  bitint *b1 = (bitint*) INTEGER(b1_);
+  bitint *b2 = (bitint*) INTEGER(b2_);
+  bitint *ret = (bitint*) INTEGER(ret_);
+#if BITS==64  
+  int n = LENGTH(b1_)/2;
+#else  
   int n = LENGTH(b1_);
+#endif  
   bit_equal(b1, b2, ret, n);
   return(ret_);
 }
 
 
 SEXP R_bit_sum(SEXP b_, SEXP range_){
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
   int *range = INTEGER(range_);
   SEXP ret_;
   PROTECT( ret_ = allocVector(INTSXP,1) );
@@ -910,7 +954,7 @@ SEXP R_bit_sum(SEXP b_, SEXP range_){
 }
 
 SEXP R_bit_all(SEXP b_, SEXP range_){
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
   int *range = INTEGER(range_);
   SEXP ret_;
   PROTECT( ret_ = allocVector(LGLSXP,1) );
@@ -921,7 +965,7 @@ SEXP R_bit_all(SEXP b_, SEXP range_){
 
 
 SEXP R_bit_any(SEXP b_, SEXP range_){
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
   int *range = INTEGER(range_);
   SEXP ret_;
   PROTECT( ret_ = allocVector(LGLSXP,1) );
@@ -931,7 +975,7 @@ SEXP R_bit_any(SEXP b_, SEXP range_){
 }
 
 SEXP R_bit_min(SEXP b_, SEXP range_){
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
   int *range = INTEGER(range_);
   SEXP ret_;
   PROTECT( ret_ = allocVector(INTSXP,1) );
@@ -941,7 +985,7 @@ SEXP R_bit_min(SEXP b_, SEXP range_){
 }
 
 SEXP R_bit_max(SEXP b_, SEXP range_){
-  int *b = INTEGER(b_);
+  bitint *b = (bitint*) INTEGER(b_);
   int *range = INTEGER(range_);
   SEXP ret_;
   PROTECT( ret_ = allocVector(INTSXP,1) );
@@ -972,3 +1016,6 @@ SEXP R_filter_getset(SEXP l1_, SEXP l2_){
   return(l2_);
 }
 
+#undef BITS 
+#undef LASTBIT
+#undef TRUE
