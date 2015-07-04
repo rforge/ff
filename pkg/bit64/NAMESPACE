@@ -8,13 +8,11 @@
 
 useDynLib(bit64)
 
-importFrom(utils, packageDescription)
-
 importFrom(methods, is)
 importFrom(methods, as)
-
-importFrom(stats, quantile)
-importFrom(stats, median)
+importFrom(utils, packageDescription)
+importFrom(stats, quantile, median,cor)
+importFrom(graphics, barplot, par, title)
 
 importFrom(bit, setattr)
 importFrom(bit, clone)

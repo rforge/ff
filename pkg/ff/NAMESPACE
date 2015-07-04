@@ -6,9 +6,9 @@
 
 useDynLib(ff)
 
-importFrom(utils, memory.limit, packageDescription)
+importFrom(utils, memory.limit, packageDescription, read.fwf, read.table, str, write.table)
+importFrom(stats, median, quantile, runif)
 import(bit)
-
 
 export(
 
