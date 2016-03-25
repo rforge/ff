@@ -14,7 +14,7 @@
 
 .onAttach <- function(libname, pkgname){
   packageStartupMessage("Attaching package bit64")
-  packageStartupMessage("package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)")
+  packageStartupMessage("package:bit64 (c) 2011-2012 Jens Oehlschlaegel")
   packageStartupMessage("creators: integer64 seq :")
   packageStartupMessage("coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin")
   packageStartupMessage("logical operator: ! & | xor != == < <= >= >")
