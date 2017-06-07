@@ -168,6 +168,7 @@ is not worth it with 32x at duplicated RAM consumption).
    \bold{creating,testing,printing} \tab \bold{see also}          \tab \bold{description} \cr
    \code{NA_integer64_} \tab \code{\link{NA_integer_}} \tab NA constant \cr
    \code{integer64} \tab \code{\link{integer}} \tab create zero atomic vector \cr
+   \code{\link{runif64}} \tab \code{\link{runif}} \tab create random vector \cr
    \code{\link{rep.integer64}} \tab \code{\link{rep}} \tab  \cr
    \code{\link{seq.integer64}} \tab \code{\link{seq}} \tab  \cr
    \code{\link{is.integer64}} \tab \code{\link{is}} \tab  \cr
@@ -189,6 +190,7 @@ is not worth it with 32x at duplicated RAM consumption).
  \cr
    \bold{coercing to integer64} \tab \bold{see also}          \tab \bold{description} \cr
    \code{\link{as.integer64}} \tab   \tab generic \cr
+   \code{\link{as.integer64.bitstring}} \tab \code{\link{as.bitstring}} \tab  \cr
    \code{\link{as.integer64.character}} \tab \code{\link{character}} \tab  \cr
    \code{\link{as.integer64.double}} \tab \code{\link{double}} \tab  \cr
    \code{\link{as.integer64.integer}} \tab \code{\link{integer}} \tab  \cr

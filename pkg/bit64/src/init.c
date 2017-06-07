@@ -10,6 +10,7 @@ extern SEXP any_integer64(SEXP, SEXP, SEXP);
 extern SEXP as_bitstring_integer64(SEXP, SEXP);
 extern SEXP as_character_integer64(SEXP, SEXP);
 extern SEXP as_double_integer64(SEXP, SEXP);
+extern SEXP as_integer64_bitstring(SEXP, SEXP);
 extern SEXP as_integer64_character(SEXP, SEXP);
 extern SEXP as_integer64_double(SEXP, SEXP);
 extern SEXP as_integer64_integer(SEXP, SEXP);
@@ -59,6 +60,7 @@ extern SEXP power_integer64_double(SEXP, SEXP, SEXP);
 extern SEXP power_integer64_integer64(SEXP, SEXP, SEXP);
 extern SEXP prod_integer64(SEXP, SEXP, SEXP);
 extern SEXP range_integer64(SEXP, SEXP, SEXP);
+extern SEXP runif_integer64(SEXP, SEXP, SEXP, SEXP);
 extern SEXP r_ram_integer64_issorted_asc(SEXP);
 extern SEXP r_ram_integer64_mergeorder(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP r_ram_integer64_mergesort(SEXP, SEXP, SEXP, SEXP);
@@ -113,6 +115,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"as_bitstring_integer64",           (DL_FUNC) &as_bitstring_integer64,           2},
     {"as_character_integer64",           (DL_FUNC) &as_character_integer64,           2},
     {"as_double_integer64",              (DL_FUNC) &as_double_integer64,              2},
+    {"as_integer64_bitstring",           (DL_FUNC) &as_integer64_bitstring,           2},
     {"as_integer64_character",           (DL_FUNC) &as_integer64_character,           2},
     {"as_integer64_double",              (DL_FUNC) &as_integer64_double,              2},
     {"as_integer64_integer",             (DL_FUNC) &as_integer64_integer,             2},
@@ -162,6 +165,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"power_integer64_integer64",        (DL_FUNC) &power_integer64_integer64,        3},
     {"prod_integer64",                   (DL_FUNC) &prod_integer64,                   3},
     {"range_integer64",                  (DL_FUNC) &range_integer64,                  3},
+    {"runif_integer64",                  (DL_FUNC) &runif_integer64,                  3},
     {"r_ram_integer64_issorted_asc",     (DL_FUNC) &r_ram_integer64_issorted_asc,     1},
     {"r_ram_integer64_mergeorder",       (DL_FUNC) &r_ram_integer64_mergeorder,       5},
     {"r_ram_integer64_mergesort",        (DL_FUNC) &r_ram_integer64_mergesort,        4},

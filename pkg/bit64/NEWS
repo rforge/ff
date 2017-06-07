@@ -1,3 +1,21 @@
+    CHANGES IN bit64 VERSION 0.9-8
+
+
+NEW FEATURES
+
+    o New function runif64 
+      (wish of )
+    o New methods as.integer64.bitstring
+      and print.bitstring (wish of )
+
+
+USER VISIBLE CHANGES
+
+    o as.bitstring.integer64 now returns its string vector
+      with class 'bitstring'
+
+
+
     CHANGES IN bit64 VERSION 0.9-7
 
 BUG FIXES
@@ -14,7 +32,7 @@ NEW FEATURES
       and no longer the underlying double
       (wish of Matt Dowle)
     o New integer64 methods is.nan, is.finite, is.infinite
-      (wish of Florent Angly
+      (wish of Florent Angly)
 
 
 USER VISIBLE CHANGES

@@ -178,6 +178,7 @@
 #!    \bold{creating,testing,printing} \tab \bold{see also}          \tab \bold{description} \cr
 #!    \code{NA_integer64_} \tab \code{\link{NA_integer_}} \tab NA constant \cr
 #!    \code{integer64} \tab \code{\link{integer}} \tab create zero atomic vector \cr
+#!    \code{\link{runif64}} \tab \code{\link{runif}} \tab create random vector \cr
 #!    \code{\link{rep.integer64}} \tab \code{\link{rep}} \tab  \cr
 #!    \code{\link{seq.integer64}} \tab \code{\link{seq}} \tab  \cr
 #!    \code{\link{is.integer64}} \tab \code{\link{is}} \tab  \cr
@@ -199,6 +200,7 @@
 #!  \cr
 #!    \bold{coercing to integer64} \tab \bold{see also}          \tab \bold{description} \cr
 #!    \code{\link{as.integer64}} \tab   \tab generic \cr
+#!    \code{\link{as.integer64.bitstring}} \tab \code{\link{as.bitstring}} \tab  \cr
 #!    \code{\link{as.integer64.character}} \tab \code{\link{character}} \tab  \cr
 #!    \code{\link{as.integer64.double}} \tab \code{\link{double}} \tab  \cr
 #!    \code{\link{as.integer64.integer}} \tab \code{\link{integer}} \tab  \cr
@@ -945,6 +947,7 @@
 #! \alias{as.integer.integer64}
 #! \alias{as.logical.integer64}
 #! \alias{as.bitstring}
+#! \alias{print.bitstring}
 #! \alias{as.bitstring.integer64}
 #! \alias{as.factor.integer64}
 #! \alias{as.ordered.integer64}
@@ -960,6 +963,7 @@
 #! \usage{
 #!  as.bitstring(x, \dots)
 #!  \method{as.bitstring}{integer64}(x, \dots)
+#!  \method{print}{bitstring}(x, \dots)
 #!  \method{as.character}{integer64}(x, \dots)
 #!  \method{as.double}{integer64}(x, keep.names = FALSE, \dots)
 #!  \method{as.integer}{integer64}(x, \dots)
@@ -973,7 +977,7 @@
 #!   \item{\dots}{ further arguments to the \code{\link{NextMethod}} }
 #! }
 #! \value{
-#!   \code{as.bitstring} returns a string of . \cr
+#!   \code{as.bitstring} returns a string of class 'bitstring'. \cr
 #!   The other methods return atomic vectors of the expected types
 #! }
 #! \author{
@@ -985,12 +989,16 @@
 #! \examples{
 #!   as.character(lim.integer64())
 #!   as.bitstring(lim.integer64())
+#!   as.bitstring(as.integer64(c(
+#!    -2,-1,NA,0:2
+#!   )))
 #! }
 
 #! \name{as.integer64.character}
 #! \alias{as.integer64}
 #! \alias{as.integer64.integer64}
 #! \alias{as.integer64.NULL}
+#! \alias{as.integer64.bitstring}
 #! \alias{as.integer64.character}
 #! \alias{as.integer64.double}
 #! \alias{as.integer64.integer}
@@ -1009,6 +1017,7 @@
 #!  \method{as.integer64}{integer64}(x, \dots)
 #!  \method{as.integer64}{NULL}(x, \dots)
 #!  \method{as.integer64}{character}(x, \dots)
+#!  \method{as.integer64}{bitstring}(x, \dots)
 #!  \method{as.integer64}{double}(x, keep.names = FALSE, \dots)
 #!  \method{as.integer64}{integer}(x, \dots)
 #!  \method{as.integer64}{logical}(x, \dots)
@@ -1021,7 +1030,12 @@
 #! }
 #! \details{
 #!   \code{as.integer64.character} is realized using C function \code{strtoll} which does not support scientific notation. 
-#!   Instead of '1e6' use '1000000'.
+#!   Instead of '1e6' use '1000000'. 
+#!   \code{as.integer64.bitstring} evaluates characters '0' anbd ' ' as zero-bit,
+#!   all other one byte characters as one-bit,
+#!   multi-byte characters are not allowed,
+#!   strings shorter than 64 characters are treated as if they were left-padded with '0',
+#!   strings longer than 64 bytes are mapped to \code{NA_INTEGER64} and a warning is emitted.
 #! }
 #! \value{
 #!   The other methods return atomic vectors of the expected types
@@ -1033,7 +1047,25 @@
 #! \keyword{ manip }
 #! \seealso{ \code{\link{as.character.integer64}} \code{\link{integer64}}  }
 #! \examples{
-#!   as.integer64(as.character(lim.integer64()))
+#! as.integer64(as.character(lim.integer64()))
+#! as.integer64(
+#!   structure(c("1111111111111111111111111111111111111111111111111111111111111110", 
+#!               "1111111111111111111111111111111111111111111111111111111111111111", 
+#!               "1000000000000000000000000000000000000000000000000000000000000000",
+#!               "0000000000000000000000000000000000000000000000000000000000000000", 
+#!               "0000000000000000000000000000000000000000000000000000000000000001", 
+#!               "0000000000000000000000000000000000000000000000000000000000000010" 
+#!   ), class = "bitstring")
+#! )
+#! as.integer64(
+#!  structure(c("............................................................... ", 
+#!              "................................................................", 
+#!              ".                                                               ",
+#!              "", 
+#!              ".", 
+#!              "10"
+#!   ), class = "bitstring")
+#! )
 #! }
 
 
@@ -1079,6 +1111,10 @@
 #!   x
 #!   x[]
 #!   x[,2:3]
+#! }
+#! \dontshow{
+#! r <- c(runif64(1e3, lim.integer64()[1], lim.integer64()[2]), NA, -2:2)
+#! stopifnot(identical(r, as.integer64(as.bitstring(r))))
 #! }
 
 #! \name{format.integer64}
@@ -1678,8 +1714,24 @@ as.bitstring.integer64 <- function(x, ...){
   n <- length(x)
   ret <- rep(as.character(NA), n)
   .Call(C_as_bitstring_integer64, x, ret)
+  oldClass(ret) <- 'bitstring'
   ret
 }
+
+print.bitstring <- function(x, ...){
+  oldClass(x) <- minusclass(class(x), 'bitstring')
+  NextMethod(x)
+}
+
+as.integer64.bitstring <- function(x, ...){
+  n <- length(x)
+  ret <- double(length(x))
+  .Call(C_as_integer64_bitstring, x, ret)
+  oldClass(ret) <- "integer64"
+  ret
+}
+
+
 
 # read.table expects S4 as() 
 setAs("character","integer64",function(from)as.integer64.character(from))
@@ -2440,4 +2492,5 @@ is.vector.integer64 <- function(x, mode="any"){
   else
     TRUE
 }
+
 

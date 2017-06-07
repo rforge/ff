@@ -110,7 +110,7 @@
 #! }
 #! \keyword{ programming }
 #! \keyword{ manip }
-#! \seealso{ \code{\link[=match.integer64]{match}} }
+#! \seealso{ \code{\link[=match.integer64]{match}}, \code{\link{runif64}} }
 #! \examples{
 #! x <- as.integer64(sample(c(NA, 0:9)))
 #! y <- as.integer64(sample(c(NA, 1:9), 10, TRUE))
@@ -362,6 +362,57 @@ hashmapupo.integer64 <- function(x, nunique=NULL, minfac=1.5, hashbits=NULL, ...
   .Call(C_hashmapupo_integer64, x, hashbits, hashmap, nunique, PACKAGE = "bit64")
 }
 
+
+#! \name{runif64}
+#! \alias{runif64}
+#! \title{
+#!    integer64: random numbers
+#! }
+#! \description{
+#!   Create uniform random 64-bit integers within defined range
+#! }
+#! \usage{
+#!   runif64(n, min = lim.integer64()[1], max = lim.integer64()[2])
+#! }
+#! \arguments{
+#!   \item{n}{ length of return vector }
+#!   \item{min}{ lower inclusive bound for random numbers }
+#!   \item{max}{ upper inclusive bound for random numbers }
+#! }
+#! \value{
+#!   a integer64 vector
+#! }
+#! \details{
+#!   For each random integer we call R's internal C interface \code{unif_rand()} twice.
+#!   Each call is mapped to 2^32 unsigned integers. The two 32-bit patterns are concatenated
+#!   to form the new integer64. This process is repeated until the result is not a \code{NA_INTEGER64}. 
+#! }
+#! \author{
+#! Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
+#! }
+#! \keyword{ classes }
+#! \keyword{distribution}
+#! \keyword{sysdata}
+#! \seealso{ 
+#!   \code{\link{runif}}, \code{\link{hashfun}}
+#! }
+#! \examples{
+#!   runif64(12)
+#!   runif64(12, -16, 16)
+#!   runif64(12, 0, as.integer64(2^60)-1)  # not 2^60-1 !
+#!   var(runif(1e4))
+#!   var(as.double(runif64(1e4, 0, 2^40))/2^40)  # ~ = 1/12 = .08333
+#! }
+
+runif64 <- function(n, min=lim.integer64()[1], max=lim.integer64()[2]){
+  ret <- .Call(C_runif_integer64, as.integer(n), as.integer64(min), as.integer64(max))
+  oldClass(ret) <- "integer64"
+  ret
+}
+
+
+
+
 if (FALSE){
   library(bit64)
   n <- 1e7
@@ -407,4 +458,28 @@ if (FALSE){
   length(t2)
   
  
+
+  
+  library(bit64)
+  n <- 1e6
+  r <- runif64(n, lim.integer64()[1], lim.integer64()[2])
+  identical(r, as.integer64(as.bitstring(r)))
+  cbind(r,as.integer64(as.bitstring(r)))
+  cbind(as.bitstring(r),as.bitstring(as.integer64(as.bitstring(r))))
+  
+  #sum(duplicated(r))
+  #table.integer64(r)
+  #range(r)
+  log2(abs(range(r)))
+  
+  x <- seq(0,1,0.1)
+  y <- quantile.integer64(r, x)
+  z <- diff(y)
+  plot(log2(z), type="b",ylim=c(0, max(log2(z))))
+  
+  
+  n <- 1e7
+  system.time(runif(n))
+  system.time(runif64(n))
+  
 }
