@@ -40,4 +40,8 @@ Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
   x
   x[]
   x[,2:3]
+  \dontshow{
+    r <- c(runif64(1e3, lim.integer64()[1], lim.integer64()[2]), NA, -2:2)
+    stopifnot(identical(r, as.integer64(as.bitstring(r))))
+  }
 }

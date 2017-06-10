@@ -1111,10 +1111,10 @@
 #!   x
 #!   x[]
 #!   x[,2:3]
-#! }
-#! \dontshow{
-#! r <- c(runif64(1e3, lim.integer64()[1], lim.integer64()[2]), NA, -2:2)
-#! stopifnot(identical(r, as.integer64(as.bitstring(r))))
+#!   \dontshow{
+#!     r <- c(runif64(1e3, lim.integer64()[1], lim.integer64()[2]), NA, -2:2)
+#!     stopifnot(identical(r, as.integer64(as.bitstring(r))))
+#!   }
 #! }
 
 #! \name{format.integer64}
@@ -1188,8 +1188,15 @@
 #! \seealso{ \code{\link{xor.integer64}} \code{\link{integer64}}  }
 #! \examples{
 #!   sqrt(as.integer64(1:12))
+#! \dontshow{
+#! i <- -999:999
+#! for (s in -3:3){
+#! r <- as.integer64(round(as.integer(i), s))
+#!   r64 <- round(as.integer64(i), s)
+#!   stopifnot(identical(r,r64))
 #! }
-
+#! }
+#! }
 
 #! \name{xor.integer64}
 #! \alias{&.integer64}
@@ -2125,14 +2132,21 @@ as.data.frame.integer64 <- function(x, ...){
 "round.integer64" <- function(x, digits=0){
   if (digits<0){
     a <- attributes(x)
-	base <- 10^floor(-digits)
-	ret <- (x%/%base) * base
+    b <- 10^round(-digits)
+    b2 <- b %/% 2
+    d <- (x %/% b)
+    db <- d * b
+    r <- abs(x-db)
+    ret <- ifelse((r < b2) | (r == b2 & ((d %% 2L) == 0L)), db, db + sign(x)*b)
     #a$class <- minusclass(a$class, "integer64")
     attributes(ret) <- a
-	ret
+    ret
   }else
-	x
+    x
 }
+
+
+
 
 "any.integer64" <- function(..., na.rm = FALSE){
   l <- list(...)

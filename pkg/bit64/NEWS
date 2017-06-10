@@ -4,16 +4,18 @@
 NEW FEATURES
 
     o New function runif64 
-      (wish of )
+      (wish of Dan Reznik)
     o New methods as.integer64.bitstring
-      and print.bitstring (wish of )
+      and print.bitstring (wish of Dan Reznik)
 
 
 USER VISIBLE CHANGES
 
     o as.bitstring.integer64 now returns its string vector
       with class 'bitstring'
-
+    o round.integer64 with a negative digits argument now rounds 
+      like round(integer) would do (wish of Ian Lyttle)
+      
 
 
     CHANGES IN bit64 VERSION 0.9-7
