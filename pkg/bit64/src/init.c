@@ -107,6 +107,12 @@ extern SEXP sqrt_integer64(SEXP, SEXP);
 extern SEXP sum_integer64(SEXP, SEXP, SEXP);
 extern SEXP times_integer64_double(SEXP, SEXP, SEXP);
 extern SEXP times_integer64_integer64(SEXP, SEXP, SEXP);
+/*
+extern SEXP r_ram_integer64_radisort(SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP r_ram_integer64_onionsort(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP r_ram_integer64_onionsortorder(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP r_ram_integer64_onionorder(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+*/
 
 static const R_CallMethodDef CallEntries[] = {
     {"abs_integer64",                    (DL_FUNC) &abs_integer64,                    2},
@@ -212,8 +218,15 @@ static const R_CallMethodDef CallEntries[] = {
     {"sum_integer64",                    (DL_FUNC) &sum_integer64,                    3},
     {"times_integer64_double",           (DL_FUNC) &times_integer64_double,           3},
     {"times_integer64_integer64",        (DL_FUNC) &times_integer64_integer64,        3},
+/*
+    {"r_ram_integer64_radisort",        (DL_FUNC) &r_ram_integer64_radisort,        5},
+    {"r_ram_integer64_onionsort",        (DL_FUNC) &r_ram_integer64_onionsort,        7},
+    {"r_ram_integer64_onionsortorder",        (DL_FUNC) &r_ram_integer64_onionsortorder,        8},
+    {"r_ram_integer64_onionorder",        (DL_FUNC) &r_ram_integer64_onionorder,        8},
+*/
     {NULL, NULL, 0}
 };
+
 
 void R_init_bit64(DllInfo *dll)
 {

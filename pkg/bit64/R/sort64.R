@@ -687,4 +687,3 @@ order.integer64 <- function(
 	o
 }
 
-

@@ -3,8 +3,9 @@
 
 NEW FEATURES
 
-    o New function runif64 
-      (wish of Dan Reznik)
+    o New function runif64 which can sample from finite 
+      and infinite populations (wish of Dan Reznik)
+
     o New methods as.integer64.bitstring
       and print.bitstring (wish of Dan Reznik)
 
@@ -15,6 +16,8 @@ USER VISIBLE CHANGES
       with class 'bitstring'
     o round.integer64 with a negative digits argument now rounds 
       like round(integer) would do (wish of Ian Lyttle)
+    o range.integer64 now has an argument finite=FALSE for compatibility 
+      with range.default (wish of Sergio Oller)
       
 
 

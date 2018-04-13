@@ -1286,7 +1286,7 @@
 #! \method{any}{integer64}(\dots, na.rm = FALSE)
 #! \method{min}{integer64}(\dots, na.rm = FALSE)
 #! \method{max}{integer64}(\dots, na.rm = FALSE)
-#! \method{range}{integer64}(\dots, na.rm = FALSE)
+#! \method{range}{integer64}(\dots, na.rm = FALSE, finite = FALSE)
 #! lim.integer64()
 #! \method{sum}{integer64}(\dots, na.rm = FALSE)
 #! \method{prod}{integer64}(\dots, na.rm = FALSE)
@@ -1294,6 +1294,7 @@
 #! \arguments{
 #!   \item{\dots}{ atomic vectors of class 'integer64'}
 #!   \item{na.rm}{ logical scalar indicating whether to ignore NAs }
+#!   \item{finite}{ logical scalar indicating whether to ignore NAs (just for compatibility with \code{\link{range.default}}) }
 #! }
 #! \details{
 #!   The numerical summary methods always return \code{integer64}. 
@@ -2285,7 +2286,9 @@ as.data.frame.integer64 <- function(x, ...){
 }
 
 
-"range.integer64" <- function(..., na.rm = FALSE){
+"range.integer64" <- function(..., na.rm = FALSE, finite = FALSE){
+  if (finite)
+    na.rm = TRUE
   ret <- double(2)
   l <- list(...)
   noval <- TRUE

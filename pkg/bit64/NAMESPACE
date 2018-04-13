@@ -208,6 +208,12 @@ export(
 #, radixorder
 , radixorder.integer64
 
+#, radisort
+#, radisort.integer64
+#, onionsort
+#, onionsort.integer64
+
+
 # -- sortmerge64.R - searching & merging --
 
 , sortnut
@@ -474,6 +480,9 @@ S3method("quicksortorder", integer64)
 S3method("radixsort", integer64)
 S3method("radixsortorder", integer64)
 S3method("radixorder", integer64)
+
+#S3method("radisort", integer64)
+#S3method("onionsort", integer64)
 
 
 # -- sortmerge64.R - searching & merging --

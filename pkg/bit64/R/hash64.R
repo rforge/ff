@@ -372,12 +372,13 @@ hashmapupo.integer64 <- function(x, nunique=NULL, minfac=1.5, hashbits=NULL, ...
 #!   Create uniform random 64-bit integers within defined range
 #! }
 #! \usage{
-#!   runif64(n, min = lim.integer64()[1], max = lim.integer64()[2])
+#!   runif64(n, min = lim.integer64()[1], max = lim.integer64()[2], replace=TRUE)
 #! }
 #! \arguments{
 #!   \item{n}{ length of return vector }
 #!   \item{min}{ lower inclusive bound for random numbers }
 #!   \item{max}{ upper inclusive bound for random numbers }
+#!   \item{replace}{ set to FALSE for sampleing from a finite pool, see \code{\link{sample}} }
 #! }
 #! \value{
 #!   a integer64 vector
@@ -402,13 +403,45 @@ hashmapupo.integer64 <- function(x, nunique=NULL, minfac=1.5, hashbits=NULL, ...
 #!   runif64(12, 0, as.integer64(2^60)-1)  # not 2^60-1 !
 #!   var(runif(1e4))
 #!   var(as.double(runif64(1e4, 0, 2^40))/2^40)  # ~ = 1/12 = .08333
+#!
+#!   table(sample(16, replace=FALSE))
+#!   table(runif64(16, 1, 16, replace=FALSE))
+#!   table(sample(16, replace=TRUE))
+#!   table(runif64(16, 1, 16, replace=TRUE))
 #! }
 
-runif64 <- function(n, min=lim.integer64()[1], max=lim.integer64()[2]){
-  ret <- .Call(C_runif_integer64, as.integer(n), as.integer64(min), as.integer64(max))
-  oldClass(ret) <- "integer64"
+runif64 <- function(n, min=lim.integer64()[1], max=lim.integer64()[2], replace = TRUE){
+  if (replace){
+    ret <- .Call(C_runif_integer64, as.integer(n), as.integer64(min), as.integer64(max))
+    oldClass(ret) <- "integer64"
+  }else{
+    N <- n <- as.integer(n)
+    min <- as.integer64(min)
+    max <- as.integer64(max)
+    d <- max - min + 1L
+    if (N > d)
+      stop("cannot take a sample larger than the population when 'replace = FALSE'")
+    ret <- integer64()
+    while (N > 0){
+      if (N*1.05 < .Machine$integer.max)
+        N <- N*1.05
+      ret <- unique(c(ret, Recall(N, min, max, replace=TRUE)))
+      N <- n - length(ret)
+    }
+    if (N != 0L)
+      ret <- ret[1:n]
+  }
   ret
 }
+
+if (FALSE){
+  require(bit64)
+  r <- FALSE
+  system.time(print(sum(duplicated(sample(2^30, 1e7, replace=r)))))
+  system.time(print(sum(duplicated(runif64(1e7, 1, 2^30, replace=r)))))
+}
+
+
 
 
 
