@@ -1,5 +1,5 @@
 # Chunking utilities for bit and ff
-# (c) 2007-2009 Jens Oehlsch‰gel
+# (c) 2007-2009 Jens Oehlsch√§gel
 # Licence: GPL2
 # Provided 'as is', use at your own risk
 # Created: 2007-09-03
@@ -31,7 +31,7 @@
 #! \details{
 #!   Tries to have \code{rb==0} or \code{rb} as close to \code{b} as possible while guaranteing that \code{rb < b && (b - rb) <= min(nb, b)}
 #! }
-#! \author{ Jens Oehlschl‰gel }
+#! \author{ Jens Oehlschl√§gel }
 #! \seealso{ \code{\link{repfromto}}, \code{\link[ff]{ffvecapply}} }
 #! \examples{
 #!   bbatch(100, 24)
@@ -111,7 +111,7 @@ bbatch <- function(N,B){
 #! \value{
 #!   a vector of length \code{from - to + 1}
 #! }
-#! \author{ Jens Oehlschl‰gel }
+#! \author{ Jens Oehlschl√§gel }
 #! \seealso{ \code{\link{rep}}, \code{\link[ff]{ffvecapply}} }
 #! \examples{
 #!   message("a simple example")
@@ -259,7 +259,7 @@ if (FALSE){
 #! \value{
 #!   \code{chunk.default} returns a list of \code{\link{ri}} objects representing chunks of subscripts
 #! }
-#! \author{ Jens Oehlschl‰gel }
+#! \author{ Jens Oehlschl√§gel }
 #! \seealso{ \code{\link{ri}},  \code{\link[base]{seq}}, \code{\link{bbatch}} }
 #! \examples{
 #!   chunk(1, 100, by=30)
@@ -426,7 +426,7 @@ chunk.default <- function(
 #!   if \code{concat==TRUE } and \code{eval==FALSE} a single call generating the concatenated sequences \cr
 #!   if \code{concat==TRUE } and \code{eval==TRUE } an integer vector of concatentated sequences
 #! }
-#! \author{ Angelo Canty, Jens Oehlschl‰gel }
+#! \author{ Angelo Canty, Jens Oehlschl√§gel }
 #! \seealso{ \code{\link{:}}, \code{\link{seq}}, \code{\link{sequence}} }
 #! \examples{
 #!   sequence(c(3,4))

@@ -35,7 +35,7 @@ as.bit(x, \dots)
 \value{
   \code{is.bit} returns FALSE or TRUE, \code{as.bit} returns a vector of class 'bit'
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{bit}}, \code{\link[bit:as.logical.bit]{as.logical}} }
 \examples{
   x <- as.bit(c(FALSE, NA, TRUE))

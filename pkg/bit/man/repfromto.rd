@@ -22,7 +22,7 @@ repfromto(x, from, to) <- value
 \value{
   a vector of length \code{from - to + 1}
 }
-\author{ Jens Oehlschlägel }
+\author{ Jens OehlschlÃ¤gel }
 \seealso{ \code{\link{rep}}, \code{\link[ff]{ffvecapply}} }
 \examples{
   message("a simple example")

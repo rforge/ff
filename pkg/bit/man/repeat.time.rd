@@ -24,7 +24,7 @@ repeat.time(expr, gcFirst = TRUE, minSec = 0.5, envir=parent.frame())
   \code{\link{system.time}}
 }
 \author{
-Jens Oehlschl‰gel <Jens.Oehlschlaegel@truecluster.com>
+Jens Oehlschl√§gel <Jens.Oehlschlaegel@truecluster.com>
 }
 \examples{
   system.time(1+1)

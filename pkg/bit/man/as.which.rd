@@ -26,7 +26,7 @@ as.which(x, \dots)
 \value{
   a vector of class 'logical' or 'integer'
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{as.bit}}, \code{\link{as.logical}}, \code{\link{as.integer}}, \code{\link{as.which}}, \code{\link{as.bitwhich}}, \code{\link[ff]{as.ff}}, \code{\link[ff]{as.hi}} }
 \examples{
   r <- ri(5, 20, 100)

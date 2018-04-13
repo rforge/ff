@@ -1,5 +1,5 @@
 # 1-bit boolean vectors for R
-# (c) 2008-2009 Jens Oehlsch‰gel
+# (c) 2008-2009 Jens Oehlsch√§gel
 # Licence: GPL2
 # Provided 'as is', use at your own risk
 
@@ -131,7 +131,7 @@ virtual <- function(x)UseMethod("virtual")
 #!   These functions return the number of \code{NAs} found or assumed during sorting
 #! }
 #! \author{
-#! Jens Oehlschl‰gel <Jens.Oehlschlaegel@truecluster.com>
+#! Jens Oehlschl√§gel <Jens.Oehlschlaegel@truecluster.com>
 #! }
 #! \keyword{univar}
 #! \keyword{manip}
@@ -204,7 +204,7 @@ keysortorder <- function(x, i, ...)UseMethod("keysortorder")
 #! 	see help of the available methods
 #! }
 #! \author{
-#! Jens Oehlschl‰gel <Jens.Oehlschlaegel@truecluster.com>
+#! Jens Oehlschl√§gel <Jens.Oehlschlaegel@truecluster.com>
 #! }
 #! \seealso{
 #! 	\code{\link[bit64]{is.sorted.integer64}}, \code{\link[bit64]{na.count.integer64}}, \code{\link[bit64]{nvalid.integer64}}, \code{\link[bit64]{nunique.integer64}}, \code{\link[bit64]{nties.integer64}} \cr

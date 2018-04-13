@@ -55,7 +55,7 @@ xor(x, y)
 \value{
   An object of class 'bit' (or 'bitwhich')
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{bit}}, \code{\link{Logic}} }
 \examples{
   x <- as.bit(c(FALSE, FALSE, FALSE, NA, NA, NA, TRUE, TRUE, TRUE))

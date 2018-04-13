@@ -1,6 +1,6 @@
 /*
 # fast rle handling for bit and ff
-# (c) 2007-2009 Jens Oehlsch‰gel
+# (c) 2007-2009 Jens Oehlsch√§gel
 # Licence: GPL2
 # Provided 'as is', use at your own risk
 # Created: 2007-08-24

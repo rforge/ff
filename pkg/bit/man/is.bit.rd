@@ -17,7 +17,7 @@ is.bitwhich(x)
 \value{
   TRUE or FALSE
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{is.logical}}, \code{\link{bit}}, \code{\link{bitwhich}} }
 \examples{
  is.ri(TRUE)

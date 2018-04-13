@@ -30,7 +30,7 @@ chunk(\dots)
 \value{
   \code{chunk.default} returns a list of \code{\link{ri}} objects representing chunks of subscripts
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{ri}},  \code{\link[base]{seq}}, \code{\link{bbatch}} }
 \examples{
   chunk(1, 100, by=30)

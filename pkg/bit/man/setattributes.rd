@@ -33,7 +33,7 @@ The attributes of 'x' are changed in place without copying x. function \code{set
   Writing R extensions -- System and foreign language interfaces -- Handling R objects in C -- Attributes (Version 2.11.1 (2010-06-03 ) R Development)
 }
 \author{
-Jens Oehlschl‰gel
+Jens Oehlschl√§gel
 }
 
 \seealso{

@@ -1,5 +1,5 @@
 # timing utilities for ff and bit
-# (c) 2012 Jens Oehlschl‰gel
+# (c) 2012 Jens Oehlschl√§gel
 # Licence: GPL2
 # Provided 'as is', use at your own risk
 # Created: 2012-05-28
@@ -30,7 +30,7 @@
 #!   \code{\link{system.time}}
 #! }
 #! \author{
-#! Jens Oehlschl‰gel <Jens.Oehlschlaegel@truecluster.com>
+#! Jens Oehlschl√§gel <Jens.Oehlschlaegel@truecluster.com>
 #! }
 #! \examples{
 #!   system.time(1+1)

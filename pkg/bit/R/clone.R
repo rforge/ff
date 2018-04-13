@@ -1,5 +1,5 @@
 # clone utilities for bit,bit64,ff
-# (c) 2014 Jens Oehlschl‰gel
+# (c) 2014 Jens Oehlschl√§gel
 # Licence: GPL2
 # Provided 'as is', use at your own risk
 # Created: 2014-03-02
@@ -35,7 +35,7 @@
 #! \value{
 #!   an object that is a deep copy of x
 #! }
-#! \author{ Jens Oehlschl‰gel }
+#! \author{ Jens Oehlschl√§gel }
 #! \seealso{ \code{\link[ff]{clone.ff}} }
 #! \examples{
 #!   x <- 1:12

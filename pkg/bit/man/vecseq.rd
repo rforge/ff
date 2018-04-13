@@ -22,7 +22,7 @@
   if \code{concat==TRUE } and \code{eval==FALSE} a single call generating the concatenated sequences \cr
   if \code{concat==TRUE } and \code{eval==TRUE } an integer vector of concatentated sequences
 }
-\author{ Angelo Canty, Jens Oehlschl‰gel }
+\author{ Angelo Canty, Jens Oehlschl√§gel }
 \seealso{ \code{\link{:}}, \code{\link{seq}}, \code{\link{sequence}} }
 \examples{
   sequence(c(3,4))

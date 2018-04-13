@@ -1,6 +1,6 @@
 /*
 #  cloning and identity querying
-# (c) 2014 Jens Oehlschl‰gel
+# (c) 2014 Jens Oehlschl√§gel
 # Licence: GPL2
 # Provided 'as is', use at your own risk
 */

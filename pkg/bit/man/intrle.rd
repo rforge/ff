@@ -30,7 +30,7 @@ intisdesc(x)
   \cr
   \code{intisdesc} returns one of \code{FALSE, TRUE} (if the input contains NAs, the output is undefined)
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link[ff]{hi}}, \code{\link{rle}}, \code{\link{is.unsorted}}, \code{\link[ff]{is.sorted}} }
 \examples{
   intrle(sample(1:100))

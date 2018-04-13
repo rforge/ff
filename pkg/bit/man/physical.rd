@@ -39,7 +39,7 @@ virtual(x) <- value
 \value{
   \command{physical} and \command{virtual} returns a list with named elements
 }
-\author{ Jens Oehlschlägel }
+\author{ Jens OehlschlÃ¤gel }
 \seealso{
  \code{\link[ff]{physical.ff}}, \code{\link[ff]{physical.ffdf}}
 }

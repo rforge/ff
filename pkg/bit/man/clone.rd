@@ -27,7 +27,7 @@ still.identical(x, y)
 \value{
   an object that is a deep copy of x
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link[ff]{clone.ff}} }
 \examples{
   x <- 1:12

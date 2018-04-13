@@ -15,7 +15,7 @@
 \value{
   An object of class 'bit'
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{c}}, \code{\link{bit}} , \code{\link{bitwhich}} }
 \examples{
  c(bit(4), bit(4))

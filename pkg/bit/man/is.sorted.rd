@@ -43,7 +43,7 @@ nties(x, \dots) <- value
 	see help of the available methods
 }
 \author{
-Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
+Jens OehlschlÃ¤gel <Jens.Oehlschlaegel@truecluster.com>
 }
 \seealso{
 	\code{\link[bit64]{is.sorted.integer64}}, \code{\link[bit64]{na.count.integer64}}, \code{\link[bit64]{nvalid.integer64}}, \code{\link[bit64]{nunique.integer64}}, \code{\link[bit64]{nties.integer64}} \cr

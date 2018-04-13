@@ -3,8 +3,8 @@ Type: Package
 Title: A Class for Vectors of 1-Bit Booleans
 Version: 1.1-13
 Date: 2018-04-11
-Author: Jens Oehlschl‰gel <Jens.Oehlschlaegel@truecluster.com>
-Maintainer: Jens Oehlschl‰gel <Jens.Oehlschlaegel@truecluster.com>
+Author: Jens Oehlschl√§gel <Jens.Oehlschlaegel@truecluster.com>
+Maintainer: Jens Oehlschl√§gel <Jens.Oehlschlaegel@truecluster.com>
 Depends: R (>= 2.9.2)
 Description: True boolean datatype (no NAs), 
   coercion from and to logicals, integers and integer subscripts; 

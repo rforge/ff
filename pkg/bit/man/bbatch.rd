@@ -20,7 +20,7 @@ bbatch(N, B)
 \details{
   Tries to have \code{rb==0} or \code{rb} as close to \code{b} as possible while guaranteing that \code{rb < b && (b - rb) <= min(nb, b)}
 }
-\author{ Jens Oehlschlägel }
+\author{ Jens OehlschlÃ¤gel }
 \seealso{ \code{\link{repfromto}}, \code{\link[ff]{ffvecapply}} }
 \examples{
   bbatch(100, 24)

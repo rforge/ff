@@ -31,7 +31,7 @@ bitwhich(maxindex, poslength = NULL, x = NULL)
    \item unique negative integers to exclude those
   }
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{as.bitwhich}}, \code{\link{as.which}}, \code{\link{bit}} }
 \examples{
  bitwhich(12, x=c(1,3), poslength=2)

@@ -21,7 +21,7 @@ attribute removal copies the object as usual
 a similar object with attributes removed
 }
 \author{
-Jens Oehlschl‰gel
+Jens Oehlschl√§gel
 }
 
 \seealso{

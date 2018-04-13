@@ -20,7 +20,7 @@
 \value{
   NULL
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{bit}}  }
 \examples{
   bit_done()

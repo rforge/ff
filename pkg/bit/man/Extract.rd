@@ -28,7 +28,7 @@
   The extractors \code{[[} and \code{[} return a logical scalar or vector.
   The replacment functions return a bit object.
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{bit}}, \code{\link{Extract}} }
 \examples{
   x <- as.bit(c(FALSE, NA, TRUE))

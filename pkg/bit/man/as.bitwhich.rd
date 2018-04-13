@@ -30,7 +30,7 @@ as.bitwhich(x, \dots)
 \value{
   a value of class \code{\link{bitwhich}}
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{bitwhich}}, \code{\link{as.bit}} }
 \examples{
  as.bitwhich(c(FALSE, FALSE, FALSE))

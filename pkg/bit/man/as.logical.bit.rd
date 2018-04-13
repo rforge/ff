@@ -33,7 +33,7 @@
 \value{
   \code{\link{as.logical}} returns a vector of \code{FALSE, TRUE}, \code{\link{as.integer}} and \code{\link{as.double}} return a vector of \code{0,1}.
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{as.bit}}, \code{\link{as.which}}, \code{\link{as.bitwhich}}, \code{\link[ff]{as.ff}}, \code{\link[ff]{as.hi}} }
 \examples{
   x <- ri(2, 5, 10)

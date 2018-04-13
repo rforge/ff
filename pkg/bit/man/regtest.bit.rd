@@ -16,7 +16,7 @@ regtest.bit(N = 100)
 \value{
   a vector of class 'logical' or 'integer'
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{bit}}, \code{\link{as.bit}}, \code{\link{as.logical}}, \code{\link{as.integer}}, \code{\link{which}} }
 \examples{
   if (regtest.bit()){

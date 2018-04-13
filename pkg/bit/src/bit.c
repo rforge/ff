@@ -2,7 +2,7 @@
    1-bit boolean vectors for R
    first bit is stored in lowest (rightmost) bit of forst word
    remember that rightshifting is dangerous because we use the sign position
-   Copyright 2008 Jens Oehlschl‰gel
+   Copyright 2008 Jens Oehlschl√§gel
 */
 
 #include <R.h>

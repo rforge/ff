@@ -106,9 +106,9 @@ Index:
   (but not longer) with an attribute 'n' and class 'bit'
 }
 \author{
-Jens Oehlschl‰gel <Jens.Oehlschlaegel@truecluster.com>
+Jens Oehlschl√§gel <Jens.Oehlschlaegel@truecluster.com>
 
-Maintainer: Jens Oehlschl‰gel <Jens.Oehlschlaegel@truecluster.com>
+Maintainer: Jens Oehlschl√§gel <Jens.Oehlschlaegel@truecluster.com>
 }
 \note{
   Currently operations on bit objects have some overhead from R-calls. Do expect speed gains for vectors

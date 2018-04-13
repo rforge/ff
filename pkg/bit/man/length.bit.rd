@@ -35,7 +35,7 @@
 \value{
   the length  A bit vector with the new length
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link{length}}, \code{\link[=sum.bit]{sum}}, \code{\link[ff]{poslength}}, \code{\link[ff]{maxindex}} }
 \examples{
   stopifnot(length(ri(1, 1, 32))==32)

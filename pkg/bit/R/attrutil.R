@@ -1,5 +1,5 @@
 # attribute utilities for ff and bit
-# (c) 2010 Jens Oehlschl‰gel
+# (c) 2010 Jens Oehlschl√§gel
 # Licence: GPL2
 # Provided 'as is', use at your own risk
 # Created: 2007-08-24
@@ -45,7 +45,7 @@
 #!   Writing R extensions -- System and foreign language interfaces -- Handling R objects in C -- Attributes (Version 2.11.1 (2010-06-03 ) R Development)
 #! }
 #! \author{
-#! Jens Oehlschl‰gel
+#! Jens Oehlschl√§gel
 #! }
 #!
 #! \seealso{
@@ -178,7 +178,7 @@ setattributes <- function(x, attributes)
 #! a similar object with attributes removed
 #! }
 #! \author{
-#! Jens Oehlschl‰gel
+#! Jens Oehlschl√§gel
 #! }
 #!
 #! \seealso{

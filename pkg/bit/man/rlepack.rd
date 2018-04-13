@@ -31,7 +31,7 @@ rleunpack(x)
   \item{ dat   }{ either an object of class \code{\link{rle}} or the complete input vector \code{x} if rle-packing is not efficient }
   \item{ last  }{ the last element of the packed sequence }
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link[ff]{hi}}, \code{\link{intrle}}, \code{\link{rle}}, \code{\link{rev}}, \code{\link{unique}} }
 \examples{
   x <- rlepack(rep(0L, 10))

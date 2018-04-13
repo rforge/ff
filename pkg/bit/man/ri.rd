@@ -20,7 +20,7 @@ ri(from, to = NULL, maxindex=NA)
 \value{
   A two element integer vector with class 'ri'
 }
-\author{ Jens Oehlschl‰gel }
+\author{ Jens Oehlschl√§gel }
 \seealso{ \code{\link[ff]{as.hi.ri}} }
 \examples{
  bit(12)[ri(1,6)]
