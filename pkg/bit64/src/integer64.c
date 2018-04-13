@@ -976,14 +976,13 @@ SEXP GE_integer64(SEXP e1_, SEXP e2_, SEXP ret_){
 
 SEXP runif_integer64(SEXP n_, SEXP min_, SEXP max_){
   int i, n=asInteger(n_);
-  Unsigned32x2T ii;
   long long min = *((long long * ) REAL(min_));
   long long max = *((long long * ) REAL(max_));
   unsigned long long d = (max - min) + 1;
   SEXP ret_;
   PROTECT(ret_ = allocVector(REALSXP, n));
   long long * ret = (long long *) REAL(ret_);
-  Unsigned32x2T * retii = (Unsigned32x2T *) REAL(ret_);
+  Unsigned32x2T ii;
   GetRNGstate();
   for (i=0; i<n; i++){
     ii.low = (unsigned int) floor(unif_rand()*4294967296);
@@ -993,12 +992,26 @@ SEXP runif_integer64(SEXP n_, SEXP min_, SEXP max_){
       ii.low = (unsigned int) floor(unif_rand()*4294967296);
       ii.high = (unsigned int) floor(unif_rand()*4294967296);
     }
-    ret[i] = min + ( (*((unsigned long long *)(&ii))) % d);
+    ret[i] = min + ( (long long)(*((unsigned long long *)(&ii))) % d);
   }
   PutRNGstate();  
   UNPROTECT(1);
   return ret_;
 }
+
+/*
+require(bit64)
+require(microbenchmark)
+microbenchmark(runif64(1e6))
+
+sort(runif64(1e2))
+
+
+Unit: milliseconds
+           expr      min       lq     mean   median       uq      max neval
+ runif64(1e+06) 24.62306 25.60286 25.61903 25.61369 25.62032 26.40202   100
+*/
+
 
 /*****************************************************************************/
 /**                                                                         **/
