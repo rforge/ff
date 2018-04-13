@@ -2,7 +2,7 @@ Package: bit
 Type: Package
 Title: A Class for Vectors of 1-Bit Booleans
 Version: 1.1-13
-Date: 2015-06-24
+Date: 2018-04-10
 Author: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Maintainer: Jens Oehlschlägel <Jens.Oehlschlaegel@truecluster.com>
 Depends: R (>= 2.9.2)
