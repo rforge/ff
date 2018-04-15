@@ -411,42 +411,52 @@ hashmapupo.integer64 <- function(x, nunique=NULL, minfac=1.5, hashbits=NULL, ...
 #! }
 
 runif64 <- function(n, min=lim.integer64()[1], max=lim.integer64()[2], replace = TRUE){
+  n <- as.integer(n)
+  min <- as.integer64(min)
+  max <- as.integer64(max)
   if (replace){
-    ret <- .Call(C_runif_integer64, as.integer(n), as.integer64(min), as.integer64(max))
+    ret <- .Call(C_runif_integer64, n, min, max)
     oldClass(ret) <- "integer64"
   }else{
-    N <- n <- as.integer(n)
-    min <- as.integer64(min)
-    max <- as.integer64(max)
+    N <- n
     d <- max - min + 1L
     if (N > d)
       stop("cannot take a sample larger than the population when 'replace = FALSE'")
-    ret <- integer64()
-    while (N > 0){
-      if (N*1.05 < .Machine$integer.max)
-        N <- N*1.05
-      ret <- unique(c(ret, Recall(N, min, max, replace=TRUE)))
-      N <- n - length(ret)
+    if (n > d  / (2*log(n,64))){
+      ret <- .Call(C_runif_integer64, as.integer(d), as.integer64(min), as.integer64(max))
+      oldClass(ret) <- "integer64"
+      ret <- sample(ret, n, FALSE)
+    }else{
+      ret <- integer64()
+      while (N > 0){
+        ret <- unique(c(ret, Recall(
+          if (N*1.05 < .Machine$integer.max) N*1.05 else N
+        , min
+        , max
+        , replace=TRUE
+        )))
+        N <- n - length(ret)
+      }
+      if (N != 0L)
+        ret <- ret[1:n]
     }
-    if (N != 0L)
-      ret <- ret[1:n]
   }
   ret
 }
 
 if (FALSE){
-  require(bit64)
-  r <- FALSE
-  system.time(print(sum(duplicated(sample(2^30, 1e7, replace=r)))))
-  system.time(print(sum(duplicated(runif64(1e7, 1, 2^30, replace=r)))))
-}
+  
+    require(bit64)
+    require(microbenchmark)
+    n <- 1e6
+    print(microbenchmark(runif64(n, 1, n), times=20))
+    for (m in c(1,2,4,8,16)){
+      print(microbenchmark(runif64(n, 1, n*m, replace=FALSE), times=20))
+      print(microbenchmark(sample(n*m, n, replace=FALSE), times=20))
+    }
+    print(microbenchmark(runif64(n, 1, replace=FALSE), times=20))
 
-
-
-
-
-
-if (FALSE){
+    
   library(bit64)
   n <- 1e7
   x <- as.integer64(sample(n, n, TRUE))
