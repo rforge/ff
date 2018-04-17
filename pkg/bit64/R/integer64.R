@@ -1081,13 +1081,14 @@
 #!   Methods to extract and replace parts of an integer64 vector.
 #! }
 #! \usage{
-#!  \method{[}{integer64}(x, \dots)
+#!  \method{[}{integer64}(x, i, \dots)
 #!  \method{[}{integer64}(x, \dots) <- value 
 #!  \method{[[}{integer64}(x, \dots)
 #!  \method{[[}{integer64}(x, \dots) <- value
 #! }
 #! \arguments{
 #!   \item{x}{ an atomic vector }
+#!   \item{i}{ indices specifying elements to extract }
 #!   \item{value}{ an atomic vector with values to be assigned }
 #!   \item{\dots}{ further arguments to the \code{\link{NextMethod}} }
 #! }
@@ -1611,42 +1612,101 @@ plusclass <- function(class, whichclass){
     whichclass
 }
 
+if (FALSE){
+  # version until 0.9-7
+	binattr <- function(e1,e2){
+		d1 <- dim(e1)
+		d2 <- dim(e2)
+		n1 <- length(e1)
+		n2 <- length(e2)
+		if (length(d1)){
+		  if (length(d2)){
+			if (!identical(dim(e1),dim(e2)))
+			stop("non-conformable arrays")
+		}else{
+			if (n2>n1)
+			  stop("length(e2) does not match dim(e1)")
+			if (n1%%n2)
+			warning("length(e1) not a multiple length(e2)")
+		}
+		attributes(e1)
+		}else{
+		  if (length(d2)){
+			if (n1>n2)
+			  stop("length(e1) does not match dim(n2)")
+			if (n2%%n1)
+			warning("length(e2) not a multiple length(e1)")
+			attributes(e2)
+		}else{
+			if (n1<n2){
+			if (n2%%n1)
+				warning("length(e2) not a multiple length(e1)")
+			}else{
+			if (n1%%n2)
+				warning("length(e1) not a multiple length(e2)")
+			}
+			attributes(e1)
+		}
+		}
+	}
+}
+
+# Version of Leonardo Silvestri
 binattr <- function(e1,e2){
   d1 <- dim(e1)
   d2 <- dim(e2)
   n1 <- length(e1)
   n2 <- length(e2)
+
+  ## this first part takes care of erroring out when the dimensions
+  ## are not compatible or warning if needed:
   if (length(d1)){
-    if (length(d2)){
+      if (length(d2)){
 	  if (!identical(dim(e1),dim(e2)))
-		stop("non-conformable arrays")
-	}else{
+              stop("non-conformable arrays")
+      }else{
 	  if (n2>n1)
-	    stop("length(e2) does not match dim(e1)")
+              stop("length(e2) does not match dim(e1)")
 	  if (n1%%n2)
-		warning("length(e1) not a multiple length(e2)")
-	}
-	attributes(e1)
+              warning("length(e1) not a multiple length(e2)")
+      }
   }else{
-    if (length(d2)){
+      if (length(d2)){
 	  if (n1>n2)
-	    stop("length(e1) does not match dim(n2)")
+              stop("length(e1) does not match dim(n2)")
 	  if (n2%%n1)
-		warning("length(e2) not a multiple length(e1)")
+              warning("length(e2) not a multiple length(e1)")
 	  attributes(e2)
-	}else{
+      }else{
 	  if (n1<n2){
-		if (n2%%n1)
-			warning("length(e2) not a multiple length(e1)")
+              if (n2%%n1)
+                  warning("length(e2) not a multiple length(e1)")
 	  }else{
-		if (n1%%n2)
-			warning("length(e1) not a multiple length(e2)")
+              if (n1%%n2)
+                  warning("length(e1) not a multiple length(e2)")
 	  }
-	  attributes(e1)
-	}
+      }
+  }
+
+  ## in this part we mimic R's algo for selecting attributes:
+  if (n1 > n2){
+      attributes(e1)
+  }else if (n2 > n1){
+      attributes(e2)
+  }else{
+      ## if same size take attribute from e1 if it exists, else from e2
+      ae1 <- attributes(e1)
+      ae2 <- attributes(e2)
+      nae1 <- names(attributes(e1))
+      nae2 <- names(attributes(e2))
+      allattr <- list()
+      for (a in union(nae1, nae2)) 
+          if (a %in% nae1)
+              allattr[[a]] <- ae1[[a]]
+          else
+              allattr[[a]] <- ae2[[a]]
   }
 }
-
 
 integer64 <- function(length=0){
   ret <- double(length)
@@ -1801,13 +1861,52 @@ str.integer64 <- function(object
   invisible()
 }
 
-"[.integer64" <- function(x,...){
-  cl <- oldClass(x)
-  ret <- NextMethod()
-  oldClass(ret) <- cl
-  remcache(ret)
-  ret
+if (FALSE){
+	require(microbenchmark)
+	require(bit64)
+	x <- runif64(1e7)
+	microbenchmark(x[TRUE], times=10)
+	microbenchmark(x[NA], times=10)
+  i <- seq_along(x)
+	i[1] <- NA
+	microbenchmark(x[i], times=10)
+	i <- rep(TRUE, length(x))
+	i[1] <- NA
+	microbenchmark(x[i], times=10)
+  i <- seq_along(x)
+	microbenchmark(x[i], times=10)
+	i <- rep(TRUE, length(x))
+	microbenchmark(x[i], times=10)
+
 }
+
+
+"[.integer64" <- function(x, i, ...){
+	cl <- oldClass(x)
+	ret <- NextMethod()
+	# Begin NA-handling from Leonardo Silvestri
+	if (!missing(i)){
+		if (class(i) == "character") {
+		  na_idx <- union(which(!(i %in% names(x))), which(is.na(i)))
+		  if (length(na_idx))
+				ret[na_idx] <- NA_integer64_
+		}else{ 
+			if (class(i) == "logical"){
+		    i <- i[is.na(i) | i]
+		    na_idx <- rep(is.na(i), length.out=length(ret))
+		  }else{
+		    na_idx <- is.na(i)
+		  }
+		  if (any(na_idx))
+				ret[na_idx] <- NA_integer64_
+		}
+	}
+	# End NA-handling from Leonardo Silvestri
+	oldClass(ret) <- cl
+	remcache(ret)
+	ret
+}
+
 
 "[<-.integer64" <- function(x,...,value){
   cl <- oldClass(x)

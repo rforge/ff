@@ -12,6 +12,10 @@ NEW FEATURES
 
 USER VISIBLE CHANGES
 
+    o [.integer64 now returns NA where the subscripts require this
+      (contributed by Leonardo Silvestri)
+    o binary operators now handle attributes more like R 
+      (new binattr() code contributed by Leonardo Silvestri)
     o as.bitstring.integer64 now returns its string vector
       with class 'bitstring'
     o round.integer64 with a negative digits argument now rounds 
