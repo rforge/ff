@@ -175,7 +175,10 @@ hashfun.integer64 <- function(x, minfac=1.41, hashbits=NULL, ...){
   n <- length(x)
   if (is.null(hashbits)){
     minlen <- ceiling(n*minfac)
-    hashbits <- as.integer(ceiling(log2(minlen)))
+    if (minlen > 0L)
+      hashbits <- as.integer(ceiling(log2(minlen)))
+    else
+      hashbits <- 0L
   }else 
     hashbits <- as.integer(hashbits)
   ret <- integer(n)
@@ -192,16 +195,20 @@ hashmap.integer64 <- function(x, nunique=NULL, minfac=1.41, hashbits=NULL, cache
     nunique <- as.integer(nunique)
     n <- nunique
   }
-  if (is.null(hashbits))
-    hashbits <- as.integer(ceiling(log2(n*minfac)))
-  else 
+  if (is.null(hashbits)){
+    minlen <- ceiling(n*minfac)
+    if (minlen > 0L)
+      hashbits <- as.integer(ceiling(log2(minlen)))
+    else
+      hashbits <- 0L
+  }else 
     hashbits <- as.integer(hashbits)
   nhash <- as.integer(2^hashbits)
   hashmap <- integer(nhash)
   .Call(C_hashmap_integer64, x, hashbits, hashmap, nunique, PACKAGE = "bit64")
   
   if (is.null(cache))
-	cache <- newcache(x)
+	  cache <- newcache(x)
   else
     if (!still.identical(x, get("x", envir=cache, inherits=FALSE)))
 		  stop("vector 'x' dissociated from cache")
@@ -331,9 +338,13 @@ hashmapuni.integer64 <- function(x, nunique=NULL, minfac=1.5, hashbits=NULL, ...
     nunique <- as.integer(nunique)
     n <- nunique
   }
-  if (is.null(hashbits))
-    hashbits <- as.integer(ceiling(log2(n*minfac)))
-  else 
+  if (is.null(hashbits)){
+    minlen <- ceiling(n*minfac)
+    if (minlen > 0L)
+      hashbits <- as.integer(ceiling(log2(minlen)))
+    else
+      hashbits <- 0L
+  }else 
     hashbits <- as.integer(hashbits)
   nhash <- as.integer(2^hashbits)
   hashmap <- integer(nhash)
@@ -352,9 +363,13 @@ hashmapupo.integer64 <- function(x, nunique=NULL, minfac=1.5, hashbits=NULL, ...
     nunique <- as.integer(nunique)
     n <- nunique
   }
-  if (is.null(hashbits))
-    hashbits <- as.integer(ceiling(log2(n*minfac)))
-  else 
+  if (is.null(hashbits)){
+    minlen <- ceiling(n*minfac)
+    if (minlen > 0L)
+      hashbits <- as.integer(ceiling(log2(minlen)))
+    else
+      hashbits <- 0L
+  }else 
     hashbits <- as.integer(hashbits)
   nhash <- as.integer(2^hashbits)
   hashmap <- integer(nhash)

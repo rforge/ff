@@ -275,7 +275,7 @@ void bit_which_negative(bitint *b, int *l, int from, int to){
 int bit_extract(bitint *b, int nb, int *i, int *l, int n){
   register int ii, il, ib, j, k;
   for (ii=0,il=0; ii<n; ii++){
-    if (i[ii]){
+    if (i[ii]>0){
       ib = i[ii] - 1;
       if (ib<nb){
         j = ib/BITS;
@@ -292,7 +292,7 @@ int bit_extract(bitint *b, int nb, int *i, int *l, int n){
 void bit_replace(bitint *b, int *i, int *l, int n){
   register int ii, ib, j, k;
   for (ii=0; ii<n; ii++){
-    if (i[ii]){
+    if (i[ii]>0){
       ib = i[ii] - 1;
       j = ib/BITS;
       k = ib%BITS;

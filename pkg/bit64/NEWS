@@ -24,6 +24,12 @@ USER VISIBLE CHANGES
       with range.default (wish of Sergio Oller)
       
 
+BUG FIXES
+
+    o calculating hashbits in hashfun, hashmap, hashmaptab and hashmapuni 
+      now gives 0 instead of stopping (bug reported by Jakob Schelbert) 
+
+
 
     CHANGES IN bit64 VERSION 0.9-7
 

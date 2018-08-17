@@ -3,3 +3,17 @@
 
 # Export all names
 exportPattern(".")
+
+S3method("print", ref)
+
+S3method("dimnames", refdata)
+S3method("dim", refdata)
+S3method("names", refdata)
+S3method("print", refdata)
+S3method("[", refdata)
+S3method("[<-", refdata)
+S3method("[[", refdata)
+S3method("[[<-", refdata)
+S3method("$", refdata)
+S3method("$<-", refdata)
+S3method("row.names", refdata)

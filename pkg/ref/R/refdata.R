@@ -46,7 +46,7 @@
 #!   \code{need.index} returns a logical scalar
 #!   \code{posi.index}  returns a vector of positive integers (or integer(0))
 #! }
-#! \author{ Jens Oehlschlägel }
+#! \author{ Jens Oehlschl?gel }
 #! \seealso{ \code{\link{refdata}}
 #!           \cr please ignore the following unpublished links: ids2index, shift.index, startstop2index
 #! }
@@ -55,7 +55,7 @@
 #!   names(l) <- letters
 #!   stopifnot({i <- 1:3 ; identical(l[i], l[optimal.index(i, n=length(l))])})
 #!   stopifnot({i <- -(4:26) ; identical(l[i], l[optimal.index(i, n=length(l))])})
-#!   stopifnot({i <- c(rep(TRUE, 3), rep(FALSE, 23)) 
+#!   stopifnot({i <- c(rep(TRUE, 3), rep(FALSE, 23))
 #!     identical(l[i], l[optimal.index(i, n=length(l))])})
 #!   stopifnot({i <- c("a", "b", "c")
 #!     identical(l[i], l[optimal.index(i, i.names=names(l))])})
@@ -209,7 +209,7 @@ need.index <- function(oi)
 #!   \item{dat}{the environment where the data x and its dimension dim is stored}
 #!   \item{ind}{the environment where the indexes i, j and the effective subset size ni, nj is stored}
 #! }
-#! \author{ Jens Oehlschlägel }
+#! \author{ Jens Oehlschl?gel }
 #! \seealso{ \code{\link[base]{Extract}},  \code{\link[base]{matrix}},  \code{\link[base]{data.frame}}, \code{\link{optimal.index}}, \code{\link{ref}} }
 #!
 #! \examples{
@@ -221,7 +221,7 @@ need.index <- function(oi)
 #!   rm(x)                      # delete original to save memory
 #!   rx[]                       # extract all data
 #!   rx[-1, ]                   # extract part of data
-#!   rx2 <- rx[-1, , ref=TRUE]  # create refdata object referencing part of data 
+#!   rx2 <- rx[-1, , ref=TRUE]  # create refdata object referencing part of data
 #!                              # (only index, no data is duplicated)
 #!   rx2                        # compare autoprinting
 #!   rx2[]                      # extract 'all' data
@@ -504,7 +504,7 @@ print.refdata <- function(x, ...){
 #! \value{
 #!   TRUE if successful
 #! }
-#! \author{ Jens Oehlschlägel }
+#! \author{ Jens Oehlschl?gel }
 #! \seealso{ \code{\link{refdata}}, \code{\link[utils]{example}} }
 #!
 #! \examples{
